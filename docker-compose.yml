@@ -18,14 +18,14 @@ services:
       - PG_PASS=pgadmin
     tty: true
     depends_on:
-      - def-dog-db
+      - defi-dog-db
 
-  def-dog-db:
+  defi-dog-db:
     build:
       dockerfile: ./Dockerfile
       context: postgres
     restart: always
-    container_name: def-dog-db
+    container_name: defi-dog-db
     ports:
       - "25434:5432"
     volumes:
@@ -48,7 +48,7 @@ services:
     ports:
       - "5052:80"
     depends_on:
-      - def-dog-db
+      - defi-dog-db
 
 volumes:
   postgres_data:
