@@ -20,7 +20,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -28,7 +27,8 @@ import java.util.UUID;
 @Table(name = "SMART_CONTRACT", indexes = {
         @Index(name = "IDX_SMART_CONTRACT_DE_FI_PROTOCOL", columnList = "DE_FI_PROTOCOL_ID"),
         @Index(name = "IDX_SMART_CONTRACT_SOURCES", columnList = "SOURCES_ID"),
-        @Index(name = "IDX_SMART_CONTRACT", columnList = "ADDRESS")
+        @Index(name = "IDX_SMART_CONTRACT", columnList = "ADDRESS"),
+        @Index(name = "IDX_SMART_CONTRACT_CRYPTOCURRENCY", columnList = "CRYPTOCURRENCY_ID")
 })
 @Entity
 public class SmartContract {
@@ -43,39 +43,19 @@ public class SmartContract {
     @Column(name = "NAME")
     private String name;
 
-    @Comment("Рыночной цена токена")
-    @Column(name = "PRICE", precision = 19, scale = 10)
-    private BigDecimal price;
-
-    @Comment("Рыночная капитализация, общая стоимость всех токенов в обращении")
-    @Column(name = "MARKET_CAP", precision = 24, scale = 2)
-    private BigDecimal marketCap;
-
-    @Comment("Объём торгов за 24 часа")
-    @Column(name = "VOLUME", precision = 24, scale = 2)
-    private BigDecimal volume;
-
-    @Comment("Циркулирующее предложение, количество токенов, находящихся в обращении на рынке")
-    @Column(name = "CIRCULATING_SUPPLY", precision = 30, scale = 10)
-    private BigDecimal circulatingSupply;
-
     @NotBlank
     @Comment("Адрес смарт-контракта в блокчейне")
     @Column(name = "ADDRESS")
     private String address;
 
-    @Comment("Тикер")
-    @Column(name = "SYMBOL")
-    private String symbol;
+    @Comment("Название сети")
+    @Column(name = "NETWORK")
+    private String network;
 
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "DE_FI_PROTOCOL_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private DeFiProtocol deFiProtocol;
-
-    @Comment("Название сети")
-    @Column(name = "NETWORK")
-    private String network;
 
     @JoinColumn(name = "SOURCES_ID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -101,6 +81,18 @@ public class SmartContract {
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
 
+    @JoinColumn(name = "CRYPTOCURRENCY_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cryptocurrency cryptocurrency;
+
+    public Cryptocurrency getCryptocurrency() {
+        return cryptocurrency;
+    }
+
+    public void setCryptocurrency(Cryptocurrency cryptocurrency) {
+        this.cryptocurrency = cryptocurrency;
+    }
+
     public SourceCode getSources() {
         return sources;
     }
@@ -123,46 +115,6 @@ public class SmartContract {
 
     public void setExternalLink(String externalLink) {
         this.externalLink = externalLink;
-    }
-
-    public BigDecimal getCirculatingSupply() {
-        return circulatingSupply;
-    }
-
-    public void setCirculatingSupply(BigDecimal circulatingSupply) {
-        this.circulatingSupply = circulatingSupply;
-    }
-
-    public BigDecimal getVolume() {
-        return volume;
-    }
-
-    public void setVolume(BigDecimal volume) {
-        this.volume = volume;
-    }
-
-    public BigDecimal getMarketCap() {
-        return marketCap;
-    }
-
-    public void setMarketCap(BigDecimal marketCap) {
-        this.marketCap = marketCap;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
     }
 
     public String getName() {
