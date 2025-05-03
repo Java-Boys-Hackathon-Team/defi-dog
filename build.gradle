@@ -62,6 +62,10 @@ dependencies {
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
     implementation 'org.springframework.ai:spring-ai-starter-model-chat-memory-jdbc'
 
+    // Telegram Bot
+    implementation 'org.telegram:telegrambots-springboot-longpolling-starter:8.3.0'
+    implementation 'org.telegram:telegrambots-client:8.3.0'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

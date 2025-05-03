@@ -22,6 +22,9 @@
       </entry>
     </moduleSettings>
   </component>
+  <component name="JmixLiquibaseChangesConfig">
+    <exclude-change idName="ai_chat_memory" tagName="dropTable" />
+  </component>
   <component name="JmixPluginProjectSettings">
     <option name="savedDbProperties">
       <list>
