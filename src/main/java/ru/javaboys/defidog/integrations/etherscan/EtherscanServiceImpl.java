@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 
+// https://docs.etherscan.io/etherscan-v2
 @Service
 @Slf4j
 public class EtherscanServiceImpl implements EtherscanService {
