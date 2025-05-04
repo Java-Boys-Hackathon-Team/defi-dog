@@ -1,17 +1,23 @@
 package ru.javaboys.defidog.integrations;
 
+import io.jmix.core.DataManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
+import ru.javaboys.defidog.entity.TelegramUser;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
+import ru.javaboys.defidog.integrations.telegram.TelegramBotService;
+import ru.javaboys.defidog.test_support.AuthenticatedAsAdmin;
 import ru.javaboys.defidog.utils.DotenvTestExecutionListener;
+import ru.javaboys.defidog.entity.User;
 
 import java.math.BigInteger;
 import java.util.UUID;
@@ -23,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         listeners = DotenvTestExecutionListener.class,
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
+@ExtendWith(AuthenticatedAsAdmin.class)
 @Slf4j
 public class IntegrationsTest {
 
@@ -34,6 +41,12 @@ public class IntegrationsTest {
 
     @Autowired
     private BlockchainService blockchainService;
+
+    @Autowired
+    private TelegramBotService telegramBotService;
+
+    @Autowired
+    private DataManager dataManager;
 
     @Test
     void shouldFetchContractSourceCodeFromEtherscan() {
@@ -72,5 +85,17 @@ public class IntegrationsTest {
 
         assertThat(blockNumber).isNotNull();
         assertThat(blockNumber.longValue()).isGreaterThan(0);
+    }
+
+    @Test
+    void shouldSendMessageToUser() {
+
+        String message = "Привет из интеграционного теста!";
+
+        var admin = dataManager.load(User.class)
+                .query("e.username = ?1", "admin")
+                .one();
+
+        telegramBotService.sendMessageToUser(message, admin);
     }
 }

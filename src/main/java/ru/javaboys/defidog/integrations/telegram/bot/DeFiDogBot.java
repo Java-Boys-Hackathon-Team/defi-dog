@@ -1,5 +1,6 @@
 package ru.javaboys.defidog.integrations.telegram.bot;
 
+import io.jmix.core.DataManager;
 import io.jmix.core.security.SystemAuthenticator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -15,10 +16,13 @@ import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateC
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import ru.javaboys.defidog.entity.TelegramUser;
+import ru.javaboys.defidog.entity.User;
+import ru.javaboys.defidog.integrations.telegram.TelegramUserService;
 
+@Component
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class DeFiDogBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     @Value("${telegram.bot.token}")
@@ -27,6 +31,10 @@ public class DeFiDogBot implements SpringLongPollingBot, LongPollingSingleThread
     private final TelegramClient telegramClient;
 
     private final SystemAuthenticator systemAuthenticator;
+
+    private final DataManager dataManager;
+
+    private final TelegramUserService telegramUserService;
 
     @Override
     public String getBotToken() {
@@ -47,7 +55,19 @@ public class DeFiDogBot implements SpringLongPollingBot, LongPollingSingleThread
 
         try {
 
+            TelegramUser upsertedTelegramUser = telegramUserService.upsertTelegramUser(update);
+
+            // TODO: Пример связывания пользователя бота и проекта
+            // TODO: УДАЛИТЬ ЭТОТ КОД ПОСЛЕ РАЗРАБОТКИ ПРОД ВЕРСИИ
+            var admin = dataManager.load(User.class)
+                    .query("e.username = ?1", "admin")
+                    .one();
+
+            admin.setTelegramUser(upsertedTelegramUser);
+            dataManager.save(admin);
+
             if (update.hasMessage() && update.getMessage().hasText()) {
+
                 String messageText = update.getMessage().getText();
                 long chatId = update.getMessage().getChatId();
 
