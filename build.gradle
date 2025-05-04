@@ -47,6 +47,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    testImplementation 'io.github.cdimascio:dotenv-java:3.2.0'
+
     // Lombok
     implementation 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
