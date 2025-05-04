@@ -7,11 +7,13 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
+import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
 import ru.javaboys.defidog.utils.DotenvTestExecutionListener;
 
+import java.math.BigInteger;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +31,9 @@ public class IntegrationsTest {
 
     @Autowired
     private OpenAiService openAiService;
+
+    @Autowired
+    private BlockchainService blockchainService;
 
     @Test
     void shouldFetchContractSourceCodeFromEtherscan() {
@@ -57,5 +62,15 @@ public class IntegrationsTest {
 
         assertThat(response).isNotBlank();
         assertThat(response.toLowerCase()).contains("paris");
+    }
+
+    @Test
+    void shouldReturnLatestBlockNumber() {
+        BigInteger blockNumber = blockchainService.getLastBlockNumber();
+
+        log.info("Blockchain API response: {}", blockNumber);
+
+        assertThat(blockNumber).isNotNull();
+        assertThat(blockNumber.longValue()).isGreaterThan(0);
     }
 }
