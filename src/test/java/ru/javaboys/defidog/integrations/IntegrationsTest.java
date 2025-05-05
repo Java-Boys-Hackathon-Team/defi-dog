@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import ru.javaboys.defidog.entity.TelegramUser;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
+import ru.javaboys.defidog.integrations.coinmarketcap.CoinMarketCapService;
+import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseDto;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
@@ -47,6 +49,9 @@ public class IntegrationsTest {
 
     @Autowired
     private DataManager dataManager;
+
+    @Autowired
+    private CoinMarketCapService coinMarketCapService;
 
     @Test
     void shouldFetchContractSourceCodeFromEtherscan() {
@@ -97,5 +102,17 @@ public class IntegrationsTest {
                 .one();
 
         telegramBotService.sendMessageToUser(message, admin);
+    }
+
+
+    @Test
+    void shouldFetchCryptocurrencyListings() {
+        CoinMarketCapResponseDto response = coinMarketCapService.getCryptocurrencyListingsLatest();
+
+        log.info("CoinMarketCap response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNotEmpty();
+        assertThat(response.getData().get(0).getName()).isNotBlank();
     }
 }
