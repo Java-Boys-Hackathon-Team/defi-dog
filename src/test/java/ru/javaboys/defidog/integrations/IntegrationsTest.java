@@ -9,7 +9,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
-import ru.javaboys.defidog.entity.TelegramUser;
+import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.coinmarketcap.CoinMarketCapService;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseDto;
@@ -19,7 +19,6 @@ import ru.javaboys.defidog.integrations.openai.OpenAiService;
 import ru.javaboys.defidog.integrations.telegram.TelegramBotService;
 import ru.javaboys.defidog.test_support.AuthenticatedAsAdmin;
 import ru.javaboys.defidog.utils.DotenvTestExecutionListener;
-import ru.javaboys.defidog.entity.User;
 
 import java.math.BigInteger;
 import java.util.UUID;
