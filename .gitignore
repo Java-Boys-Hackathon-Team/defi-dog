@@ -31,3 +31,6 @@ webpack.generated.js
 .DS_Store
 .idea
 /.env
+/all_java_code.txt
+all_java_code_*.txt
+
