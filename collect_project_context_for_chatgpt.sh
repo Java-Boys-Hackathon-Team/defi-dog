@@ -76,3 +76,24 @@ find "$ROOT_DIR" -type f | while read -r file; do
 done
 
 echo "✅ Сбор завершён. Результат в: $OUTPUT_FILE"
+
+# Загрузим также требования к проекту и сохраним их в файл
+
+# ID документа (из URL)
+DOC_ID="1-JOCyAptFwL30WpuQPYt4SX5FAIuRJt5nKTj6EHBL04"
+
+# Имя временного и итогового файла
+TEMP_REQUIREMENTS_FILE="temp_doc.txt"
+OUTPUT_REQUIREMENTS_FILE="${PROJECT_NAME} - project requirements.txt"
+
+# Скачивание документа в текстовом формате
+curl -sL "https://docs.google.com/document/d/${DOC_ID}/export?format=txt" -o "${TEMP_REQUIREMENTS_FILE}"
+
+# Удаление пустых строк и сохранение в итоговый файл
+grep -v '^[[:space:]]*$' "${TEMP_REQUIREMENTS_FILE}" > "${OUTPUT_REQUIREMENTS_FILE}"
+
+# Удаление временного файла
+rm -f "${TEMP_REQUIREMENTS_FILE}"
+
+# Сообщение об успехе
+echo "✅ Требования сохранены в: ${OUTPUT_REQUIREMENTS_FILE}"
