@@ -1,10 +1,10 @@
 package ru.javaboys.defidog.security;
 
-import ru.javaboys.defidog.entity.User;
 import io.jmix.securitydata.user.AbstractDatabaseUserRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+import ru.javaboys.defidog.entity.User;
 
 import java.util.Collection;
 
