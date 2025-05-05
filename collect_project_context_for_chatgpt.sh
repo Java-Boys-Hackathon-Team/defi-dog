@@ -75,7 +75,7 @@ find "$ROOT_DIR" -type f | while read -r file; do
   echo "$CONTENT" >> "$OUTPUT_FILE"
 done
 
-echo "✅ Сбор завершён. Результат в: $OUTPUT_FILE"
+echo "✅ Сбор исходного кода завершён. Результат в: $OUTPUT_FILE"
 
 # Загрузим также требования к проекту и сохраним их в файл
 
