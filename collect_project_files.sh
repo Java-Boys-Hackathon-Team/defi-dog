@@ -12,10 +12,10 @@ fi
 # ====== Настройки фильтрации ======
 
 # Каталоги, которые нужно исключить
-EXCLUDED_DIRS_REGEX="(/build/|/out/|/node_modules/|/.git/|/.idea/|/target/|src/main/bundles)"
+EXCLUDED_DIRS_REGEX="(/build/|/out/|/node_modules/|/.git/|/.idea/|/target/|src/main/bundles|/.jmix)"
 
 # Расширения файлов для исключения
-EXCLUDED_EXTENSIONS=("class" "jar" "png" "jpg" "jpeg" "gif" "ico" "log" "js" "ts")
+EXCLUDED_EXTENSIONS=("class" "jar" "png" "jpg" "jpeg" "gif" "ico" "log" "js" "ts" "ipynb")
 
 # Разрешённые расширения
 INCLUDED_EXTENSIONS=("java" "xml" "properties" "yml" "yaml" "html" "js" "ts" "gradle" "md")
