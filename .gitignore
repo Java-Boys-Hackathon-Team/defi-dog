@@ -34,3 +34,5 @@ webpack.generated.js
 /all_java_code.txt
 all_java_code_*.txt
 *.ipynb
+collected_code_*.txt
+
