@@ -9,6 +9,8 @@ if [ ! -d "$ROOT_DIR" ]; then
   exit 1
 fi
 
+PROJECT_NAME="DeFi Dog"
+
 # ====== Настройки фильтрации ======
 
 # Каталоги, которые нужно исключить
@@ -29,7 +31,7 @@ EXCLUDED_LINE_PATTERNS=(
 
 # ====== Выходной файл ======
 DIR_NAME=$(basename "$ROOT_DIR")
-OUTPUT_FILE="$PWD/collected_code_${DIR_NAME}.txt"
+OUTPUT_FILE="$PWD/${PROJECT_NAME} - source code.txt"
 > "$OUTPUT_FILE"
 
 # ====== Обход файлов ======
