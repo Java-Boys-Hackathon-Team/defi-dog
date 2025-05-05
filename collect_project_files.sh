@@ -2,8 +2,6 @@
 
 # Путь к каталогу (по умолчанию — текущий)
 INPUT_DIR=${1:-.}
-
-# Приведение к абсолютному пути
 ROOT_DIR=$(realpath "$INPUT_DIR")
 
 if [ ! -d "$ROOT_DIR" ]; then
@@ -11,26 +9,34 @@ if [ ! -d "$ROOT_DIR" ]; then
   exit 1
 fi
 
-# Исключаемые каталоги
+# ====== Настройки фильтрации ======
+
+# Каталоги, которые нужно исключить
 EXCLUDED_DIRS_REGEX="(/build/|/out/|/node_modules/|/.git/|/.idea/|/target/|src/main/bundles)"
 
-# Исключаемые расширения
+# Расширения файлов для исключения
 EXCLUDED_EXTENSIONS=("class" "jar" "png" "jpg" "jpeg" "gif" "ico" "log" "js" "ts")
 
-# Включаемые расширения
+# Разрешённые расширения
 INCLUDED_EXTENSIONS=("java" "xml" "properties" "yml" "yaml" "html" "js" "ts" "gradle" "md")
 
-# Название выходного файла
+# Паттерны строк, которые нужно удалить из содержимого файлов
+EXCLUDED_LINE_PATTERNS=(
+    '^\s*$'              # пустые строки
+    '^\s*import\s'       # строки с import
+    '^\s*package\s'      # строки с package
+)
+
+# ====== Выходной файл ======
 DIR_NAME=$(basename "$ROOT_DIR")
 OUTPUT_FILE="$PWD/collected_code_${DIR_NAME}.txt"
-
-# Очистка выходного файла
 > "$OUTPUT_FILE"
 
-# Поиск и обработка файлов
+# ====== Обход файлов ======
 find "$ROOT_DIR" -type f | while read -r file; do
-  # Проверка на включённые расширения
   ext="${file##*.}"
+
+  # Проверка расширения
   include=0
   for allowed in "${INCLUDED_EXTENSIONS[@]}"; do
     if [[ "$ext" == "$allowed" ]]; then
@@ -38,9 +44,7 @@ find "$ROOT_DIR" -type f | while read -r file; do
       break
     fi
   done
-  if [ $include -eq 0 ]; then
-    continue
-  fi
+  [ $include -eq 0 ] && continue
 
   # Проверка на исключённые каталоги
   if [[ "$file" =~ $EXCLUDED_DIRS_REGEX ]]; then
@@ -54,12 +58,19 @@ find "$ROOT_DIR" -type f | while read -r file; do
     fi
   done
 
-  # Относительный путь
+  # Путь относительно корня
   REL_PATH="${file#$ROOT_DIR/}"
 
-  # Добавление метаданных и содержимого
-  echo -e "\n\n==== FILE: $REL_PATH ====\n" >> "$OUTPUT_FILE"
-  cat "$file" >> "$OUTPUT_FILE"
+  # Вывод метаданных
+  echo -e "\n==== FILE: $REL_PATH ====" >> "$OUTPUT_FILE"
+
+  # Применение фильтра к содержимому файла
+  CONTENT=$(cat "$file")
+  for pattern in "${EXCLUDED_LINE_PATTERNS[@]}"; do
+    CONTENT=$(echo "$CONTENT" | grep -Ev "$pattern")
+  done
+
+  echo "$CONTENT" >> "$OUTPUT_FILE"
 done
 
 echo "✅ Сбор завершён. Результат в: $OUTPUT_FILE"
