@@ -109,7 +109,6 @@ public class IntegrationsTest {
         telegramBotService.sendMessageToUser(message, admin);
     }
 
-
     @Test
     void shouldFetchCryptocurrencyListings() {
         CoinMarketCapResponseDto response = coinMarketCapService.getCryptocurrencyListingsLatest();
@@ -120,7 +119,6 @@ public class IntegrationsTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData().get(0).getName()).isNotBlank();
     }
-
 
     @Test
     void shouldDecompileBytecodeSuccessfully() {
