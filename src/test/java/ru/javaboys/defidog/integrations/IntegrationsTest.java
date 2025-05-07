@@ -18,10 +18,15 @@ import ru.javaboys.defidog.integrations.dedaub.dto.DecompilationDto;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
+import ru.javaboys.defidog.integrations.sourcify.SourcifyService;
+import ru.javaboys.defidog.integrations.sourcify.dto.GetContract200Response;
+import ru.javaboys.defidog.integrations.sourcify.dto.GetV2ContractsChainId200Response;
+import ru.javaboys.defidog.integrations.sourcify.dto.VerifiedContractMinimal;
 import ru.javaboys.defidog.integrations.telegram.TelegramBotService;
 import ru.javaboys.defidog.test_support.AuthenticatedAsAdmin;
 import ru.javaboys.defidog.utils.DotenvTestExecutionListener;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.UUID;
@@ -57,6 +62,9 @@ public class IntegrationsTest {
 
     @Autowired
     private DedaubService dedaubService;
+
+    @Autowired
+    private SourcifyService sourcifyService;
 
     @Test
     void shouldFetchContractSourceCodeFromEtherscan() {
@@ -132,5 +140,37 @@ public class IntegrationsTest {
         assertThat(result).isNotNull();
         assertThat(result.getMd5()).isNotBlank();
         assertThat(result.getSource()).isNotBlank();
+    }
+
+    @Test
+    void shouldGetContractMetadata() {
+        String chainId = "1";
+        String address = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+        String fields = "all";
+        String omit = null;
+
+        GetContract200Response response = sourcifyService.getContract(chainId, address, fields, omit);
+
+        log.info("Sourcify response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getAddress()).isEqualToIgnoringCase(address);
+        assertThat(response.getChainId()).isEqualTo(chainId);
+    }
+
+    @Test
+    void shouldGetContractsList() {
+        String chainId = "1";
+        String sort = "asc";
+        BigDecimal limit = BigDecimal.valueOf(5);
+        String afterMatchId = null;
+
+        GetV2ContractsChainId200Response response = sourcifyService.getV2ContractsChainId(chainId, sort, limit, afterMatchId);
+
+        log.info("Sourcify contracts list response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getResults().size()).isGreaterThan(1);
+        assertThat(response.getResults().get(0).getMatch()).isEqualTo(VerifiedContractMinimal.MatchEnum.EXACT_MATCH);
     }
 }
