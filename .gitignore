@@ -31,10 +31,8 @@ webpack.generated.js
 .DS_Store
 .idea
 /.env
-/all_java_code.txt
-all_java_code_*.txt
+all_java_code*.txt
 *.ipynb
-collected_code_*.txt
 *source code.txt
 *project requirements.txt
 /.ipynb_checkpoints/
