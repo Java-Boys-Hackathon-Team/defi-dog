@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://sourceCodeListView.title"
+      focusComponent="sourceCodesDataGrid">
+    <data>
+        <collection id="sourceCodesDc"
+                    class="ru.javaboys.defidog.entity.SourceCode">
+            <fetchPlan extends="_base"/>
+            <loader id="sourceCodesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from SourceCode e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="sourceCodesDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="sourceCodesDataGrid.createAction"/>
+            <button id="removeButton" action="sourceCodesDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="sourceCodesDl"/>
+        </hbox>
+        <dataGrid id="sourceCodesDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="sourceCodesDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="sourceType" header="msg://sourceCodesDataGrid.sourceType" width="12%"/>
+                <column property="fetchedAt" header="msg://sourceCodesDataGrid.fetchedAt" width="13%"/>
+                <column property="repoUrl" header="msg://sourceCodesDataGrid.repoUrl" width="30%"/>
+                <column property="branch" header="msg://sourceCodesDataGrid.branch" width="10%"/>
+                <column property="localPath" header="msg://sourceCodesDataGrid.localPath" width="35%"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

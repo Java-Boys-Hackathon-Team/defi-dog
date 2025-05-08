@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://scanToolListView.title"
+      focusComponent="scanToolsDataGrid">
+    <data>
+        <collection id="scanToolsDc"
+                    class="ru.javaboys.defidog.entity.ScanTool">
+            <fetchPlan extends="_base"/>
+            <loader id="scanToolsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from ScanTool e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="scanToolsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="scanToolsDataGrid.createAction"/>
+            <button id="removeButton" action="scanToolsDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="scanToolsDl"/>
+        </hbox>
+        <dataGrid id="scanToolsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="scanToolsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="active" header="msg://scanToolsDataGrid.active" width="10%"/>
+                <column property="name" header="msg://scanToolsDataGrid.name" width="45%"/>
+                <column property="dockerImage" header="msg://scanToolsDataGrid.dockerImage" width="45%"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>
