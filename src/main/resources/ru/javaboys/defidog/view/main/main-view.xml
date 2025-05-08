@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <mainView xmlns="http://jmix.io/schema/flowui/main-view"
           title="msg://MainView.title">
+    <data readOnly="true">
+        <collection id="cryptocurrencyDg"
+                    class="ru.javaboys.defidog.entity.Cryptocurrency">
+<!--            <fetchPlan extends="_local">-->
+<!--                <property name="id" fetchPlan="_local"/>-->
+<!--            </fetchPlan>-->
+            <loader id="cryptocurrencyLoader">
+                <query>
+                    <![CDATA[select cc from Cryptocurrency cc order by cc.id]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="dexDg"
+                    class="ru.javaboys.defidog.entity.DeFiProtocol">
+            <!--            <fetchPlan extends="_local">-->
+            <!--                <property name="id" fetchPlan="_local"/>-->
+            <!--            </fetchPlan>-->
+            <loader id="dexLoader">
+                <query>
+                    <![CDATA[select dp from DeFiProtocol dp order by dp.id]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <actions>
         <action id="logoutAction" type="logout"/>
+        <action id="updateAction" text="Update"/>
     </actions>
     <appLayout>
         <navigationBar>
@@ -37,6 +65,37 @@
             </section>
         </drawerLayout>
         <initialLayout>
+            <flexLayout id="topLayout">
+                <hbox alignItems="END" classNames="flex-wrap">
+                    <comboBox id="blockchainNetworkComboBox"
+                              itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"
+                              label="Select Network"/>
+                    <button id="updateButton" action="updateAction"/>
+                </hbox>
+            </flexLayout>
+            <flexLayout id="dataLayoutButtons">
+                <button id="cryptocurrenciesButton"
+                        text="Cryptocurrencies"/>
+                <button id="dexButton"
+                        text="DEX"/>
+            </flexLayout>
+            <dataGrid id="cryptocurrencyGrid" width="100%" minHeight="20em"
+                      dataContainer="cryptocurrencyDg">
+                <columns>
+                    <column property="ticker"/>
+                    <column property="name"/>
+                    <column property="price"/>
+                    <column property="marketCap"/>
+<!--                    <column id="actionColumn" key="action" header="Run Audit"/>-->
+                </columns>
+            </dataGrid>
+            <dataGrid id="dexGrid" width="100%" minHeight="20em"
+                      dataContainer="dexDg">
+                <columns>
+                    <column property="name"/>
+                    <column property="officialSite"/>
+                </columns>
+            </dataGrid>
         </initialLayout>
     </appLayout>
 </mainView>

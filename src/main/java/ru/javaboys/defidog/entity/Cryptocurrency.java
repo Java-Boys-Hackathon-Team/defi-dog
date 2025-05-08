@@ -38,6 +38,12 @@ public class Cryptocurrency {
     @Id
     private UUID id;
 
+    @Column(name = "CMC_ID")
+    private Integer cmcId;
+
+    @Column(name = "CMC_RANK")
+    private Integer cmcRank;
+
     @InstanceName
     @Comment("Название криптовалюты")
     @Column(name = "NAME")
@@ -48,7 +54,7 @@ public class Cryptocurrency {
     private String ticker;
 
     @Comment("Рыночной цена")
-    @Column(name = "PRICE", precision = 19, scale = 10)
+    @Column(name = "PRICE", precision = 24, scale = 16)
     private BigDecimal price;
 
     @Comment("Рыночная капитализация, общая стоимость всех токенов в обращении")
@@ -77,6 +83,23 @@ public class Cryptocurrency {
     @CreatedDate
     @Column(name = "CREATED_DATE")
     private OffsetDateTime createdDate;
+
+
+    public Integer getCmcRank() {
+        return cmcRank;
+    }
+
+    public void setCmcRank(Integer cmcRank) {
+        this.cmcRank = cmcRank;
+    }
+
+    public Integer getCmcId() {
+        return cmcId;
+    }
+
+    public void setCmcId(Integer cmcId) {
+        this.cmcId = cmcId;
+    }
 
     @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
     @OneToOne(fetch = FetchType.LAZY)

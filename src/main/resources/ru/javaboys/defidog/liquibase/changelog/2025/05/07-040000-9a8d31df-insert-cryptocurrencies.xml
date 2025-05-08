@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="insert-cryptocurrencies-001" author="defi-dog">
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="8b2d5f2d-5d2f-4b17-a03f-740da3e01ae2"/>
+            <column name="NAME" value="Ethereum"/>
+            <column name="TICKER" value="ETH"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" valueDate="1027"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="d5e91de5-9a8f-4f74-9791-21ad61c14d56"/>
+            <column name="NAME" value="Tether"/>
+            <column name="TICKER" value="USDT"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" valueDate="825"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="1c3a4e9c-1470-4b8f-a764-76822eebfc1c"/>
+            <column name="NAME" value="BNB"/>
+            <column name="TICKER" value="BNB"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" valueDate="1839"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="cbf38799-4381-401b-bbe6-89901bba5015"/>
+            <column name="NAME" value="Solana"/>
+            <column name="TICKER" value="SOL"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" valueDate="5426"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="5b4209c1-1375-4f7f-b2a6-4d10961c0bfa"/>
+            <column name="NAME" value="USDC"/>
+            <column name="TICKER" value="USDC"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" valueDate="3408"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="4fcf2b36-02dc-4ec6-9b59-42613deabf29"/>
+            <column name="NAME" value="Dai"/>
+            <column name="TICKER" value="DAI"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" valueDate="4943"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
