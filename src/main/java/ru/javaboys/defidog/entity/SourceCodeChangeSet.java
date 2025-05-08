@@ -54,6 +54,11 @@ public class SourceCodeChangeSet {
     @Column(name = "COMMIT_HASH")
     private String commitHash;
 
+    @Comment("Git diff изменения")
+    @Column(name = "GIT_DIFF")
+    @Lob
+    private String gitDiff;
+
     @OneToMany(mappedBy = "sourceCodeChangeSet")
     private List<SourceCodeSecurityScanJob> securityScanJobResult;
 
@@ -115,6 +120,14 @@ public class SourceCodeChangeSet {
 
     public void setCommitHash(String commitHash) {
         this.commitHash = commitHash;
+    }
+
+    public String getGitDiff() {
+        return gitDiff;
+    }
+
+    public void setGitDiff(String gitDiff) {
+        this.gitDiff = gitDiff;
     }
 
     public OffsetDateTime getLastModifiedDate() {
