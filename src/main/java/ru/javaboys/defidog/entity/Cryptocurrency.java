@@ -95,6 +95,7 @@ public class Cryptocurrency {
 
     public void setCmcId(Integer cmcId) {
         this.cmcId = cmcId;
+    }
 
     @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
     @OneToOne(fetch = FetchType.LAZY)
