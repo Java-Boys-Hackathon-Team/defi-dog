@@ -1,1 +1,48 @@
 /* Define your styles here */
+.status-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: #4CAF50
+}
+
+.bordered-box {
+  margin-top: 4px;
+  ap: 4px;
+}
+
+@media (min-width: 640px) {
+    .sm\:dashboard-padding {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+}
+
+@media (min-width: 768px) {
+    .md\:dashboard-padding {
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:dashboard-padding {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+}
+
+@media (min-width: 1280px) {
+    .xl\:dashboard-padding {
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+}
+
+@media (min-width: 1536px) {
+    .xxl\:dashboard-padding {
+        padding-left: 5em;
+        padding-right: 5em;
+    }
+}

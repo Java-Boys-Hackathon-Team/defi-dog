@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Audit">
+    <data>
+        <collection id="sourceCodeChangesDc" class="ru.javaboys.defidog.entity.SourceCodeChangeSet"/>
+
+        <collection id="abiChangesDc" class="ru.javaboys.defidog.entity.AbiChangeSet">
+            <fetchPlan extends="_base"/>
+            <loader id="abiChangesDl" readOnly="true">
+                <query>
+                    <![CDATA[
+                    select e from AbiChangeSet e
+                    where e.auditReport.id = :auditReportId
+                    order by e.createdDate desc
+                ]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+
+    <layout>
+        <!-- Корневая вертикальная обертка -->
+        <vbox id="root" width="100%" height="100%" padding="false"
+              classNames="sm:dashboard-padding md:dashboard-padding lg:dashboard-padding xl:dashboard-padding xxl:dashboard-padding">
+
+            <!-- Заголовок: описание протокола и статус -->
+            <hbox id="header" width="100%" justifyContent="BETWEEN" alignItems="CENTER" classNames="bordered-box">
+                <vbox>
+                    <!-- Текст заголовка -->
+                    <h3 id = "protocolNameH3" text="Protocol name"/>
+                    <p id = "protocolDescriptionP" text="Protocol Description"/>
+                </vbox>
+                <!-- Индикатор текущего состояния (зеленый кружок) -->
+                <div classNames="status-dot"/>
+            </hbox>
+
+            <!-- Средний блок: граф зависимостей и редактор кода -->
+            <hbox id="middleSection" width="100%" height="400px" classNames="bordered-box">
+                <!-- Блок с графом зависимостей контрактов -->
+                <div id="graphContainer" width="50%" height="100%"/>
+
+                <!-- Блок с редактором исходного кода контракта -->
+                <vbox id="sourceCodeCard" width="50%" height="100%">
+                    <!-- Компонент редактора кода (например, Solidity) -->
+                    <codeEditor id="sourceCodeEditor" width="100%" height="100%"/>
+                </vbox>
+            </hbox>
+
+            <!-- Нижний блок: история исходного кода и ABI -->
+            <hbox id="abiHistoryHbox" width="100%" classNames="gap-m mt-m">
+                <!-- История изменений ABI -->
+                <details id="abiHistoryCard" summaryText="This section shows changes in the ABI definition across versions" classNames="bordered-box" width="100%">
+                    <dataGrid id="abiHistoryGrid" width="100%" dataContainer="abiChangesDc" height="100%">
+                        <columns>
+                            <!-- ID изменения -->
+                            <column property="id"/>
+                            <!-- Дата создания изменения -->
+                            <column property="createdDate"/>
+                        </columns>
+                    </dataGrid>
+                </details>
+            </hbox>
+
+            <hbox id="sourceCodeHbox" width="100%" classNames="gap-m mt-m">
+                <!-- История изменений исходного кода -->
+                <details id="sourceCodeHistoryCard" summaryText="This section shows version changes of the source code" classNames="bordered-box" width="100%">
+                    <dataGrid id="sourceCodeHistoryGrid"
+                              width="100%"
+                              dataContainer="sourceCodeChangesDc"
+                              height="100%">
+                        <columns>
+                            <column property="id" header="ID"/>
+                            <column property="createdDate" header="Дата изменения"/>
+                            <column property="commitHash" header="Коммит"/>
+                            <column property="changeSummary" header="Описание изменений"/>
+                            <column property="sourceCode.sourceType" header="Тип источника"/>
+                            <column property="sourceCode.repoUrl" header="Репозиторий"/>
+                            <column property="sourceCode.branch" header="Ветка"/>
+                            <column property="auditReport.criticality" header="Критичность"/>
+                        </columns>
+                    </dataGrid>
+                </details>
+            </hbox>
+        </vbox>
+    </layout>
+
+</view>
