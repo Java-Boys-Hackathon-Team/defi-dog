@@ -20,4 +20,7 @@ public class StatusDto {
 
     @JsonProperty("credit_count")
     private Integer creditCount;
+
+    @JsonProperty("notice")
+    private String notice;
 }
