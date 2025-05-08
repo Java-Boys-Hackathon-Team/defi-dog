@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://cryptocurrencyListView.title"
+      focusComponent="cryptocurrenciesDataGrid">
+    <data>
+        <collection id="cryptocurrenciesDc"
+                    class="ru.javaboys.defidog.entity.Cryptocurrency">
+            <fetchPlan extends="_base"/>
+            <loader id="cryptocurrenciesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Cryptocurrency e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="cryptocurrenciesDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="cryptocurrenciesDataGrid.createAction"/>
+            <button id="removeButton" action="cryptocurrenciesDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="cryptocurrenciesDl"/>
+        </hbox>
+        <dataGrid id="cryptocurrenciesDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="cryptocurrenciesDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="name" header="msg://cryptocurrenciesDataGrid.name"/>
+                <column property="ticker" header="msg://cryptocurrenciesDataGrid.ticker"/>
+                <column property="price" header="msg://cryptocurrenciesDataGrid.price"/>
+                <column property="marketCap" header="msg://cryptocurrenciesDataGrid.marketCap"/>
+                <column property="totalSupply" header="msg://cryptocurrenciesDataGrid.totalSupply"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

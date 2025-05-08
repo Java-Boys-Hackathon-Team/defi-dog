@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://smartContractListView.title"
+      focusComponent="smartContractsDataGrid">
+    <data>
+        <collection id="smartContractsDc"
+                    class="ru.javaboys.defidog.entity.SmartContract">
+            <fetchPlan extends="_base"/>
+            <loader id="smartContractsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from SmartContract e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="smartContractsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="smartContractsDataGrid.createAction"/>
+            <button id="removeButton" action="smartContractsDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="smartContractsDl"/>
+        </hbox>
+        <dataGrid id="smartContractsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="smartContractsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="name" header="msg://smartContractsDataGrid.name"/>
+                <column property="address" header="msg://smartContractsDataGrid.address"/>
+                <column property="network" header="msg://smartContractsDataGrid.network"/>
+                <column property="externalLink" header="msg://smartContractsDataGrid.externalLink"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

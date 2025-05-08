@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://deFiProtocolListView.title"
+      focusComponent="deFiProtocolsDataGrid">
+    <data>
+        <collection id="deFiProtocolsDc"
+                    class="ru.javaboys.defidog.entity.DeFiProtocol">
+            <fetchPlan extends="_base"/>
+            <loader id="deFiProtocolsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from DeFiProtocol e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="deFiProtocolsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="deFiProtocolsDataGrid.createAction"/>
+            <button id="removeButton" action="deFiProtocolsDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="deFiProtocolsDl"/>
+        </hbox>
+        <dataGrid id="deFiProtocolsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="deFiProtocolsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="name" header="msg://deFiProtocolsDataGrid.name"/>
+                <column property="description" header="msg://deFiProtocolsDataGrid.description"/>
+                <column property="officialSite" header="msg://deFiProtocolsDataGrid.officialSite"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>
