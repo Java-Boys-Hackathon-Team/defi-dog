@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="insert-defi-protocols-001" author="defi-dog">
+        <insert tableName="PROTOCOL">
+            <column name="ID" value="3d308c6c-c7b6-4f44-9f74-ff13c062a99e"/>
+            <column name="NAME" value="PancakeSwap v3 (BSC)"/>
+            <column name="DESCRIPTION" value=""/>
+            <column name="OFFICIAL_SITE" value="https://pancakeswap.finance"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="PROTOCOL">
+            <column name="ID" value="dbb9f012-7b52-490b-a8d2-b0146f33cb8b"/>
+            <column name="NAME" value="Raydium"/>
+            <column name="DESCRIPTION" value=""/>
+            <column name="OFFICIAL_SITE" value="https://raydium.io/"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="PROTOCOL">
+            <column name="ID" value="9272cf36-bd27-414e-a61c-1f23c31bb255"/>
+            <column name="NAME" value="Uniswap v3 (Ethereum)"/>
+            <column name="DESCRIPTION" value=""/>
+            <column name="OFFICIAL_SITE" value="https://app.uniswap.org/#/swap"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="PROTOCOL">
+            <column name="ID" value="257a3b18-3706-4e94-b226-174e87917362"/>
+            <column name="NAME" value="THORChain"/>
+            <column name="DESCRIPTION" value=""/>
+            <column name="OFFICIAL_SITE" value="https://thorchain.org/"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="PROTOCOL">
+            <column name="ID" value="641bfbfd-5d87-4ccf-a723-8325ec2a4642"/>
+            <column name="NAME" value="Compound"/>
+            <column name="DESCRIPTION" value=""/>
+            <column name="OFFICIAL_SITE" value="https://compound.finance/"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="PROTOCOL">
+            <column name="ID" value="69e07e8c-17f6-48c4-84a0-82ae4df5b5ce"/>
+            <column name="NAME" value="Aave"/>
+            <column name="DESCRIPTION" value=""/>
+            <column name="OFFICIAL_SITE" value="https://aave.com/"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

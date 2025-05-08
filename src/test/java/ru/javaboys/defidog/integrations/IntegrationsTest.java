@@ -12,6 +12,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.coinmarketcap.CoinMarketCapService;
+import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapIdMapResponseDto;
+import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapQuotesLatestResponseDto;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseDto;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
@@ -21,6 +23,7 @@ import ru.javaboys.defidog.test_support.AuthenticatedAsAdmin;
 import ru.javaboys.defidog.utils.DotenvTestExecutionListener;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,13 +108,41 @@ public class IntegrationsTest {
 
 
     @Test
-    void shouldFetchCryptocurrencyListings() {
+    void shouldFetchCryptocurrencyListingsLatest() {
         CoinMarketCapResponseDto response = coinMarketCapService.getCryptocurrencyListingsLatest();
 
-        log.info("CoinMarketCap response: {}", response);
+        log.info("CoinMarketCap ListingsLatest response: {}", response);
 
         assertThat(response).isNotNull();
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData().get(0).getName()).isNotBlank();
+    }
+
+    @Test
+    void shouldFetchCryptocurrencyCoinMarketCapIDMap() {
+        CoinMarketCapIdMapResponseDto response = coinMarketCapService.getCryptocurrencyCoinMarketCapIDMap();
+
+        log.info("CoinMarketCap CryptocurrencyCoinMarketCapIDMap response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNotEmpty();
+        assertThat(response.getData().get(0).getName()).isNotBlank();
+    }
+
+    @Test
+    void shouldFetchCryptocurrencyQuotesLatest() {
+        List<Integer> listSymbols = List.of(1839, 825, 1027, 4943, 3408, 5426);
+        //BNB - 1839
+        //USDT - 825
+        //ETH - 1027
+        //DAI - 4943
+        //USDC - 3408
+        //SOL - 5426
+        CoinMarketCapQuotesLatestResponseDto response = coinMarketCapService.getCryptocurrencyQuotesLatestByIds(listSymbols);
+
+        log.info("CoinMarketCap CryptocurrencyCryptocurrencyQuotesLatest response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNotEmpty();
     }
 }
