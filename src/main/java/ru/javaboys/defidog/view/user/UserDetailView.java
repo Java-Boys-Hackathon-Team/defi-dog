@@ -1,7 +1,5 @@
 package ru.javaboys.defidog.view.user;
 
-import ru.javaboys.defidog.entity.User;
-import ru.javaboys.defidog.view.main.MainView;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -9,9 +7,17 @@ import com.vaadin.flow.router.Route;
 import io.jmix.core.EntityStates;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.textfield.TypedTextField;
-import io.jmix.flowui.view.*;
+import io.jmix.flowui.view.EditedEntityContainer;
+import io.jmix.flowui.view.MessageBundle;
+import io.jmix.flowui.view.StandardDetailView;
+import io.jmix.flowui.view.Subscribe;
+import io.jmix.flowui.view.ViewComponent;
+import io.jmix.flowui.view.ViewController;
+import io.jmix.flowui.view.ViewDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.javaboys.defidog.entity.User;
+import ru.javaboys.defidog.view.main.MainView;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,7 +1,6 @@
 package ru.javaboys.defidog.entity;
 
 import io.jmix.core.metamodel.datatype.EnumClass;
-
 import org.springframework.lang.Nullable;
 
 

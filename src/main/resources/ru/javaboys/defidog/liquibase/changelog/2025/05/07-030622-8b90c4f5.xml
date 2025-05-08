@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="defi-dog">
+        <createTable tableName="NOTIFICATION_SETTINGS_CRYPTOCURRENCY_LINK">
+            <column name="CRYPTOCURRENCY_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="PK_NOTIFICATION_SETTINGS_CRYPTOCURRENCY_LINK"/>
+            </column>
+            <column name="NOTIFICATION_SETTINGS_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="PK_NOTIFICATION_SETTINGS_CRYPTOCURRENCY_LINK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="defi-dog">
+        <createTable tableName="NOTIFICATION_SETTINGS_DE_FI_PROTOCOL_LINK">
+            <column name="DE_FI_PROTOCOL_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="PK_NOTIFICATION_SETTINGS_DE_FI_PROTOCOL_LINK"/>
+            </column>
+            <column name="NOTIFICATION_SETTINGS_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="PK_NOTIFICATION_SETTINGS_DE_FI_PROTOCOL_LINK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="defi-dog">
+        <addForeignKeyConstraint baseColumnNames="CRYPTOCURRENCY_ID"
+                                 baseTableName="NOTIFICATION_SETTINGS_CRYPTOCURRENCY_LINK"
+                                 constraintName="FK_NOTSETCRY_ON_CRYPTOCURRENCY" referencedColumnNames="ID"
+                                 referencedTableName="CRYPTOCURRENCY"/>
+    </changeSet>
+    <changeSet id="4" author="defi-dog">
+        <addForeignKeyConstraint baseColumnNames="NOTIFICATION_SETTINGS_ID"
+                                 baseTableName="NOTIFICATION_SETTINGS_CRYPTOCURRENCY_LINK"
+                                 constraintName="FK_NOTSETCRY_ON_NOTIFICATION_SETTINGS" referencedColumnNames="ID"
+                                 referencedTableName="NOTIFICATION_SETTINGS"/>
+    </changeSet>
+    <changeSet id="5" author="defi-dog">
+        <addForeignKeyConstraint baseColumnNames="DE_FI_PROTOCOL_ID"
+                                 baseTableName="NOTIFICATION_SETTINGS_DE_FI_PROTOCOL_LINK"
+                                 constraintName="FK_NOTSETDEFIPRO_ON_DE_FI_PROTOCOL" referencedColumnNames="ID"
+                                 referencedTableName="PROTOCOL"/>
+    </changeSet>
+    <changeSet id="6" author="defi-dog">
+        <addForeignKeyConstraint baseColumnNames="NOTIFICATION_SETTINGS_ID"
+                                 baseTableName="NOTIFICATION_SETTINGS_DE_FI_PROTOCOL_LINK"
+                                 constraintName="FK_NOTSETDEFIPRO_ON_NOTIFICATION_SETTINGS" referencedColumnNames="ID"
+                                 referencedTableName="NOTIFICATION_SETTINGS"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,204 @@
+openapi: 3.0.2
+info:
+  title: Contract Library Rest API
+  version: 1.0.0
+servers:
+  - url: https://api.dedaub.com
+paths:
+  /api/on_demand/decompilation/{md5}:
+    get:
+      tags:
+        - decompiler_api
+      summary: Fetch output from Decompiler
+      description: Returns the decompiled code from the decompiler.
+      operationId: get_decompilation
+      parameters:
+        - required: true
+          schema:
+            title: Md5
+            pattern: ^(0x)?[0-9A-Fa-f]{32}$
+            type: string
+          name: md5
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decompilation'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - OAuth2AuthorizationCodeBearer: []
+        - APIKeyHeader: []
+  /api/on_demand/{md5}/status:
+    get:
+      tags:
+        - decompiler_api
+      summary: Query status of decompilation
+      description: >-
+        The `CIStage` indicates the progress of your decompilation, with five
+        return responses.
+                The statuses `ANALYSIS_STARTED` and `ANALYSIS_ENDED` are only applicable if you're using
+                the static analysis pipeline. Note that all results are uploaded together; thus, even if
+                your status changes from `DECOMPILATION_STARTED` to `ANALYSIS_STARTED`, the decompilation
+                result won't be uploaded until the pipeline returns `COMPLETED`.
+      operationId: get_on_demand_analysis_status
+      parameters:
+        - required: true
+          schema:
+            title: Md5
+            pattern: ^(0x)?[0-9A-Fa-f]{32}$
+            type: string
+          name: md5
+          in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CIStage'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - OAuth2AuthorizationCodeBearer: []
+        - APIKeyHeader: []
+  /api/on_demand:
+    post:
+      tags:
+        - decompiler_api
+      summary: Submit bytecode for decompilation
+      description: >-
+        Upload the hex representation of your bytecode for scheduling
+        decompilation.
+                Identify your decompilation job using the returned hex string, which is an MD5
+                hash of the uploaded bytecode in binary format.
+      operationId: decompile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: Hex Bytecode
+              pattern: ^(0x)?[0-9A-Fa-f]*$
+              type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully submitted bytecode for decompilation
+          content:
+            application/json:
+              schema:
+                title: Response Decompile
+                pattern: ^(0x)?[0-9A-Fa-f]{32}$
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - OAuth2AuthorizationCodeBearer: []
+        - APIKeyHeader: []
+components:
+  schemas:
+    CIStage:
+      title: CIStage
+      enum:
+        - UNKNOWN
+        - SCHEDULED
+        - DECOMPILATION_STARTED
+        - ANALYSIS_STARTED
+        - ANALYSIS_ENDED
+        - COMPLETED
+      type: string
+      description: An enumeration.
+    Decompilation:
+      title: Decompilation
+      required:
+        - md5
+        - bytecode
+        - disassembled
+        - tac
+        - yul
+        - source
+      type: object
+      properties:
+        md5:
+          title: Md5
+          pattern: ^(0x)?[0-9A-Fa-f]{32}$
+          type: string
+        bytecode:
+          title: Bytecode
+          type: string
+        disassembled:
+          title: Disassembled
+          type: string
+        tac:
+          title: Tac
+          type: string
+
+        yul:
+          title: Yul
+          type: string
+        source:
+          title: Source
+          type: string
+
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          refreshUrl: https://auth.dedaub.com/realms/dedaub/protocol/openid-connect/token
+          scopes: {}
+          authorizationUrl: https://auth.dedaub.com/realms/dedaub/protocol/openid-connect/auth
+          tokenUrl: https://auth.dedaub.com/realms/dedaub/protocol/openid-connect/token
+    APIKeyHeader:
+      type: apiKey
+      description: API key
+      in: header
+      name: x-api-key
+tags:
+  - name: decompiler_api
+    description: ' The Decompiler API consists of three parts. The [Decompile](https://api.dedaub.com/api/docs/#tag/decompiler_api/operation/decompile) endpoint accepts your bytecode via a POST request and returns an `md5_bytecode`, which is an `md5` hash of the binary representation of your submitted bytecode. You can use this returned `md5` (or compute it yourself) to poll the status of your decompilation using the [Status](https://api.dedaub.com/api/docs/#tag/decompiler_api/operation/get_on_demand_analysis_status) endpoint, which provides individual status updates. Finally, you can retrieve your decompiled code using [GetDecompilation](https://api.dedaub.com/api/docs/#tag/decompiler_api/operation/get_decompilation), which will provide all the representations we managed to reverse-engineer from your submitted binary. If you encounter any issues while using this API, please contact our support channel on [Discord](https://discord.com/invite/jSnED9pPJ4). Note that the decompiler is engineered to work only on EVM-equivelant binaries, contracts compiled for platforms such as ZKSync will not decompile successfully. '

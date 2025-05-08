@@ -58,6 +58,11 @@ public class AbiChangeSet {
     @Column(name = "COMMIT_HASH")
     private String commitHash;
 
+    @Comment("Git diff изменения")
+    @Column(name = "GIT_DIFF")
+    @Lob
+    private String gitDiff;
+
     @JoinColumn(name = "AUDIT_REPORT_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private AuditReport auditReport;
@@ -100,6 +105,14 @@ public class AbiChangeSet {
 
     public void setCommitHash(String commitHash) {
         this.commitHash = commitHash;
+    }
+
+    public String getGitDiff() {
+        return gitDiff;
+    }
+
+    public void setGitDiff(String gitDiff) {
+        this.gitDiff = gitDiff;
     }
 
     public String getChangeSummary() {
