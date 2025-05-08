@@ -6,8 +6,12 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,7 +24,9 @@ import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "CRYPTOCURRENCY")
+@Table(name = "CRYPTOCURRENCY", indexes = {
+        @Index(name = "IDX_CRYPTOCURRENCY_DEPENDENCY_GRAPH", columnList = "DEPENDENCY_GRAPH_ID")
+})
 @Entity
 public class Cryptocurrency {
     @JmixGeneratedValue
@@ -67,6 +73,18 @@ public class Cryptocurrency {
     @CreatedDate
     @Column(name = "CREATED_DATE")
     private OffsetDateTime createdDate;
+
+    @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
+    @OneToOne(fetch = FetchType.LAZY)
+    private ContractDependenciesGraph dependencyGraph;
+
+    public ContractDependenciesGraph getDependencyGraph() {
+        return dependencyGraph;
+    }
+
+    public void setDependencyGraph(ContractDependenciesGraph dependencyGraph) {
+        this.dependencyGraph = dependencyGraph;
+    }
 
     public List<SmartContract> getContracts() {
         return contracts;
