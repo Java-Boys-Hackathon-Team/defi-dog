@@ -6,6 +6,7 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -69,6 +70,16 @@ public class SourceCode {
 
     @OneToMany(mappedBy = "sourceCode")
     private List<ScanTool> scanTools;
+
+    @Comment("Последний известный исходный код смарт-контракта или группы смартов")
+    @Column(name = "LAST_KNOWN_SOURCE_CODE")
+    @Lob
+    private String lastKnownSourceCode;
+
+    @Comment("Последний известный ABI смарт-контракта")
+    @Column(name = "LAST_KNOWN_ABI")
+    @Lob
+    private String lastKnownAbi;
 
     @CreatedBy
     @Column(name = "CREATED_BY")
