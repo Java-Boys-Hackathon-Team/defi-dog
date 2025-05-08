@@ -16,6 +16,8 @@ services:
       - PG_DATASOURCE_URL=jdbc:postgresql://defi-dog-db:5432/defidog
       - PG_NAME=pgadmin
       - PG_PASS=pgadmin
+    env_file:
+      - .env
     tty: true
     depends_on:
       - defi-dog-db

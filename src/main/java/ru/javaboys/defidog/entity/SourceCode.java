@@ -81,6 +81,11 @@ public class SourceCode {
     @Lob
     private String lastKnownAbi;
 
+    @Comment("Результаты/логи последнего запуска джобы синхронизации исходного кода")
+    @Column(name = "SYNC_JOB_RESULT")
+    @Lob
+    private String syncJobResult;
+
     @CreatedBy
     @Column(name = "CREATED_BY")
     private String createdBy;
