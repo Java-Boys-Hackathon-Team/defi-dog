@@ -58,6 +58,17 @@ public class ContractDependenciesGraph {
     @Column(name = "CREATED_DATE")
     private OffsetDateTime createdDate;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "dependencyGraph")
+    private Cryptocurrency cryptocurrency;
+
+    public Cryptocurrency getCryptocurrency() {
+        return cryptocurrency;
+    }
+
+    public void setCryptocurrency(Cryptocurrency cryptocurrency) {
+        this.cryptocurrency = cryptocurrency;
+    }
+
     public DeFiProtocol getDeFiProtocol() {
         return deFiProtocol;
     }
