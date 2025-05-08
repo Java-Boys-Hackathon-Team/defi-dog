@@ -17,6 +17,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -32,6 +34,8 @@ import java.util.UUID;
         @Index(name = "IDX_SOURCE_CODE_CHANGE_SET_AUDIT_REPORT", columnList = "AUDIT_REPORT_ID")
 })
 @Entity
+@Getter
+@Setter
 public class SourceCodeChangeSet {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
@@ -81,93 +85,4 @@ public class SourceCodeChangeSet {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
-
-    public AuditReport getAuditReport() {
-        return auditReport;
-    }
-
-    public void setAuditReport(AuditReport auditReport) {
-        this.auditReport = auditReport;
-    }
-
-    public List<SourceCodeSecurityScanJob> getSecurityScanJobResult() {
-        return securityScanJobResult;
-    }
-
-    public void setSecurityScanJobResult(List<SourceCodeSecurityScanJob> securityScanJobResult) {
-        this.securityScanJobResult = securityScanJobResult;
-    }
-
-    public SourceCode getSourceCode() {
-        return sourceCode;
-    }
-
-    public void setSourceCode(SourceCode sourceCode) {
-        this.sourceCode = sourceCode;
-    }
-
-    public String getChangeSummary() {
-        return changeSummary;
-    }
-
-    public void setChangeSummary(String changeSummary) {
-        this.changeSummary = changeSummary;
-    }
-
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    public void setCommitHash(String commitHash) {
-        this.commitHash = commitHash;
-    }
-
-    public String getGitDiff() {
-        return gitDiff;
-    }
-
-    public void setGitDiff(String gitDiff) {
-        this.gitDiff = gitDiff;
-    }
-
-    public OffsetDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(OffsetDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
 }

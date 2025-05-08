@@ -13,6 +13,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -24,6 +26,8 @@ import java.util.UUID;
 @JmixEntity
 @Table(name = "AUDIT_REPORT")
 @Entity
+@Getter
+@Setter
 public class AuditReport {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
@@ -66,85 +70,4 @@ public class AuditReport {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
-
-    public SourceCodeSecurityScanJob getSourceCodeSecurityScanJob() {
-        return sourceCodeSecurityScanJob;
-    }
-
-    public void setSourceCodeSecurityScanJob(SourceCodeSecurityScanJob sourceCodeSecurityScanJob) {
-        this.sourceCodeSecurityScanJob = sourceCodeSecurityScanJob;
-    }
-
-    public AbiChangeSet getAbiChangeSet() {
-        return abiChangeSet;
-    }
-
-    public void setAbiChangeSet(AbiChangeSet abiChangeSet) {
-        this.abiChangeSet = abiChangeSet;
-    }
-
-    public SourceCodeChangeSet getSourceCodeChangeSet() {
-        return sourceCodeChangeSet;
-    }
-
-    public void setSourceCodeChangeSet(SourceCodeChangeSet sourceCodeChangeSet) {
-        this.sourceCodeChangeSet = sourceCodeChangeSet;
-    }
-
-    public AuditScanResutlCriticality getCriticality() {
-        return criticality == null ? null : AuditScanResutlCriticality.fromId(criticality);
-    }
-
-    public void setCriticality(AuditScanResutlCriticality criticality) {
-        this.criticality = criticality == null ? null : criticality.getId();
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public OffsetDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(OffsetDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
 }

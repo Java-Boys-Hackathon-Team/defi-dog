@@ -12,6 +12,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -26,6 +28,8 @@ import java.util.UUID;
         @Index(name = "IDX_NOTIFICATION_SETTINGS_USER", columnList = "USER_ID")
 })
 @Entity
+@Getter
+@Setter
 public class NotificationSettings {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
@@ -63,69 +67,4 @@ public class NotificationSettings {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
-
-    public List<DeFiProtocol> getSubscribedDeFiProtocols() {
-        return subscribedDeFiProtocols;
-    }
-
-    public void setSubscribedDeFiProtocols(List<DeFiProtocol> subscribedDeFiProtocols) {
-        this.subscribedDeFiProtocols = subscribedDeFiProtocols;
-    }
-
-    public List<Cryptocurrency> getSubscribedCryptocurrencies() {
-        return subscribedCryptocurrencies;
-    }
-
-    public void setSubscribedCryptocurrencies(List<Cryptocurrency> subscribedCryptocurrencies) {
-        this.subscribedCryptocurrencies = subscribedCryptocurrencies;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public OffsetDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(OffsetDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
 }
