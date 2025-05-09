@@ -77,7 +77,7 @@ public class GitHubSourceCodeUpdater implements SourceCodeUpdater, TypedUpdater 
         }
 
         sourceCode.setFetchedAt(OffsetDateTime.now());
-        sourceCode.setLocalPath(localPath.toAbsolutePath().toString());
+        sourceCode.setLocalPath(storageService.getRelativePath(localPath));
 
         return jobLog.toString();
     }

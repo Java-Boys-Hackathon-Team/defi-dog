@@ -17,7 +17,12 @@ public class SourceStorageService {
     public Path getSourceDirectory(SourceCode sourceCode) {
         SourceType type = SourceType.fromId(sourceCode.getSourceType());
         if (type == null) throw new IllegalArgumentException("Unknown SourceType: " + sourceCode.getSourceType());
-
         return Path.of(sourceStorageRoot, type.getId(), sourceCode.getId().toString());
+    }
+
+    public String getRelativePath(Path path) {
+        Path cwd = Path.of("").toAbsolutePath(); // current working directory
+        Path absolute = path.toAbsolutePath().normalize();
+        return cwd.relativize(absolute).toString().replace("\\", "/"); // на случай Windows
     }
 }
