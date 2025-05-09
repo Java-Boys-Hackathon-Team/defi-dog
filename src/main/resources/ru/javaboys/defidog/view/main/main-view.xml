@@ -102,11 +102,11 @@
             <dataGrid id="cryptocurrencyGrid" width="100%" minHeight="20em"
                       dataContainer="cryptocurrencyDg">
                 <columns>
-                    <column property="ticker"/>
                     <column property="name"/>
+                    <column property="ticker"/>
                     <column property="price"/>
+                    <column property="percentChange24h"/>
                     <column property="marketCap"/>
-<!--                    <column id="actionColumn" key="action" header="Run Audit"/>-->
                 </columns>
             </dataGrid>
             <dataGrid id="dexGrid" width="100%" minHeight="20em"

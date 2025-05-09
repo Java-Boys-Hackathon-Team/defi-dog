@@ -65,6 +65,8 @@ public class CryptocurrencyServiceImpl implements CryptocurrencyService {
                     crypto.setPrice(BigDecimal.valueOf(usd.getPrice()));
                 if (usd.getMarketCap() != null)
                     crypto.setMarketCap(BigDecimal.valueOf(usd.getMarketCap()));
+                if (usd.getPercentChange24h() != null)
+                    crypto.setPercentChange24h(BigDecimal.valueOf(usd.getPercentChange24h()));
             }
 
             // Сохраняем обновленную сущность
