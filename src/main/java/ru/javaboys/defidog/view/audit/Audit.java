@@ -127,11 +127,11 @@ public class Audit extends StandardView {
 
     private void configureGraphPanel(GraphPanel graphPanel, String graphJson) {
         graphPanel.setGraphJson(graphJson);
-        graphPanel.setOnNodeClick(contractId -> {
+        /*graphPanel.setOnNodeClick(contractId -> {
             // TODO: заменить на подгрузку из БД
             String code = "// Contract code for ID: " + contractId + "\nint a = 5;";
             sourceCodeEditor.setValue(code);
-        });
+        });*/
     }
 
     private boolean validateInputs() {
@@ -165,7 +165,6 @@ public class Audit extends StandardView {
                 ? "UNKNOWN"
                 : Optional.ofNullable(changes.get(0).getAuditReport())
                 .map(AuditReport::getCriticality)
-                .map(Enum::name)
                 .orElse("UNKNOWN");
 
         // Очистка текущих классов и установка базового
@@ -196,6 +195,8 @@ public class Audit extends StandardView {
         if (contracts == null || contracts.isEmpty()) {
             sourceCodeChangesDc.setItems(List.of());
             abiChangesDc.setItems(List.of());
+            sourceCodeEditor.setValue("// Исходный код отсутствует");
+            abiCodeEditor.setValue("// ABI отсутствует");
             return;
         }
 
@@ -209,6 +210,8 @@ public class Audit extends StandardView {
         if (sourceCode == null) {
             sourceCodeChangesDc.setItems(List.of());
             abiChangesDc.setItems(List.of());
+            sourceCodeEditor.setValue("// Исходный код отсутствует");
+            abiCodeEditor.setValue("// ABI отсутствует");
             return;
         }
 
@@ -219,5 +222,14 @@ public class Audit extends StandardView {
 
         sourceCodeChangesDc.setItems(codeChanges);
         abiChangesDc.setItems(abiChanges);
+
+        // Установка значений в code editor
+        sourceCodeEditor.setValue(
+                sourceCode.getLastKnownSourceCode() != null ? sourceCode.getLastKnownSourceCode() : "// Исходный код отсутствует"
+        );
+
+        abiCodeEditor.setValue(
+                sourceCode.getLastKnownAbi() != null ? sourceCode.getLastKnownAbi() : "// ABI отсутствует"
+        );
     }
 }
