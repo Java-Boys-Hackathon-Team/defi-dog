@@ -27,7 +27,8 @@ import java.util.UUID;
 
 @JmixEntity
 @Table(name = "PROTOCOL", indexes = {
-        @Index(name = "IDX_PROTOCOL_DEPENDENCY_GRAPH", columnList = "DEPENDENCY_GRAPH_ID")
+        @Index(name = "IDX_PROTOCOL_DEPENDENCY_GRAPH", columnList = "DEPENDENCY_GRAPH_ID"),
+        @Index(name = "IDX_PROTOCOL_SOURCES", columnList = "SOURCES_ID")
 })
 @Entity
 @Getter
@@ -61,6 +62,10 @@ public class DeFiProtocol {
     @OneToMany(mappedBy = "deFiProtocol")
     private List<SmartContract> contracts;
 
+    @JoinColumn(name = "SOURCES_ID")
+    @OneToOne(fetch = FetchType.LAZY)
+    private SourceCode sources;
+
     @CreatedBy
     @Column(name = "CREATED_BY")
     private String createdBy;
@@ -76,4 +81,13 @@ public class DeFiProtocol {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    public SourceCode getSources() {
+        return sources;
+    }
+
+    public void setSources(SourceCode sources) {
+        this.sources = sources;
+    }
+
 }
