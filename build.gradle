@@ -70,6 +70,12 @@ dependencies {
 
     implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 
+    implementation 'com.github.docker-java:docker-java:3.5.0'
+    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.5.0'
+
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:7.2.0.202503040940-r'
+
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
