@@ -5,9 +5,11 @@ import io.jmix.core.metamodel.annotation.Comment;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -17,7 +19,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -63,6 +64,10 @@ public class SourceCode {
     @Column(name = "SCAN_START_COMMIT_HASH")
     private String scanStartCommitHash;
 
+    @Comment("SHA последнего коммита, полученного при обновлении исходного кода из удаленного репозитория")
+    @Column(name = "LAST_COMMIT_SHA")
+    private String lastCommitSha;
+
     @OneToMany(mappedBy = "sourceCode")
     private List<SourceCodeChangeSet> sourceCodeChanges;
 
@@ -71,6 +76,9 @@ public class SourceCode {
 
     @OneToMany(mappedBy = "sourceCode")
     private List<ScanTool> scanTools;
+
+    @OneToMany(mappedBy = "sources")
+    private List<SmartContract> smartContracts;
 
     @Comment("Последний известный исходный код смарт-контракта или группы смартов")
     @Column(name = "LAST_KNOWN_SOURCE_CODE")
@@ -102,4 +110,16 @@ public class SourceCode {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sources")
+    private DeFiProtocol deFiProtocol;
+
+    public DeFiProtocol getDeFiProtocol() {
+        return deFiProtocol;
+    }
+
+    public void setDeFiProtocol(DeFiProtocol deFiProtocol) {
+        this.deFiProtocol = deFiProtocol;
+    }
+
 }
