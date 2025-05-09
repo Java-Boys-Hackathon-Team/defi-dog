@@ -109,6 +109,16 @@ public class IntegrationsTest {
     }
 
     @Test
+    void shouldReturnSmartContractBytecode() {
+        String address = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+        String bytecode = blockchainService.getBytecode(address);
+
+        log.info("Blockchain API response: {}", bytecode);
+
+        assertThat(bytecode).isNotBlank().startsWith("0x");
+    }
+
+    @Test
     void shouldSendMessageToUser() {
 
         String message = "Привет из интеграционного теста!";
@@ -197,7 +207,7 @@ public class IntegrationsTest {
 
         GetV2ContractsChainId200Response response = sourcifyService.getV2ContractsChainId(chainId, sort, limit, afterMatchId);
 
-        log.info("Sourcify contracts list response: {}", response);
+        log.info("Sourcify response: {}", response);
 
         assertThat(response).isNotNull();
         assertThat(response.getResults().size()).isGreaterThan(1);

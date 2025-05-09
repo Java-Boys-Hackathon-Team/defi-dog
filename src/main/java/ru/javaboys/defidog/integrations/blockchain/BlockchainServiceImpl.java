@@ -5,7 +5,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlockNumber;
+import org.web3j.protocol.core.methods.response.EthGetCode;
 
 import java.math.BigInteger;
 
@@ -21,9 +23,14 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     @SneakyThrows
     public BigInteger getLastBlockNumber() {
-
         EthBlockNumber latestBlock = web3j.ethBlockNumber().send();
-
         return latestBlock.getBlockNumber();
+    }
+
+    @Override
+    @SneakyThrows
+    public String getBytecode(String address) {
+        EthGetCode code = web3j.ethGetCode(address, DefaultBlockParameterName.LATEST).send();
+        return code.getCode();
     }
 }
