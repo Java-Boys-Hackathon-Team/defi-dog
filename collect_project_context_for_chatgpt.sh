@@ -14,7 +14,7 @@ PROJECT_NAME="DeFi Dog"
 # ====== Настройки фильтрации ======
 
 # Каталоги, которые нужно исключить
-EXCLUDED_DIRS_REGEX="(/build/|/out/|/node_modules/|/.git/|/.idea/|/target/|src/main/bundles|/.jmix)"
+EXCLUDED_DIRS_REGEX="(/build/|/out/|/node_modules/|/.git/|/.idea/|/target/|src/main/bundles|/.jmix|/src/main/java/ru/javaboys/defidog/integrations/sourcify/client|/src/main/java/ru/javaboys/defidog/integrations/sourcify/dto)"
 
 # Расширения файлов для исключения
 EXCLUDED_EXTENSIONS=("class" "jar" "png" "jpg" "jpeg" "gif" "ico" "log" "js" "ts" "ipynb")
@@ -26,7 +26,7 @@ INCLUDED_EXTENSIONS=("java" "xml" "properties" "yml" "yaml" "html" "js" "ts" "gr
 EXCLUDED_LINE_PATTERNS=(
     '^\s*$'              # пустые строки
     '^\s*import\s'       # строки с import
-    '^\s*package\s'      # строки с package
+#    '^\s*package\s'      # строки с package
 )
 
 # ====== Выходной файл ======
@@ -64,7 +64,7 @@ find "$ROOT_DIR" -type f | while read -r file; do
   REL_PATH="${file#$ROOT_DIR/}"
 
   # Вывод метаданных
-  echo -e "\n==== FILE: $REL_PATH ====" >> "$OUTPUT_FILE"
+#  echo -e "\n==== FILE: $REL_PATH ====" >> "$OUTPUT_FILE"
 
   # Применение фильтра к содержимому файла
   CONTENT=$(cat "$file")

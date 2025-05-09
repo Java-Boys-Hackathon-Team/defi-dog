@@ -13,6 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -28,11 +30,19 @@ import java.util.UUID;
         @Index(name = "IDX_CRYPTOCURRENCY_DEPENDENCY_GRAPH", columnList = "DEPENDENCY_GRAPH_ID")
 })
 @Entity
+@Getter
+@Setter
 public class Cryptocurrency {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
     private UUID id;
+
+    @Column(name = "CMC_ID")
+    private Integer cmcId;
+
+    @Column(name = "CMC_RANK")
+    private Integer cmcRank;
 
     @InstanceName
     @Comment("Название криптовалюты")
@@ -44,7 +54,7 @@ public class Cryptocurrency {
     private String ticker;
 
     @Comment("Рыночной цена")
-    @Column(name = "PRICE", precision = 19, scale = 10)
+    @Column(name = "PRICE", precision = 24, scale = 16)
     private BigDecimal price;
 
     @Comment("Рыночная капитализация, общая стоимость всех токенов в обращении")
@@ -74,104 +84,24 @@ public class Cryptocurrency {
     @Column(name = "CREATED_DATE")
     private OffsetDateTime createdDate;
 
+
+    public Integer getCmcRank() {
+        return cmcRank;
+    }
+
+    public void setCmcRank(Integer cmcRank) {
+        this.cmcRank = cmcRank;
+    }
+
+    public Integer getCmcId() {
+        return cmcId;
+    }
+
+    public void setCmcId(Integer cmcId) {
+        this.cmcId = cmcId;
+    }
+
     @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private ContractDependenciesGraph dependencyGraph;
-
-    public ContractDependenciesGraph getDependencyGraph() {
-        return dependencyGraph;
-    }
-
-    public void setDependencyGraph(ContractDependenciesGraph dependencyGraph) {
-        this.dependencyGraph = dependencyGraph;
-    }
-
-    public List<SmartContract> getContracts() {
-        return contracts;
-    }
-
-    public void setContracts(List<SmartContract> contracts) {
-        this.contracts = contracts;
-    }
-
-    public BigDecimal getTotalSupply() {
-        return totalSupply;
-    }
-
-    public void setTotalSupply(BigDecimal totalSupply) {
-        this.totalSupply = totalSupply;
-    }
-
-    public BigDecimal getMarketCap() {
-        return marketCap;
-    }
-
-    public void setMarketCap(BigDecimal marketCap) {
-        this.marketCap = marketCap;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public OffsetDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(OffsetDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
 }

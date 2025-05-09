@@ -15,6 +15,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -31,6 +33,8 @@ import java.util.UUID;
         @Index(name = "IDX_SMART_CONTRACT_CRYPTOCURRENCY", columnList = "CRYPTOCURRENCY_ID")
 })
 @Entity
+@Getter
+@Setter
 public class SmartContract {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
@@ -84,101 +88,4 @@ public class SmartContract {
     @JoinColumn(name = "CRYPTOCURRENCY_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cryptocurrency cryptocurrency;
-
-    public Cryptocurrency getCryptocurrency() {
-        return cryptocurrency;
-    }
-
-    public void setCryptocurrency(Cryptocurrency cryptocurrency) {
-        this.cryptocurrency = cryptocurrency;
-    }
-
-    public SourceCode getSources() {
-        return sources;
-    }
-
-    public void setSources(SourceCode sources) {
-        this.sources = sources;
-    }
-
-    public DeFiProtocol getDeFiProtocol() {
-        return deFiProtocol;
-    }
-
-    public void setDeFiProtocol(DeFiProtocol deFiProtocol) {
-        this.deFiProtocol = deFiProtocol;
-    }
-
-    public String getExternalLink() {
-        return externalLink;
-    }
-
-    public void setExternalLink(String externalLink) {
-        this.externalLink = externalLink;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BlockchainNetwork getNetwork() {
-        return network == null ? null : BlockchainNetwork.fromId(network);
-    }
-
-    public void setNetwork(BlockchainNetwork network) {
-        this.network = network == null ? null : network.getId();
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public OffsetDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(OffsetDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
 }

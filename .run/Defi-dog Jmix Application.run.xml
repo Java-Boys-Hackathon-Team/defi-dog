@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Defi-dog Jmix Application" type="JmixRunApplication">
+    <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/.env" />
+    </option>
+    <option name="MAIN_CLASS_NAME" value="ru.javaboys.defidog.DefiDogApplication" />
+    <module name="defi-dog.main" />
+    <shortenClasspath name="ARGS_FILE" />
+    <method v="2">
+      <option name="JmixCleanConf" enabled="false" />
+      <option name="JmixCheckIncludes" enabled="false" />
+      <option name="JmixSyncDb" enabled="false" />
+      <option name="JmixAssemble" enabled="false" />
+    </method>
+  </configuration>
+</component>

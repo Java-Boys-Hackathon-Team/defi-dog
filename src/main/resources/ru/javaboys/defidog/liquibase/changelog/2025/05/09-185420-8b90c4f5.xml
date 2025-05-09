@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="defi-dog">
+        <addColumn tableName="PROTOCOL">
+            <column name="SOURCES_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="defi-dog">
+        <createIndex indexName="IDX_PROTOCOL_SOURCES" tableName="PROTOCOL">
+            <column name="SOURCES_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="SOURCES_ID" baseTableName="PROTOCOL"
+                                 constraintName="FK_PROTOCOL_ON_SOURCES" referencedColumnNames="ID"
+                                 referencedTableName="SOURCE_CODE"/>
+    </changeSet>
+</databaseChangeLog>

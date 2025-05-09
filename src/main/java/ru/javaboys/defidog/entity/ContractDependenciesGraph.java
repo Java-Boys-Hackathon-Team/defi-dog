@@ -11,6 +11,8 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -22,6 +24,8 @@ import java.util.UUID;
 @JmixEntity
 @Table(name = "CONTRACT_DEPENDENCIES_GRAPH")
 @Entity
+@Getter
+@Setter
 public class ContractDependenciesGraph {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
@@ -60,77 +64,4 @@ public class ContractDependenciesGraph {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "dependencyGraph")
     private Cryptocurrency cryptocurrency;
-
-    public Cryptocurrency getCryptocurrency() {
-        return cryptocurrency;
-    }
-
-    public void setCryptocurrency(Cryptocurrency cryptocurrency) {
-        this.cryptocurrency = cryptocurrency;
-    }
-
-    public DeFiProtocol getDeFiProtocol() {
-        return deFiProtocol;
-    }
-
-    public void setDeFiProtocol(DeFiProtocol deFiProtocol) {
-        this.deFiProtocol = deFiProtocol;
-    }
-
-    public String getMermaidDsl() {
-        return mermaidDsl;
-    }
-
-    public void setMermaidDsl(String mermaidDsl) {
-        this.mermaidDsl = mermaidDsl;
-    }
-
-    public String getGraphJson() {
-        return graphJson;
-    }
-
-    public void setGraphJson(String graphJson) {
-        this.graphJson = graphJson;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public OffsetDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(OffsetDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
 }
