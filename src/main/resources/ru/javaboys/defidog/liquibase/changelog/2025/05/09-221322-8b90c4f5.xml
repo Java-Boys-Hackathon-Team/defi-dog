@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="defi-dog">
+        <addColumn tableName="AUDIT_REPORT">
+            <column name="DESCRIPTION" remarks="Краткая характеристика отчета аудита" type="VARCHAR(255)"/>
+            <column name="SMART_CONTRACT_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2" author="defi-dog">
+        <createIndex indexName="IDX_AUDIT_REPORT_SMART_CONTRACT" tableName="AUDIT_REPORT">
+            <column name="SMART_CONTRACT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="SMART_CONTRACT_ID" baseTableName="AUDIT_REPORT"
+                                 constraintName="FK_AUDIT_REPORT_ON_SMART_CONTRACT" referencedColumnNames="ID"
+                                 referencedTableName="SMART_CONTRACT"/>
+    </changeSet>
+</databaseChangeLog>

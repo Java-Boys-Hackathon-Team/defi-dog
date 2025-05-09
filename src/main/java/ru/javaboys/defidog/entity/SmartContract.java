@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -23,6 +24,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
@@ -68,6 +70,9 @@ public class SmartContract {
     @Comment("Ссылка на страницу контракта на Etherscan")
     @Column(name = "EXTERNAL_LINK")
     private String externalLink;
+
+    @OneToMany(mappedBy = "smartContract")
+    private List<AuditReport> auditReports;
 
     @CreatedBy
     @Column(name = "CREATED_BY")
