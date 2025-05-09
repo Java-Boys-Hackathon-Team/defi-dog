@@ -1,6 +1,7 @@
 package ru.javaboys.defidog.crypto;
 
 import io.jmix.core.DataManager;
+import io.jmix.flowui.UiEventPublisher;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.javaboys.defidog.entity.Cryptocurrency;
@@ -19,6 +20,8 @@ public class CryptocurrencyServiceImpl implements CryptocurrencyService {
 
     private CoinMarketCapServiceImpl coinMarketCapService;
 
+    private UiEventPublisher uiEventPublisher;
+
     private DataManager dataManager;
 
     @Override
@@ -33,7 +36,8 @@ public class CryptocurrencyServiceImpl implements CryptocurrencyService {
         for (Map.Entry<String, CryptocurrencyQuoteDto> cr : response.getData().entrySet()) {
             updateCryptoByDto(cr.getValue());
         }
-
+//        uiEventPublisher.publishEventForUsers(
+//                new CryptocurrencyReloadEvent(this), null);
     }
 
     private void updateCryptoByDto(CryptocurrencyQuoteDto dto) {

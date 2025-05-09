@@ -7,13 +7,17 @@ import io.jmix.flowui.Notifications;
 import io.jmix.flowui.app.main.StandardMainView;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.grid.DataGrid;
+import io.jmix.flowui.facet.Timer;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
 import io.jmix.flowui.kit.theme.ThemeUtils;
+import io.jmix.flowui.model.CollectionLoader;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import ru.javaboys.defidog.crypto.CryptocurrencyReloadEvent;
 import ru.javaboys.defidog.crypto.CryptocurrencyService;
 import ru.javaboys.defidog.entity.BlockchainNetwork;
 import ru.javaboys.defidog.entity.Cryptocurrency;
@@ -29,6 +33,9 @@ public class MainView extends StandardMainView {
 
     @Autowired
     private CryptocurrencyService cryptocurrencyService;
+
+    @ViewComponent("cryptocurrencyLoader")
+    private CollectionLoader<Cryptocurrency> cryptocurrencyLoader;
 
     @ViewComponent
     private JmixComboBox<BlockchainNetwork> blockchainNetworkComboBox;
@@ -63,6 +70,16 @@ public class MainView extends StandardMainView {
         }).setHeader("Audit");
     }
 
+    @Subscribe("timer")
+    public void onTimerTimerAction(final Timer.TimerActionEvent event) {
+        updateCryptocurrencyGrid();
+    }
+
+    @EventListener
+    private void cryptocurrencyGridDataChanged(CryptocurrencyReloadEvent event) {
+        updateCryptocurrencyGrid();
+    }
+
     @Subscribe("cryptocurrenciesButton")
     public void onCryptocurrenciesButtonClick(ClickEvent<Button> event) {
         setVisiblesGrid(true, false);
@@ -75,7 +92,6 @@ public class MainView extends StandardMainView {
 
     @Subscribe("updateButton")
     protected void onHelloButtonClick(ClickEvent<Button> event) {
-        //notifications.show("Update from CMC");
         cryptocurrencyService.updateCryptocurrenciesInfo();
     }
 
@@ -92,6 +108,10 @@ public class MainView extends StandardMainView {
 
     private void goToAuditDex(DeFiProtocol deFiProtocol) {
         notifications.create("Button clicked for: " + deFiProtocol.getName()).show();
+    }
+
+    private void updateCryptocurrencyGrid() {
+        cryptocurrencyLoader.load();
     }
 
     @Subscribe("themeSwitcher.systemThemeItem.systemThemeAction")

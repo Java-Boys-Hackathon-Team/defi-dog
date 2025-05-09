@@ -4,4 +4,5 @@ import java.math.BigInteger;
 
 public interface BlockchainService {
     BigInteger getLastBlockNumber();
+    String getBytecode(String address);
 }
