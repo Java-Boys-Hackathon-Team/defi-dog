@@ -7,6 +7,7 @@ services:
     command: ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-Dconfig.file=/app/config/application-prod.properties", "-jar", "defi-dog.jar"]
     volumes:
       - './src/main/resources/application-prod.properties:/app/config/application-prod.properties'
+      - ./sources:/app/sources
     restart: always
     container_name: defi-dog
     ports:
