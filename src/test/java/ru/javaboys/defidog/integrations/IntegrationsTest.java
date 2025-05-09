@@ -9,6 +9,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.coinmarketcap.CoinMarketCapService;
@@ -18,6 +19,7 @@ import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseD
 import ru.javaboys.defidog.integrations.dedaub.DedaubService;
 import ru.javaboys.defidog.integrations.dedaub.dto.DecompilationDto;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
+import ru.javaboys.defidog.integrations.etherscan.dto.ContractAbiResponseDto;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
 import ru.javaboys.defidog.integrations.sourcify.SourcifyService;
@@ -42,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
 @ExtendWith(AuthenticatedAsAdmin.class)
+@TestPropertySource(properties = "defi-dog.scheduling.enable=false")
 @Slf4j
 public class IntegrationsTest {
 
@@ -85,6 +88,21 @@ public class IntegrationsTest {
     }
 
     @Test
+    void shouldFetchContractAbiFromEtherscan() {
+        String chainId = "1"; // Ethereum Mainnet
+        String contractAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"; // USDC
+
+        ContractAbiResponseDto response = etherscanService.getContractAbi(chainId, contractAddress);
+
+        log.info("Etherscan response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo("1");
+        assertThat(response.getResult()).isNotEmpty();
+        assertThat(response.getResult()).isNotBlank();
+    }
+
+    @Test
     void shouldTalkToChatGPTSuccessfully() {
         String conversationId = UUID.randomUUID().toString();
         SystemMessage systemMessage = new SystemMessage("You are a helpful assistant.");
@@ -106,6 +124,16 @@ public class IntegrationsTest {
 
         assertThat(blockNumber).isNotNull();
         assertThat(blockNumber.longValue()).isGreaterThan(0);
+    }
+
+    @Test
+    void shouldReturnSmartContractBytecode() {
+        String address = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+        String bytecode = blockchainService.getBytecode(address);
+
+        log.info("Blockchain API response: {}", bytecode);
+
+        assertThat(bytecode).isNotBlank().startsWith("0x");
     }
 
     @Test
@@ -197,7 +225,7 @@ public class IntegrationsTest {
 
         GetV2ContractsChainId200Response response = sourcifyService.getV2ContractsChainId(chainId, sort, limit, afterMatchId);
 
-        log.info("Sourcify contracts list response: {}", response);
+        log.info("Sourcify response: {}", response);
 
         assertThat(response).isNotNull();
         assertThat(response.getResults().size()).isGreaterThan(1);

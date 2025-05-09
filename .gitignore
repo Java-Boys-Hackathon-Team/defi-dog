@@ -44,3 +44,4 @@ all_java_code*.txt
 *source code.txt
 *project requirements.txt
 /.ipynb_checkpoints/
+/sources/

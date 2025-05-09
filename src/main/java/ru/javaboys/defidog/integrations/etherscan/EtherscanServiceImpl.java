@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import ru.javaboys.defidog.integrations.etherscan.dto.ContractAbiResponseDto;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 
 // https://docs.etherscan.io/etherscan-v2
@@ -31,4 +32,19 @@ public class EtherscanServiceImpl implements EtherscanService {
                 .retrieve()
                 .body(ContractSourceResponseDto.class);
     }
+
+    @Override
+    public ContractAbiResponseDto getContractAbi(String chainId, String address) {
+        return etherscanClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .queryParam("chainid", chainId)
+                        .queryParam("module", "contract")
+                        .queryParam("action", "getabi")
+                        .queryParam("address", address)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(ContractAbiResponseDto.class);
+    }
+
 }
