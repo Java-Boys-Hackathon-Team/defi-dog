@@ -9,6 +9,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.coinmarketcap.CoinMarketCapService;
@@ -18,6 +19,7 @@ import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseD
 import ru.javaboys.defidog.integrations.dedaub.DedaubService;
 import ru.javaboys.defidog.integrations.dedaub.dto.DecompilationDto;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
+import ru.javaboys.defidog.integrations.etherscan.dto.ContractAbiResponseDto;
 import ru.javaboys.defidog.integrations.etherscan.dto.ContractSourceResponseDto;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
 import ru.javaboys.defidog.integrations.sourcify.SourcifyService;
@@ -42,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
 @ExtendWith(AuthenticatedAsAdmin.class)
+@TestPropertySource(properties = "defi-dog.scheduling.enable=false")
 @Slf4j
 public class IntegrationsTest {
 
@@ -82,6 +85,21 @@ public class IntegrationsTest {
         assertThat(response.getStatus()).isEqualTo("1");
         assertThat(response.getResult()).isNotEmpty();
         assertThat(response.getResult().get(0).getSourceCode()).isNotBlank();
+    }
+
+    @Test
+    void shouldFetchContractAbiFromEtherscan() {
+        String chainId = "1"; // Ethereum Mainnet
+        String contractAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"; // USDC
+
+        ContractAbiResponseDto response = etherscanService.getContractAbi(chainId, contractAddress);
+
+        log.info("Etherscan response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo("1");
+        assertThat(response.getResult()).isNotEmpty();
+        assertThat(response.getResult()).isNotBlank();
     }
 
     @Test
