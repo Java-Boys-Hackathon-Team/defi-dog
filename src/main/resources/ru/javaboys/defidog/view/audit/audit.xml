@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Audit">
+
+    <data>
+        <collection id="sourceCodeChangesDc" class="ru.javaboys.defidog.entity.SourceCodeChangeSet"/>
+        <collection id="abiChangesDc" class="ru.javaboys.defidog.entity.AbiChangeSet"/>
+    </data>
+
+    <layout>
+        <!-- Корневая обертка -->
+        <vbox id="root" width="100%" height="100%" padding="false">
+
+            <!-- Заголовок: описание протокола и статус -->
+            <hbox id="header"
+                  width="100%"
+                  justifyContent="BETWEEN"
+                  alignItems="CENTER"
+                  classNames="protocol-header bordered-box px-l py-m gap-l rounded-xl shadow-m bg-surface-1">
+
+                <!-- Левая часть: Название и описание -->
+                <vbox classNames="gap-xs">
+                    <h3 id="protocolNameH3" classNames="text-2xl font-bold text-primary"/>
+                    <p id="protocolDescriptionP" classNames="text-body text-secondary"/>
+                </vbox>
+
+                <!-- Правая часть: Индикатор статуса -->
+                <hbox id="statusWrapper" alignItems="CENTER" classNames="gap-s">
+                    <div id="statusDot" classNames="fancy-dot"/>
+                    <span id="statusLabel" text="Unknown" classNames="text-secondary"/>
+                </hbox>
+            </hbox>
+
+            <!-- Средний блок: граф зависимостей и редактор кода -->
+            <hbox id="middleSection" width="100%" classNames="bordered-box">
+                <div id="graphContainer" width="50%" height="400px"/>
+                <vbox id="codeEditorsWrapper" width="50%" height="400px" spacing="false" classNames="relative-container">
+
+                    <!-- Блок исходного кода -->
+                    <div id="sourceCodeWrapper" classNames="relative-container" width="100%" height="60%">
+                        <codeEditor id="sourceCodeEditor" width="100%" height="100%" label="Исходный код смарт-контракта"/>
+                        <button id="copyCodeBtn"
+                                text="📋"
+                                title="Скопировать исходный код"
+                                classNames="copy-button"/>
+                    </div>
+
+                    <!-- Блок ABI кода -->
+                    <div id="abiCodeWrapper" classNames="relative-container mt-xs" width="100%" height="40%">
+                        <codeEditor id="abiCodeEditor" width="100%" height="100%" label="ABI-интерфейс"/>
+                        <button id="copyAbiBtn"
+                                text="📋"
+                                title="Скопировать ABI"
+                                classNames="copy-button"/>
+                    </div>
+
+                </vbox>
+            </hbox>
+
+            <!-- История ABI -->
+            <details id="abiHistoryCard"
+                     summaryText="История изменений ABI"
+                     classNames="history-section"
+                     width="100%" height="100%">
+                <dataGrid id="abiHistoryGrid"
+                          width="100%" height="200px"
+                          dataContainer="abiChangesDc"
+                          columnReorderingAllowed="true"
+                          themeNames="column-borders">
+                    <columns>
+                        <column property="id" header="ID" resizable="true"/>
+                        <column property="createdDate" header="Дата" resizable="true"/>
+                        <column property="changeSummary" header="Описание изменений" resizable="true"/>
+                        <column property="auditReport.summary" header="Описание аудита" resizable="true"/>
+                        <column property="auditReport.criticality" header="Критичность" resizable="true"/>
+                    </columns>
+                </dataGrid>
+            </details>
+
+            <!-- История исходного кода -->
+            <details id="sourceCodeHistoryCard"
+                     summaryText="История изменений исходного кода"
+                     classNames="history-section mt-m"
+                     width="100%" height="100%">
+                <dataGrid id="sourceCodeHistoryGrid"
+                          width="100%" height="200px"
+                          dataContainer="sourceCodeChangesDc"
+                          columnReorderingAllowed="true"
+                          themeNames="column-borders">
+                    <columns>
+                        <column property="id" header="ID" resizable="true"/>
+                        <column property="createdDate" header="Дата" resizable="true"/>
+                        <column property="commitHash" header="Коммит" resizable="true"/>
+                        <column property="changeSummary" header="Описание изменений" resizable="true"/>
+                        <column property="auditReport.summary" header="Описание аудита" resizable="true"/>
+                        <column property="auditReport.criticality" header="Критичность" resizable="true"/>
+                    </columns>
+                </dataGrid>
+            </details>
+        </vbox>
+    </layout>
+</view>

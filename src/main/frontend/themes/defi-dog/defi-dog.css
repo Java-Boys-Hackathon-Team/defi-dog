@@ -1,1 +1,160 @@
 /* Define your styles here */
+.status-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: #4CAF50
+}
+
+.fixed-graph {
+    width: 600px;
+    height: 400px;
+    min-width: 600px;
+    min-height: 400px;
+    max-width: 600px;
+    max-height: 400px;
+}
+
+.bordered-box {
+  margin-top: 4px;
+  ap: 4px;
+}
+
+.details-expand-full {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.details-expand-full::part(summary) {
+    flex-shrink: 0;
+}
+
+.details-expand-full::part(content) {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.details-expand-full vaadin-grid {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.v-grid-cell {
+    border-right: 1px solid #ccc;
+}
+
+.v-grid-cell:last-child {
+    border-right: none;
+}
+
+.relative-container {
+    position: relative;
+}
+
+.copy-button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 10;
+    padding: 4px;
+    font-size: 12px;
+}
+
+.protocol-header {
+  background-color: #1c2333;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+}
+
+.text-primary {
+  color: #ffffff;
+}
+
+.text-secondary {
+  color: #cbd5e0;
+}
+
+.status-dot {
+  transition: background-color 0.3s ease;
+}
+
+.fancy-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ccc 0%, #666 100%);
+  box-shadow: 0 0 4px #aaa, 0 0 6px #aaa;
+}
+
+.status-critical {
+  background: radial-gradient(circle, #ff4d4f 0%, #a8071a 100%);
+  box-shadow: 0 0 4px #ff4d4f, 0 0 8px #ff4d4f;
+}
+
+.status-high {
+  background: radial-gradient(circle, #ffc107 0%, #856404 100%);
+  box-shadow: 0 0 4px #ffc107, 0 0 8px #ffc107;
+}
+
+.status-normal {
+  background: radial-gradient(circle, #52c41a 0%, #237804 100%);
+  box-shadow: 0 0 4px #52c41a, 0 0 8px #52c41a;
+}
+
+.status-unknown {
+  background: radial-gradient(circle, #d9d9d9 0%, #8c8c8c 100%);
+  box-shadow: 0 0 4px #999, 0 0 8px #999;
+}
+
+.relative-container {
+    position: relative;
+}
+
+.copy-button {
+    position: absolute;
+    top: 8px; /* Было 4px, стало ниже */
+    right: 8px;
+    font-size: 14px; /* Сделаем иконку чуть меньше */
+    padding: 2px 6px;
+    background-color: var(--lumo-contrast-10pct);
+    border: none;
+    border-radius: var(--lumo-border-radius-s);
+    box-shadow: var(--lumo-box-shadow-xs);
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0.9;
+    transition: all 0.2s ease-in-out;
+}
+
+.copy-button:hover {
+    opacity: 1;
+    background-color: var(--lumo-primary-color-10pct);
+}
+
+.editor-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+.mt-s {
+    margin-top: 8px;
+}
+
+.editor-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.history-section {
+    border: 1px solid var(--lumo-contrast-20pct);
+    border-radius: var(--lumo-border-radius-m);
+    padding: var(--lumo-space-m);
+    background-color: var(--lumo-base-color);
+}

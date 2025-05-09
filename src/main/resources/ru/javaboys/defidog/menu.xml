@@ -9,6 +9,7 @@
         <item view="SmartContract.list" title="msg://ru.javaboys.defidog.view.smartcontract/smartContractListView.title"/>
         <item view="Cryptocurrency.list" title="msg://ru.javaboys.defidog.view.cryptocurrency/cryptocurrencyListView.title"/>
         <item view="DeFiProtocol.list" title="msg://ru.javaboys.defidog.view.defiprotocol/deFiProtocolListView.title"/>
+        <item view="Audit" title="msg://ru.javaboys.defidog.view.audit/audit.title"/>
     </menu>
 
 </menu-config>
