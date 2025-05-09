@@ -27,6 +27,7 @@
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
+        <timer id="timer" delay="30000" autostart="true" repeating="true"/>
     </facets>
     <actions>
         <action id="logoutAction" type="logout"/>
