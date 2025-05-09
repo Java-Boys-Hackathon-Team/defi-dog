@@ -17,6 +17,7 @@ import ru.javaboys.defidog.entity.SourceType;
 import java.io.File;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -81,6 +82,15 @@ public class GitHubSourceCodeUpdater implements SourceCodeUpdater, TypedUpdater 
 
         String aggregatedCode = gitRepositoryService.getFullSourceCode(repoDir);
         sourceCode.setLastKnownSourceCode(aggregatedCode);
+
+        List<String> abis = gitRepositoryService.extractAbiStrings(repoDir);
+        if (!abis.isEmpty()) {
+            // Запишем первый найденный ABI
+            sourceCode.setLastKnownAbi(abis.get(0));
+            jobLog.append("Найден ABI. Кол-во вариантов: ").append(abis.size()).append("\n");
+        } else {
+            jobLog.append("ABI не найден в репозитории.\n");
+        }
 
         sourceCode.setFetchedAt(OffsetDateTime.now());
         sourceCode.setLocalPath(storageService.getRelativePath(localPath));
