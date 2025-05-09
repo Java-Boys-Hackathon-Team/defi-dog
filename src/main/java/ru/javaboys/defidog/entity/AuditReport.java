@@ -8,7 +8,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -24,7 +27,9 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "AUDIT_REPORT")
+@Table(name = "AUDIT_REPORT", indexes = {
+        @Index(name = "IDX_AUDIT_REPORT_SMART_CONTRACT", columnList = "SMART_CONTRACT_ID")
+})
 @Entity
 @Getter
 @Setter
@@ -40,6 +45,10 @@ public class AuditReport {
     @Column(name = "SUMMARY")
     @Lob
     private String summary;
+
+    @Comment("Краткая характеристика отчета аудита")
+    @Column(name = "DESCRIPTION")
+    private String description;
 
     @NotNull
     @Comment("Уровень критичности")
@@ -70,4 +79,9 @@ public class AuditReport {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    @JoinColumn(name = "SMART_CONTRACT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SmartContract smartContract;
+
 }
