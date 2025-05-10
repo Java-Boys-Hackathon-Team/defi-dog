@@ -85,13 +85,14 @@ public class GitHubSourceCodeUpdater implements SourceCodeUpdater, TypedUpdater 
         String aggregatedCode = gitRepositoryService.getFullSourceCode(repoDir);
         sourceCode.setLastKnownSourceCode(aggregatedCode);
 
-        List<String> abis = gitRepositoryService.extractAbiStrings(repoDir);
-        if (!abis.isEmpty()) {
-            // Запишем первый найденный ABI
-            sourceCode.setLastKnownAbi(abis.get(0));
-            jobLog.append("Найден ABI. Кол-во вариантов: ").append(abis.size()).append("\n");
+        var abiCandidates = gitRepositoryService.extractAbiInfo(repoDir);
+        if (!abiCandidates.isEmpty()) {
+            var abi = abiCandidates.get(0);
+            sourceCode.setLastKnownAbi(abi.json());
+            sourceCode.setAbiFilePath(abi.path());
+            jobLog.append("Найден ABI-файл: ").append(abi.path()).append("\n");
         } else {
-            jobLog.append("ABI не найден в репозитории.\n");
+            jobLog.append("ABI не найден.\n");
         }
 
         changeSetService.createChangeSetsIfNeeded(sourceCode, repoDir, headId.getName());
