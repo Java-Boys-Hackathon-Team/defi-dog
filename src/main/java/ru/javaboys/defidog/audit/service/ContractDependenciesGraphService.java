@@ -26,7 +26,7 @@ public class ContractDependenciesGraphService {
     private final SourceCodeRepository sourceCodeRepository;
 
 
-    public ContractDependenciesGraphDto generateGraph(UUID protocolId, ProtocolKind protocolKind) {
+    private ContractDependenciesGraphDto generateGraph(UUID protocolId, ProtocolKind protocolKind) {
         Optional<SourceCode> sourceCodeOpt = sourceCodeRepository.findFirstSourceCodeByProtocolId(protocolId, protocolKind);
 
         if (sourceCodeOpt.isEmpty() || sourceCodeOpt.get().getLastKnownSourceCode() == null) {
@@ -87,6 +87,18 @@ public class ContractDependenciesGraphService {
                             List.of()  // пустой список ребер
                     )
             );
+        }
+    }
+
+    public String generateGraphAsJson(UUID protocolId, ProtocolKind protocolKind) {
+        ContractDependenciesGraphDto graphDto = generateGraph(protocolId, protocolKind);
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(graphDto);
+        } catch (Exception e) {
+            log.error("Ошибка при сериализации графа в JSON. Protocol ID: {}", protocolId, e);
+            return "{\"elements\":{\"nodes\":[],\"edges\":[]}}"; // Возврат пустого графа как строка
         }
     }
 }
