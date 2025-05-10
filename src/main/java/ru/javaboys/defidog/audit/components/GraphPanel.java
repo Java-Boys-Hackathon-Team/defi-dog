@@ -1,4 +1,4 @@
-package ru.javaboys.defidog.components;
+package ru.javaboys.defidog.audit.components;
 
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
