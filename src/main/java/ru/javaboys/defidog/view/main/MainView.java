@@ -6,6 +6,7 @@ import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.app.main.StandardMainView;
@@ -24,10 +25,13 @@ import ru.javaboys.defidog.crypto.CryptocurrencyService;
 import ru.javaboys.defidog.entity.BlockchainNetwork;
 import ru.javaboys.defidog.entity.Cryptocurrency;
 import ru.javaboys.defidog.entity.DeFiProtocol;
+import ru.javaboys.defidog.entity.ProtocolKind;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Map;
+import java.util.UUID;
 
 @Route("")
 @ViewController(id = "MainView")
@@ -73,7 +77,8 @@ public class MainView extends StandardMainView {
         cryptocurrencyGrid.addComponentColumn(crypto -> {
                     Span span = new Span(crypto.getName());
                     span.getStyle().set("font-weight", "bold");
-                    return span;})
+                    return span;
+                })
                 .setTextAlign(ColumnTextAlign.START)
                 .setHeader("Name");
 
@@ -91,7 +96,8 @@ public class MainView extends StandardMainView {
                     BigDecimal price = crypto.getPrice();
                     String formatted = price != null ? "$" + format.format(price) : "$—";
 
-                    return new Span(formatted);})
+                    return new Span(formatted);
+                })
                 .setTextAlign(ColumnTextAlign.END)
                 .setHeader("Price");
 
@@ -103,7 +109,7 @@ public class MainView extends StandardMainView {
                         textSpan = "-";
                     } else {
                         int cmp = percentChange24h.compareTo(BigDecimal.ZERO);
-                        if (cmp < 0 ) textSpan = "▼ " + percentChange24h.abs() + "%";
+                        if (cmp < 0) textSpan = "▼ " + percentChange24h.abs() + "%";
                         else if (cmp > 0) textSpan = "▲ " + percentChange24h + "%";
                         else textSpan = percentChange24h + "%";
                     }
@@ -119,7 +125,8 @@ public class MainView extends StandardMainView {
                     }
                     span.getStyle().set("font-weight", "bold");
 
-                    return span;})
+                    return span;
+                })
                 .setTextAlign(ColumnTextAlign.END)
                 .setHeader("24h %");
 
@@ -137,20 +144,22 @@ public class MainView extends StandardMainView {
                         span.setText("—");
                     }
 
-                    return span;})
+                    return span;
+                })
                 .setTextAlign(ColumnTextAlign.END)
                 .setHeader("Market Cap");
 
         cryptocurrencyGrid.addComponentColumn(entity -> {
             Button actionButton = new Button("Run Audit");
-            actionButton.addClickListener(clickEvent -> goToAuditCrypto(entity));
+            actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.CRYPTOCURRENCY));
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
         dexGrid.addComponentColumn(dex -> {
                     Span span = new Span(dex.getName());
                     span.getStyle().set("font-weight", "bold");
-                    return span;})
+                    return span;
+                })
                 .setTextAlign(ColumnTextAlign.START)
                 .setHeader("Name");
 
@@ -158,13 +167,14 @@ public class MainView extends StandardMainView {
                     String url = dex.getOfficialSite();
                     Anchor anchor = new Anchor(url, url);
                     anchor.setTarget("_blank"); // Открыть в новой вкладке
-                    return anchor;})
+                    return anchor;
+                })
                 .setTextAlign(ColumnTextAlign.START)
                 .setHeader("Official Site");
 
         dexGrid.addComponentColumn(entity -> {
             Button actionButton = new Button("Run Audit");
-            actionButton.addClickListener(clickEvent -> goToAuditDex(entity));
+            actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.DEFI));
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
@@ -198,12 +208,17 @@ public class MainView extends StandardMainView {
         dexButton.setThemeName(visibleDexGrid ? "primary contrast" : "tertiary contrast");
     }
 
-    private void goToAuditCrypto(Cryptocurrency cryptocurrency) {
-        notifications.create("Button clicked for: " + cryptocurrency.getName()).show();
-    }
+    private void goToAudit(UUID id, ProtocolKind kind) {
+        if (id == null || kind == null) return;
 
-    private void goToAuditDex(DeFiProtocol deFiProtocol) {
-        notifications.create("Button clicked for: " + deFiProtocol.getName()).show();
+        getUI().ifPresent(ui -> ui.navigate("audit",
+                QueryParameters.simple(
+                        Map.of(
+                                "id", id.toString(),
+                                "kind", kind.name()
+                        )
+                )
+        ));
     }
 
     private void updateCryptocurrencyGrid() {
