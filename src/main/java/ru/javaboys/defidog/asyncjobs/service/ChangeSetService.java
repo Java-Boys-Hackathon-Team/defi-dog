@@ -29,6 +29,7 @@ public class ChangeSetService {
 
     private final GitRepositoryService gitRepositoryService;
     private final UnconstrainedDataManager dataManager;
+    private final ChangeSummaryGenerationService changeSummaryGenerationService;
 
     public void createChangeSetsIfNeeded(SourceCode sourceCode, File repoDir, String newHeadCommit) {
         try (Git git = gitRepositoryService.openGit(repoDir)) {
@@ -53,7 +54,10 @@ public class ChangeSetService {
                 codeChangeSet.setSourceCode(sourceCode);
                 codeChangeSet.setCommitHash(newHeadCommit);
                 codeChangeSet.setGitDiff(sourceCodeDiff);
-                codeChangeSet.setChangeSummary("Изменения исходного кода между %s и %s".formatted(oldCommit, newHeadCommit));
+
+                String summary = changeSummaryGenerationService.generateSourceCodeSummary(codeChangeSet);
+                codeChangeSet.setChangeSummary(summary);
+
                 dataManager.save(codeChangeSet);
             }
 
@@ -72,7 +76,10 @@ public class ChangeSetService {
                 abiChangeSet.setSourceCode(sourceCode);
                 abiChangeSet.setCommitHash(newHeadCommit);
                 abiChangeSet.setGitDiff(abiDiff);
-                abiChangeSet.setChangeSummary("Изменения ABI между %s и %s".formatted(oldCommit, newHeadCommit));
+
+                String summary = changeSummaryGenerationService.generateAbiSummary(abiChangeSet);
+                abiChangeSet.setChangeSummary(summary);
+
                 dataManager.save(abiChangeSet);
             }
 
