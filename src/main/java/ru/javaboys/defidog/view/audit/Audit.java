@@ -9,22 +9,33 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.codeeditor.CodeEditor;
-import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.view.*;
+import io.jmix.flowui.view.StandardView;
+import io.jmix.flowui.view.Subscribe;
+import io.jmix.flowui.view.ViewComponent;
+import io.jmix.flowui.view.ViewController;
+import io.jmix.flowui.view.ViewDescriptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaboys.defidog.components.GraphPanel;
-import ru.javaboys.defidog.entity.*;
+import ru.javaboys.defidog.entity.AbiChangeSet;
+import ru.javaboys.defidog.entity.AuditReport;
+import ru.javaboys.defidog.entity.ProtocolKind;
+import ru.javaboys.defidog.entity.SmartContract;
+import ru.javaboys.defidog.entity.SourceCode;
+import ru.javaboys.defidog.entity.SourceCodeChangeSet;
 import ru.javaboys.defidog.repositories.ChangeSetRepository;
 import ru.javaboys.defidog.repositories.CryptocurrencyRepository;
 import ru.javaboys.defidog.repositories.DeFiProtocolRepository;
 import ru.javaboys.defidog.view.main.MainView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,8 +45,6 @@ import java.util.UUID;
 @ViewDescriptor(path = "audit.xml")
 @RequiredArgsConstructor
 public class Audit extends StandardView {
-    private static final UUID MOCK_PROTOCOL_ID = UUID.fromString("4f6e2c97-8ad6-45fb-9c77-c6b86a678f04");
-    private static final ProtocolKind PROTOCOL_KIND = ProtocolKind.DEFI;
 
     @ViewComponent
     private H3 protocolNameH3;
@@ -54,7 +63,9 @@ public class Audit extends StandardView {
     @ViewComponent
     private Div statusDot;
     @ViewComponent
-    private DataGrid<SourceCodeChangeSet> sourceCodeHistoryGrid;
+    private Span statusLabel;
+    @ViewComponent
+    private CodeEditor abiCodeEditor;
 
     @Autowired
     private DeFiProtocolRepository deFiProtocolRepository;
@@ -62,19 +73,47 @@ public class Audit extends StandardView {
     private CryptocurrencyRepository cryptocurrencyRepository;
     @Autowired
     private ChangeSetRepository changeSetRepository;
-    @ViewComponent
-    private Span statusLabel;
-    @ViewComponent
-    private CodeEditor abiCodeEditor;
+
+    private UUID protocolId;
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        UUID protocolId = null;
+        ProtocolKind protocolKind = null;
+
+        QueryParameters queryParameters = event.getLocation().getQueryParameters();
+        Map<String, List<String>> paramsMap = queryParameters.getParameters();
+
+        try {
+            protocolId = Optional.ofNullable(paramsMap.get("id"))
+                    .flatMap(list -> list.stream().findFirst())
+                    .map(UUID::fromString)
+                    .orElseThrow(() -> new IllegalArgumentException("Missing or invalid 'id'"));
+
+            protocolKind = Optional.ofNullable(paramsMap.get("kind"))
+                    .flatMap(list -> list.stream().findFirst())
+                    .map(ProtocolKind::valueOf)
+                    .orElseThrow(() -> new IllegalArgumentException("Missing or invalid 'kind'"));
+        } catch (Exception e) {
+            getUI().ifPresent(ui ->
+                    ui.navigate("main")
+            );
+        }
+        this.protocolId = protocolId;
+
+        if (!validateInputs(protocolKind, protocolId)) {
+            return;
+        }
+
+        List<SmartContract> contracts = getContracts(protocolKind, protocolId);
+        renderProtocolTexts(protocolId);
+        renderChanges(contracts);
+        renderStatusDot();
+    }
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
-        if (!validateInputs()) return;
 
-        List<SmartContract> contracts = getContracts();
-        renderProtocolTexts();
-        renderChanges(contracts);
-        renderStatusDot();
     }
 
     @Subscribe
@@ -115,7 +154,7 @@ public class Audit extends StandardView {
     }
 
     private void renderDependencyGraph() {
-        Optional<String> graphJsonOpt = deFiProtocolRepository.findGraphJsonById(MOCK_PROTOCOL_ID);
+        Optional<String> graphJsonOpt = deFiProtocolRepository.findGraphJsonById(protocolId);
 
         GraphPanel graphPanel = new GraphPanel();
 
@@ -134,27 +173,27 @@ public class Audit extends StandardView {
         });*/
     }
 
-    private boolean validateInputs() {
-        if (MOCK_PROTOCOL_ID == null || PROTOCOL_KIND == null) {
+    private boolean validateInputs(ProtocolKind protocolKind, UUID protocolId) {
+        if (protocolId == null || protocolKind == null) {
             notifications.create("Ошибка: не передан ID или тип объекта").show();
             return false;
         }
         return true;
     }
 
-    private List<SmartContract> getContracts() {
-        return switch (PROTOCOL_KIND) {
-            case DEFI -> deFiProtocolRepository.findContracts(MOCK_PROTOCOL_ID);
-            case CRYPTOCURRENCY -> cryptocurrencyRepository.findContracts(MOCK_PROTOCOL_ID);
+    private List<SmartContract> getContracts(ProtocolKind protocolKind, UUID protocolId) {
+        return switch (protocolKind) {
+            case DEFI -> deFiProtocolRepository.findContracts(protocolId);
+            case CRYPTOCURRENCY -> cryptocurrencyRepository.findContracts(protocolId);
         };
     }
 
-    private void renderProtocolTexts() {
+    private void renderProtocolTexts(UUID protocolId) {
         protocolNameH3.setText(
-                deFiProtocolRepository.findNameById(MOCK_PROTOCOL_ID).orElse("Не найдено")
+                deFiProtocolRepository.findNameById(protocolId).orElse("Не найдено")
         );
         protocolDescriptionP.setText(
-                deFiProtocolRepository.findDescriptionById(MOCK_PROTOCOL_ID).orElse("Описание отсутствует")
+                deFiProtocolRepository.findDescriptionById(protocolId).orElse("Описание отсутствует")
         );
     }
 
