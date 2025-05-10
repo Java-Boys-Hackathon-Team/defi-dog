@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://notificationSettingsListView.title"
+      focusComponent="notificationSettingsesDataGrid">
+    <data>
+        <collection id="notificationSettingsDc"
+                    class="ru.javaboys.defidog.entity.NotificationSettings">
+            <fetchPlan extends="_base">
+                <property name="subscribedCryptocurrencies" fetchPlan="_base"/>
+                <property name="subscribedDeFiProtocols" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="notificationSettingsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from NotificationSettings e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="notificationSettingsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="notificationSettingsesDataGrid.createAction"/>
+            <button id="removeButton" action="notificationSettingsesDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="notificationSettingsDl"/>
+        </hbox>
+        <dataGrid id="notificationSettingsesDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="notificationSettingsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>
