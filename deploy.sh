@@ -41,6 +41,8 @@ docker image prune -f --filter "label=com.docker.compose.project=defi-dog"
 # Шаг 6: Сборка проекта defi-dog
 ./gradlew -Pvaadin.productionMode=true bootJar -x test
 
+./build_scan_tools.sh
+
 # Шаг 7: Запуск всех сервисов
 docker-compose up -d
 
