@@ -11,4 +11,5 @@ public class ScanResult {
     private SecurityScanJobStatus status;
     private String rawOutput;
     private String errorMessage;
+    private Integer exitCode;
 }
