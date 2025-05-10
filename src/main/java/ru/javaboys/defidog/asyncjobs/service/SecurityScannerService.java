@@ -120,7 +120,7 @@ public class SecurityScannerService {
                 return ScanResult.builder()
                         .status(SecurityScanJobStatus.FAILED)
                         .exitCode(exitCode)
-                        .errorMessage("Контейнер завершился с кодом " + exitCode)
+                        .errorMessage("Контейнер завершился с кодом " + exitCode + ": " + logs)
                         .rawOutput(logs)
                         .build();
             }
