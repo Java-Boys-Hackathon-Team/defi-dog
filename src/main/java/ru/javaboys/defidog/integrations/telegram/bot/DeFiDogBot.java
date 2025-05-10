@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.longpolling.BotSession;
@@ -23,6 +24,7 @@ import ru.javaboys.defidog.integrations.telegram.TelegramUserService;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "telegram.bot", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DeFiDogBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     @Value("${telegram.bot.token}")

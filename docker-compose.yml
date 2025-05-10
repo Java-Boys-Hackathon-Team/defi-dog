@@ -19,6 +19,8 @@ services:
       - PG_PASS=pgadmin
     env_file:
       - .env
+    extra_hosts:
+      - "host.docker.internal:192.168.88.151"
     tty: true
     depends_on:
       - defi-dog-db

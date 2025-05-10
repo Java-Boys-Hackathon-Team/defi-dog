@@ -1,4 +1,4 @@
-package ru.javaboys.defidog.asyncjobs;
+package ru.javaboys.defidog.asyncjobs.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
