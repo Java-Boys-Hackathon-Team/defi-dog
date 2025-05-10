@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javaboys.defidog.asyncjobs.updater.SourceCodeUpdater;
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceType;
@@ -23,6 +24,7 @@ public class SourceCodeSyncJob {
     private final Map<SourceType, SourceCodeUpdater> updaterMap;
 
     @Scheduled(fixedDelay = 30000)
+    @Transactional
     public void run() {
         log.info("Запуск джобы синхронизации исходного кода...");
 
