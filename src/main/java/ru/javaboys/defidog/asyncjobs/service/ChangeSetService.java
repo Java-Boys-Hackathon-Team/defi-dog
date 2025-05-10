@@ -1,7 +1,6 @@
 package ru.javaboys.defidog.asyncjobs.service;
 
 
-import io.jmix.core.DataManager;
 import io.jmix.core.UnconstrainedDataManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,8 +59,12 @@ public class ChangeSetService {
 
             // --- ABI change set (по .json, .abi и т.п.)
             String abiDiff = getGitDiff(repo, oldId, newId, path -> {
-                String p = path.toLowerCase();
-                return p.endsWith(".json") || p.endsWith(".abi") || p.contains("abi");
+                if (sourceCode.getAbiFilePath() != null) {
+                    return path.equals(sourceCode.getAbiFilePath());
+                } else {
+                    String p = path.toLowerCase();
+                    return p.endsWith(".json") || p.contains("abi");
+                }
             });
 
             if (!abiDiff.isBlank()) {
@@ -84,12 +87,8 @@ public class ChangeSetService {
                 DiffFormatter formatter = new DiffFormatter(out);
                 RevWalk walk = new RevWalk(repo)
         ) {
-            RevCommit csCommit = walk.parseCommit(oldId);
-            if (csCommit.getParentCount() == 0) {
-                log.warn("Коммит {} не имеет родителя — пропускаем diff", oldId.name());
-                return "";
-            }
-            RevCommit oldCommit = walk.parseCommit(csCommit.getParent(0));
+
+            RevCommit oldCommit = walk.parseCommit(oldId);
             RevCommit newCommit = walk.parseCommit(newId);
 
             try (var reader = repo.newObjectReader()) {

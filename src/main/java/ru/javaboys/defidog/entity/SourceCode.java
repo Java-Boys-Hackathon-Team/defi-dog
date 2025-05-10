@@ -52,6 +52,10 @@ public class SourceCode {
     @Column(name = "LOCAL_PATH")
     private String localPath;
 
+    @Comment("Путь к файлу ABI в локальном репозитории")
+    @Column(name = "ABI_FILE_PATH")
+    private String abiFilePath;
+
     @Comment("Дата последнего обновления исходника")
     @Column(name = "FETCHED_AT")
     private OffsetDateTime fetchedAt;
@@ -113,13 +117,5 @@ public class SourceCode {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sources")
     private DeFiProtocol deFiProtocol;
-
-    public DeFiProtocol getDeFiProtocol() {
-        return deFiProtocol;
-    }
-
-    public void setDeFiProtocol(DeFiProtocol deFiProtocol) {
-        this.deFiProtocol = deFiProtocol;
-    }
 
 }
