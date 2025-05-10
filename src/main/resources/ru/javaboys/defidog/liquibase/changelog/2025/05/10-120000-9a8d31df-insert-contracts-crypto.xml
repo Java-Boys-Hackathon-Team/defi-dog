@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="insert-smart-contracts-crypto-001" author="defi-dog">
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="8b2d5f2d-5d2f-4b17-a03f-740da3e01af2"/>
+            <column name="NAME" value="Tether Token Contract ETH Network"/>
+            <column name="ADDRESS" value="0xdac17f958d2ee523a2206206994597c13d831ec7"/>
+            <column name="NETWORK" value="ETHEREUM"/>
+            <column name="CRYPTOCURRENCY_ID" value="d5e91de5-9a8f-4f74-9791-21ad61c14d56"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="9c3d1e30-e0ab-4e1c-a3f6-5dbb4a6432de"/>
+            <column name="NAME" value="Tether Token Contract BSC Network"/>
+            <column name="ADDRESS" value="0x55d398326f99059ff775485246999027b3197955"/>
+            <column name="NETWORK" value="BSC"/>
+            <column name="CRYPTOCURRENCY_ID" value="d5e91de5-9a8f-4f74-9791-21ad61c14d56"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="2fdf69ab-e48b-4af6-b8a1-28a9c2b76b5b"/>
+            <column name="NAME" value="Tether Token Contract SOL Network"/>
+            <column name="ADDRESS" value="Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"/>
+            <column name="NETWORK" value="SOLANA"/>
+            <column name="CRYPTOCURRENCY_ID" value="d5e91de5-9a8f-4f74-9791-21ad61c14d56"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="bc1a5a44-b19c-42b2-b5d6-ff5ab9871211"/>
+            <column name="NAME" value="USDC Token Contract ETH Network"/>
+            <column name="ADDRESS" value="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"/>
+            <column name="NETWORK" value="ETHEREUM"/>
+            <column name="CRYPTOCURRENCY_ID" value="5b4209c1-1375-4f7f-b2a6-4d10961c0bfa"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="4e6fdc14-19c0-4018-8599-8f92081cf31a"/>
+            <column name="NAME" value="USDC Token Contract BSC Network"/>
+            <column name="ADDRESS" value="0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"/>
+            <column name="NETWORK" value="BSC"/>
+            <column name="CRYPTOCURRENCY_ID" value="5b4209c1-1375-4f7f-b2a6-4d10961c0bfa"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="12d91a17-4933-41a0-9097-62e9e022e93c"/>
+            <column name="NAME" value="DAI Token Contract SOL Network"/>
+            <column name="ADDRESS" value="EjmyN6qEC1Tf1JxiG1ae7UTJhUxSwk1TCWNWqxWV4J6o"/>
+            <column name="NETWORK" value="SOLANA"/>
+            <column name="CRYPTOCURRENCY_ID" value="4fcf2b36-02dc-4ec6-9b59-42613deabf29"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
