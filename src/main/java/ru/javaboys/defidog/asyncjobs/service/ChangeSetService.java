@@ -31,7 +31,7 @@ public class ChangeSetService {
     private final GitRepositoryService gitRepositoryService;
     private final UnconstrainedDataManager dataManager;
 
-    public void createChangeSetsIfNeeded(SourceCode sourceCode, File repoDir, String newHeadCommit, String newAbiJson) {
+    public void createChangeSetsIfNeeded(SourceCode sourceCode, File repoDir, String newHeadCommit) {
         try (Git git = gitRepositoryService.openGit(repoDir)) {
             String oldCommit = sourceCode.getLastCommitSha();
             if (oldCommit == null || oldCommit.equals(newHeadCommit)) {
@@ -64,12 +64,10 @@ public class ChangeSetService {
                 return p.endsWith(".json") || p.endsWith(".abi") || p.contains("abi");
             });
 
-            String oldAbi = sourceCode.getLastKnownAbi();
-            if (newAbiJson != null && !newAbiJson.equals(oldAbi) && !abiDiff.isBlank()) {
+            if (!abiDiff.isBlank()) {
                 AbiChangeSet abiChangeSet = dataManager.create(AbiChangeSet.class);
                 abiChangeSet.setSourceCode(sourceCode);
                 abiChangeSet.setCommitHash(newHeadCommit);
-                abiChangeSet.setAbiJson(newAbiJson);
                 abiChangeSet.setGitDiff(abiDiff);
                 abiChangeSet.setChangeSummary("Изменения ABI между %s и %s".formatted(oldCommit, newHeadCommit));
                 dataManager.save(abiChangeSet);

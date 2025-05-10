@@ -41,12 +41,6 @@ public class AbiChangeSet {
     private UUID id;
 
     @NotBlank
-    @Comment("Полный ABI в виде JSON")
-    @Column(name = "ABI_JSON")
-    @Lob
-    private String abiJson;
-
-    @NotBlank
     @Comment("Человеко-понятное описание изменений ABI смарт-контракта")
     @Column(name = "CHANGE_SUMMARY")
     @Lob

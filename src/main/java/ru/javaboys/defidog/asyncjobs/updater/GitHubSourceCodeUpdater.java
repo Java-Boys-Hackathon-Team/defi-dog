@@ -94,7 +94,7 @@ public class GitHubSourceCodeUpdater implements SourceCodeUpdater, TypedUpdater 
             jobLog.append("ABI не найден в репозитории.\n");
         }
 
-        changeSetService.createChangeSetsIfNeeded(sourceCode, repoDir, headId.getName(), sourceCode.getLastKnownAbi());
+        changeSetService.createChangeSetsIfNeeded(sourceCode, repoDir, headId.getName());
 
         String commitSha = headId.getName();
         sourceCode.setLastCommitSha(commitSha);
