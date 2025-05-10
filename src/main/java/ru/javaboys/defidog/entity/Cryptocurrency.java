@@ -4,15 +4,7 @@ import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -56,6 +48,9 @@ public class Cryptocurrency {
     @Comment("Рыночной цена")
     @Column(name = "PRICE", precision = 24, scale = 16)
     private BigDecimal price;
+
+    @Column(name = "PERCENT_CHANGE24H", precision = 19, scale = 2)
+    private BigDecimal percentChange24h;
 
     @Comment("Рыночная капитализация, общая стоимость всех токенов в обращении")
     @Column(name = "MARKET_CAP", precision = 24, scale = 2)
@@ -104,4 +99,12 @@ public class Cryptocurrency {
     @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private ContractDependenciesGraph dependencyGraph;
+
+    public BigDecimal getPercentChange24h() {
+        return percentChange24h;
+    }
+
+    public void setPercentChange24h(BigDecimal percentChange24h) {
+        this.percentChange24h = percentChange24h;
+    }
 }
