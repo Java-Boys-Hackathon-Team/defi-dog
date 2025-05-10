@@ -42,6 +42,12 @@
                               ariaLabel="msg://drawerToggle.ariaLabel"/>
                 <h1 id="viewTitle" classNames="jmix-main-view-title"/>
             </header>
+            <hbox spacing="true" alignItems="CENTER">
+                <label value="Select Network"/>
+                <comboBox id="blockchainNetworkComboBox"
+                          itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"
+                          label=""/>
+            </hbox>
             <dropdownButton id="themeSwitcher"
                             text="Theme" icon="ADJUST"
                             classNames="ms-auto me-m"
@@ -85,13 +91,8 @@
             </section>
         </drawerLayout>
         <initialLayout>
-            <flexLayout id="topLayout">
-                <hbox alignItems="END" classNames="flex-wrap">
-                    <comboBox id="blockchainNetworkComboBox"
-                              itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"
-                              label="Select Network"/>
-                    <button id="updateButton" action="updateAction"/>
-                </hbox>
+            <flexLayout id="topLayout" alignItems="END" justifyContent="END" width="100%" visible="false">
+                <button id="updateButton" action="updateAction"/>
             </flexLayout>
             <flexLayout id="dataLayoutButtons">
                 <button id="cryptocurrenciesButton"

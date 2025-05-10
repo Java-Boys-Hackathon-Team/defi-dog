@@ -3,6 +3,7 @@ package ru.javaboys.defidog.view.main;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.router.Route;
@@ -19,8 +20,6 @@ import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
-import ru.javaboys.defidog.crypto.CryptocurrencyReloadEvent;
 import ru.javaboys.defidog.crypto.CryptocurrencyService;
 import ru.javaboys.defidog.entity.BlockchainNetwork;
 import ru.javaboys.defidog.entity.Cryptocurrency;
@@ -64,7 +63,13 @@ public class MainView extends StandardMainView {
         blockchainNetworkComboBox.setValue(BlockchainNetwork.ETHEREUM);
         setVisiblesGrid(true, false);
 
-        // Колонки
+        setColumnsDataGrids();
+        cryptocurrencyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        dexGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+    }
+
+    private void setColumnsDataGrids() {
+
         cryptocurrencyGrid.addComponentColumn(crypto -> {
                     Span span = new Span(crypto.getName());
                     span.getStyle().set("font-weight", "bold");
@@ -86,12 +91,9 @@ public class MainView extends StandardMainView {
                     BigDecimal price = crypto.getPrice();
                     String formatted = price != null ? "$" + format.format(price) : "$—";
 
-                    Span span = new Span(formatted);
-                    span.getStyle().set("font-weight", "bold");
-
-                    return span;})
+                    return new Span(formatted);})
                 .setTextAlign(ColumnTextAlign.END)
-                .setHeader("24h %");
+                .setHeader("Price");
 
         cryptocurrencyGrid.addComponentColumn(crypto -> {
                     BigDecimal percentChange24h = crypto.getPercentChange24h();
@@ -101,8 +103,9 @@ public class MainView extends StandardMainView {
                         textSpan = "-";
                     } else {
                         int cmp = percentChange24h.compareTo(BigDecimal.ZERO);
-                        if (cmp <= 0 ) textSpan = percentChange24h + "%";
-                        else textSpan = "+" + percentChange24h + "%";
+                        if (cmp < 0 ) textSpan = "▼ " + percentChange24h.abs() + "%";
+                        else if (cmp > 0) textSpan = "▲ " + percentChange24h + "%";
+                        else textSpan = percentChange24h + "%";
                     }
                     Span span = new Span(textSpan);
 
@@ -133,7 +136,6 @@ public class MainView extends StandardMainView {
                     } else {
                         span.setText("—");
                     }
-                    span.getStyle().set("font-weight", "bold");
 
                     return span;})
                 .setTextAlign(ColumnTextAlign.END)
@@ -146,9 +148,9 @@ public class MainView extends StandardMainView {
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
         dexGrid.addComponentColumn(dex -> {
-            Span span = new Span(dex.getName());
-            span.getStyle().set("font-weight", "bold");
-            return span;})
+                    Span span = new Span(dex.getName());
+                    span.getStyle().set("font-weight", "bold");
+                    return span;})
                 .setTextAlign(ColumnTextAlign.START)
                 .setHeader("Name");
 
@@ -165,15 +167,11 @@ public class MainView extends StandardMainView {
             actionButton.addClickListener(clickEvent -> goToAuditDex(entity));
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
+
     }
 
     @Subscribe("timer")
     public void onTimerTimerAction(final Timer.TimerActionEvent event) {
-        updateCryptocurrencyGrid();
-    }
-
-    @EventListener
-    private void cryptocurrencyGridDataChanged(CryptocurrencyReloadEvent event) {
         updateCryptocurrencyGrid();
     }
 
@@ -190,6 +188,7 @@ public class MainView extends StandardMainView {
     @Subscribe("updateButton")
     protected void onHelloButtonClick(ClickEvent<Button> event) {
         cryptocurrencyService.updateCryptocurrenciesInfo();
+        updateCryptocurrencyGrid();
     }
 
     private void setVisiblesGrid(Boolean visibleCryptocurrencyGrid, Boolean visibleDexGrid) {
