@@ -86,7 +86,12 @@ public class ChangeSetService {
                 DiffFormatter formatter = new DiffFormatter(out);
                 RevWalk walk = new RevWalk(repo)
         ) {
-            RevCommit oldCommit = walk.parseCommit(oldId);
+            RevCommit csCommit = walk.parseCommit(oldId);
+            if (csCommit.getParentCount() == 0) {
+                log.warn("Коммит {} не имеет родителя — пропускаем diff", oldId.name());
+                return "";
+            }
+            RevCommit oldCommit = walk.parseCommit(csCommit.getParent(0));
             RevCommit newCommit = walk.parseCommit(newId);
 
             try (var reader = repo.newObjectReader()) {
