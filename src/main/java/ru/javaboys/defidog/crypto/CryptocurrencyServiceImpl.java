@@ -1,7 +1,6 @@
 package ru.javaboys.defidog.crypto;
 
 import io.jmix.core.DataManager;
-import io.jmix.flowui.UiEventPublisher;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.javaboys.defidog.entity.Cryptocurrency;

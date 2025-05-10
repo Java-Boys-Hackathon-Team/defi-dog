@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="insert-smart-contracts-defi-001" author="defi-dog">
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="c1a3db47-2c0d-4d4a-82ef-a34ec3f5e9fa"/>
+            <column name="NAME" value="Uniswap V3 Factory ETH Network"/>
+            <column name="ADDRESS" value="0x1F98431c8aD98523631AE4a59f267346ea31F984"/>
+            <column name="NETWORK" value="ETHEREUM"/>
+            <column name="DE_FI_PROTOCOL_ID" value="9272cf36-bd27-414e-a61c-1f23c31bb255"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="d2b2cb88-9bc6-40a1-bdb2-5d02c5d9df29"/>
+            <column name="NAME" value="Uniswap V3 Router ETH Network"/>
+            <column name="ADDRESS" value="0xE592427A0AEce92De3Edee1F18E0157C05861564"/>
+            <column name="NETWORK" value="ETHEREUM"/>
+            <column name="DE_FI_PROTOCOL_ID" value="9272cf36-bd27-414e-a61c-1f23c31bb255"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="ea749b20-3db7-4d36-8850-d8b0fa77c9ee"/>
+            <column name="NAME" value="PancakeSwap Factory V3 BSC Network"/>
+            <column name="ADDRESS" value="0x1097053Fd2ea711dad45caCcc45EfF7548fCB362"/>
+            <column name="NETWORK" value="BSC"/>
+            <column name="DE_FI_PROTOCOL_ID" value="3d308c6c-c7b6-4f44-9f74-ff13c062a99e"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="f3c53b62-678b-4b5e-8cb3-b54024dd8416"/>
+            <column name="NAME" value="PancakeSwap Router V3 (SwapRouter) BSC Network"/>
+            <column name="ADDRESS" value="0x7a250d5630b4cf539739df2c5dacb4c659f2488d"/>
+            <column name="NETWORK" value="BSC"/>
+            <column name="DE_FI_PROTOCOL_ID" value="3d308c6c-c7b6-4f44-9f74-ff13c062a99e"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="a8f2c9e5-4f0c-4c96-b9de-e7a5c1131f92"/>
+            <column name="NAME" value="Aave LendingPool V3 ETH Network"/>
+            <column name="ADDRESS" value="0x7EbD09022Be45AD993BAA1CEc611312D45aE5bB6"/>
+            <column name="NETWORK" value="ETHEREUM"/>
+            <column name="DE_FI_PROTOCOL_ID" value="69e07e8c-17f6-48c4-84a0-82ae4df5b5ce"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+        <insert tableName="SMART_CONTRACT">
+            <column name="ID" value="e735ab2d-7396-4565-9d8a-73c2c4783a5d"/>
+            <column name="NAME" value="Raydium Staking SOL Network"/>
+            <column name="ADDRESS" value="EhhTKvL1KAZrR6i6u6vL7Gpxp8S7CZf7ksxN38oQ2DkS"/>
+            <column name="NETWORK" value="SOLANA"/>
+            <column name="DE_FI_PROTOCOL_ID" value="dbb9f012-7b52-490b-a8d2-b0146f33cb8b"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
