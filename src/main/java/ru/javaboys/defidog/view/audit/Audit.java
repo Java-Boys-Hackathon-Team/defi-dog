@@ -22,21 +22,19 @@ import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.javaboys.defidog.components.GraphPanel;
+import ru.javaboys.defidog.audit.components.GraphPanel;
 import ru.javaboys.defidog.entity.AbiChangeSet;
 import ru.javaboys.defidog.entity.AuditReport;
 import ru.javaboys.defidog.entity.ProtocolKind;
-import ru.javaboys.defidog.entity.SmartContract;
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceCodeChangeSet;
 import ru.javaboys.defidog.repositories.ChangeSetRepository;
-import ru.javaboys.defidog.repositories.CryptocurrencyRepository;
 import ru.javaboys.defidog.repositories.DeFiProtocolRepository;
+import ru.javaboys.defidog.repositories.SourceCodeRepository;
 import ru.javaboys.defidog.view.main.MainView;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -70,9 +68,9 @@ public class Audit extends StandardView {
     @Autowired
     private DeFiProtocolRepository deFiProtocolRepository;
     @Autowired
-    private CryptocurrencyRepository cryptocurrencyRepository;
-    @Autowired
     private ChangeSetRepository changeSetRepository;
+    @Autowired
+    private SourceCodeRepository sourceCodeRepository;
 
     private UUID protocolId;
 
@@ -101,19 +99,13 @@ public class Audit extends StandardView {
         }
         this.protocolId = protocolId;
 
-        if (!validateInputs(protocolKind, protocolId)) {
+        if (!validateInputs(protocolId, protocolKind)) {
             return;
         }
 
-        List<SmartContract> contracts = getContracts(protocolKind, protocolId);
         renderProtocolTexts(protocolId);
-        renderChanges(contracts);
+        renderChanges(protocolId, protocolKind);
         renderStatusDot();
-    }
-
-    @Subscribe
-    public void onBeforeShow(final BeforeShowEvent event) {
-
     }
 
     @Subscribe
@@ -173,19 +165,12 @@ public class Audit extends StandardView {
         });*/
     }
 
-    private boolean validateInputs(ProtocolKind protocolKind, UUID protocolId) {
+    private boolean validateInputs(UUID protocolId, ProtocolKind protocolKind) {
         if (protocolId == null || protocolKind == null) {
             notifications.create("Ошибка: не передан ID или тип объекта").show();
             return false;
         }
         return true;
-    }
-
-    private List<SmartContract> getContracts(ProtocolKind protocolKind, UUID protocolId) {
-        return switch (protocolKind) {
-            case DEFI -> deFiProtocolRepository.findContracts(protocolId);
-            case CRYPTOCURRENCY -> cryptocurrencyRepository.findContracts(protocolId);
-        };
     }
 
     private void renderProtocolTexts(UUID protocolId) {
@@ -230,8 +215,10 @@ public class Audit extends StandardView {
         );
     }
 
-    private void renderChanges(List<SmartContract> contracts) {
-        if (contracts == null || contracts.isEmpty()) {
+    private void renderChanges(UUID protocolId, ProtocolKind kind) {
+        Optional<SourceCode> sourceCodeOpt = sourceCodeRepository.findFirstSourceCodeByProtocolId(protocolId, kind);
+
+        if (sourceCodeOpt.isEmpty()) {
             sourceCodeChangesDc.setItems(List.of());
             abiChangesDc.setItems(List.of());
             sourceCodeEditor.setValue("// Исходный код отсутствует");
@@ -239,36 +226,23 @@ public class Audit extends StandardView {
             return;
         }
 
-        // Берем первый sourceCode из любого смарта
-        SourceCode sourceCode = contracts.stream()
-                .map(SmartContract::getSources)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
-
-        if (sourceCode == null) {
-            sourceCodeChangesDc.setItems(List.of());
-            abiChangesDc.setItems(List.of());
-            sourceCodeEditor.setValue("// Исходный код отсутствует");
-            abiCodeEditor.setValue("// ABI отсутствует");
-            return;
-        }
-
+        SourceCode sourceCode = sourceCodeOpt.get();
         UUID sourceId = sourceCode.getId();
 
-        List<SourceCodeChangeSet> codeChanges = changeSetRepository.loadCodeChanges(sourceId);
-        List<AbiChangeSet> abiChanges = changeSetRepository.loadAbiChanges(sourceId);
+        List<SourceCodeChangeSet> codeChanges = changeSetRepository.findCodeChanges(sourceId);
+        List<AbiChangeSet> abiChanges = changeSetRepository.findAbiChanges(sourceId);
 
         sourceCodeChangesDc.setItems(codeChanges);
         abiChangesDc.setItems(abiChanges);
 
-        // Установка значений в code editor
         sourceCodeEditor.setValue(
-                sourceCode.getLastKnownSourceCode() != null ? sourceCode.getLastKnownSourceCode() : "// Исходный код отсутствует"
+                Optional.ofNullable(sourceCode.getLastKnownSourceCode())
+                        .orElse("// Исходный код отсутствует")
         );
 
         abiCodeEditor.setValue(
-                sourceCode.getLastKnownAbi() != null ? sourceCode.getLastKnownAbi() : "// ABI отсутствует"
+                Optional.ofNullable(sourceCode.getLastKnownAbi())
+                        .orElse("// ABI отсутствует")
         );
     }
 }

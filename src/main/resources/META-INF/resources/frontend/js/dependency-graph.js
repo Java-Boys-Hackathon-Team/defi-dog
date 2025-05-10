@@ -5,7 +5,6 @@ window.renderCytoscapeGraph = function (container, rawJson) {
 
   container.innerHTML = "";
 
-  // Обновлённая визуальная обводка
   container.style.border = "2px solid rgba(0, 116, 217, 0.7)";
   container.style.borderRadius = "12px";
   container.style.boxShadow = "0 0 10px rgba(0, 116, 217, 0.4)";
@@ -16,7 +15,7 @@ window.renderCytoscapeGraph = function (container, rawJson) {
   try {
     parsed = JSON.parse(rawJson);
   } catch (e) {
-    console.error("Ошибка парсинга JSON:", e);
+    console.error("\u041e\u0448\u0438\u0431\u043a\u0430 \u043f\u0430\u0440\u0441\u0438\u043d\u0433\u0430 JSON:", e);
     return;
   }
 
@@ -32,7 +31,7 @@ window.renderCytoscapeGraph = function (container, rawJson) {
           "background-color": "#0074D9",
           "label": "data(label)",
           "color": "#fff",
-          "text-valign": "top", // <-- Текст сверху
+          "text-valign": "top",
           "text-halign": "center",
           "text-margin-y": "-10px",
           "font-size": "14px",
@@ -47,7 +46,8 @@ window.renderCytoscapeGraph = function (container, rawJson) {
           "width": 2,
           "line-color": "#ccc",
           "target-arrow-color": "#ccc",
-          "target-arrow-shape": "triangle"
+          "target-arrow-shape": "triangle",
+          "curve-style": "bezier" // <-- Это добавлено
         }
       }
     ],

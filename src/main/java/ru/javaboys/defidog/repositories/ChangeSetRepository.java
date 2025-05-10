@@ -18,7 +18,7 @@ public class ChangeSetRepository {
     private final DataManager dataManager;
     private final FetchPlans fetchPlans;
 
-    public List<SourceCodeChangeSet> loadCodeChanges(UUID sourceId) {
+    public List<SourceCodeChangeSet> findCodeChanges(UUID sourceId) {
         FetchPlan fetchPlan = fetchPlans.builder(SourceCodeChangeSet.class)
                 .add("id")
                 .add("changeSummary")
@@ -37,7 +37,7 @@ public class ChangeSetRepository {
                 .list();
     }
 
-    public List<AbiChangeSet> loadAbiChanges(UUID sourceId) {
+    public List<AbiChangeSet> findAbiChanges(UUID sourceId) {
         FetchPlan fetchPlan = fetchPlans.builder(AbiChangeSet.class)
                 .add("id")
                 .add("changeSummary")
