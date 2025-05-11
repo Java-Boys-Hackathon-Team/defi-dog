@@ -61,11 +61,11 @@ public class SmartContract {
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "DE_FI_PROTOCOL_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private DeFiProtocol deFiProtocol; // +
+    private DeFiProtocol deFiProtocol;
 
     @JoinColumn(name = "SOURCES_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private SourceCode sources; // +
+    private SourceCode sources;
 
     @Comment("Ссылка на страницу контракта на Etherscan")
     @Column(name = "EXTERNAL_LINK")
@@ -92,5 +92,5 @@ public class SmartContract {
 
     @JoinColumn(name = "CRYPTOCURRENCY_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Cryptocurrency cryptocurrency;// +
+    private Cryptocurrency cryptocurrency;
 }
