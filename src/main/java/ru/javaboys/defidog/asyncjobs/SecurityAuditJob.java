@@ -13,7 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.javaboys.defidog.asyncjobs.service.AuditReportService;
 import ru.javaboys.defidog.asyncjobs.service.SecurityScannerService;
+import ru.javaboys.defidog.audit.service.ContractDependenciesGraphService;
 import ru.javaboys.defidog.entity.AuditReport;
+import ru.javaboys.defidog.entity.ContractDependenciesGraph;
+import ru.javaboys.defidog.entity.Cryptocurrency;
+import ru.javaboys.defidog.entity.DeFiProtocol;
 import ru.javaboys.defidog.entity.Notification;
 import ru.javaboys.defidog.entity.ScanTool;
 import ru.javaboys.defidog.entity.SmartContract;
@@ -30,6 +34,7 @@ public class SecurityAuditJob {
     private final UnconstrainedDataManager dataManager;
     private final SecurityScannerService securityScannerService;
     private final AuditReportService auditReportService;
+    private final ContractDependenciesGraphService contractDependenciesGraphService;
 
     @Scheduled(fixedDelay = 60000)
     @Transactional
@@ -70,6 +75,8 @@ public class SecurityAuditJob {
             if (CollectionUtils.isNotEmpty(notifications)) {
                 dataManager.saveAll(notifications);
             }
+
+            buildGraphProtocol(report, changeSet);
         }
 
         log.info("Джоба аудита безопасности завершена");
@@ -85,13 +92,13 @@ public class SecurityAuditJob {
         if (smartContract.getCryptocurrency() != null) {
             users = dataManager.load(User.class)
                     .query("select distinct n.user from NotificationSettings n " +
-                           "where :currency in(n.subscribedCryptocurrencies)")
+                            "where :currency in(n.subscribedCryptocurrencies)")
                     .parameter("currency", smartContract.getCryptocurrency())
                     .list();
         } else if (smartContract.getDeFiProtocol() == null) {
             users = dataManager.load(User.class)
                     .query("select distinct n.user from NotificationSettings n " +
-                           "where :protocol in(n.subscribedDeFiProtocols)")
+                            "where :protocol in(n.subscribedDeFiProtocols)")
                     .parameter("protocol", smartContract.getDeFiProtocol())
                     .list();
         }
@@ -118,4 +125,40 @@ public class SecurityAuditJob {
                 .toList();
     }
 
+    private void buildGraphProtocol(AuditReport report, SourceCodeChangeSet changeSet) {
+        String sourceCode = changeSet.getSourceCode().getLastKnownSourceCode();
+        log.info("🔄 Начало генерации графа зависимостей для AuditReport ID: {}", report.getId());
+
+        String jsonGraph = contractDependenciesGraphService.generateGraphJsonFromSource(sourceCode);
+        log.info("✅ Сгенерирован JSON граф: {}", jsonGraph);
+
+        SmartContract contract = report.getSmartContract();
+
+        if (contract == null) {
+            log.warn("⚠️ У AuditReport ID: {} не задан SmartContract — пропуск генерации графа", report.getId());
+            return;
+        }
+
+        // Криптовалюта
+        Cryptocurrency crypto = contract.getCryptocurrency();
+        if (crypto != null) {
+            ContractDependenciesGraph graph = crypto.getDependencyGraph() != null
+                    ? crypto.getDependencyGraph()
+                    : dataManager.create(ContractDependenciesGraph.class);
+            graph.setGraphJson(jsonGraph);
+            crypto.setDependencyGraph(graph);
+            log.info("📦 Обновлён/создан граф для Cryptocurrency ID: {}", crypto.getId());
+        }
+
+        // DeFi-протокол
+        DeFiProtocol defi = contract.getDeFiProtocol();
+        if (defi != null) {
+            ContractDependenciesGraph graph = defi.getDependencyGraph() != null
+                    ? defi.getDependencyGraph()
+                    : dataManager.create(ContractDependenciesGraph.class);
+            graph.setGraphJson(jsonGraph);
+            defi.setDependencyGraph(graph);
+            log.info("📦 Обновлён/создан граф для DeFiProtocol ID: {}", defi.getId());
+        }
+    }
 }

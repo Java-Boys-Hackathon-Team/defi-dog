@@ -25,17 +25,9 @@ public class ContractDependenciesGraphService {
 
     private final SourceCodeRepository sourceCodeRepository;
 
-
-    private ContractDependenciesGraphDto generateGraph(UUID protocolId, ProtocolKind protocolKind) {
-        Optional<SourceCode> sourceCodeOpt = sourceCodeRepository.findFirstSourceCodeByProtocolId(protocolId, protocolKind);
-
-        if (sourceCodeOpt.isEmpty() || sourceCodeOpt.get().getLastKnownSourceCode() == null) {
-            return new ContractDependenciesGraphDto(new ContractDependenciesGraphDto.Elements(List.of(), List.of()));
-        }
-
-        String sourceCode = sourceCodeOpt.get().getLastKnownSourceCode();
-
+    public String generateGraphJsonFromSource(String sourceCode) {
         String conversationId = UUID.randomUUID().toString();
+
         SystemMessage systemMessage = new SystemMessage("""
         Ты — помощник по анализу смарт-контрактов. У тебя есть несколько Solidity-файлов, содержащих смарт-контракты одного проекта (например, Uniswap, Aave, Compound и т.д.).
         """);
@@ -74,31 +66,14 @@ public class ContractDependenciesGraphService {
                 new UserMessage(userMessage)
         );
 
+        // Проверим, корректно ли мапится
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(jsonGraph, ContractDependenciesGraphDto.class);
+            mapper.readValue(jsonGraph, ContractDependenciesGraphDto.class);
+            return jsonGraph;
         } catch (Exception e) {
-            log.error("Ошибка при парсинге графа из OpenAI. Protocol ID: {}, ответ: {}", protocolId, jsonGraph, e);
-
-            // Возвращаем пустой граф
-            return new ContractDependenciesGraphDto(
-                    new ContractDependenciesGraphDto.Elements(
-                            List.of(), // пустой список узлов
-                            List.of()  // пустой список ребер
-                    )
-            );
-        }
-    }
-
-    public String generateGraphAsJson(UUID protocolId, ProtocolKind protocolKind) {
-        ContractDependenciesGraphDto graphDto = generateGraph(protocolId, protocolKind);
-
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(graphDto);
-        } catch (Exception e) {
-            log.error("Ошибка при сериализации графа в JSON. Protocol ID: {}", protocolId, e);
-            return "{\"elements\":{\"nodes\":[],\"edges\":[]}}"; // Возврат пустого графа как строка
+            log.error("Невалидный JSON-граф от OpenAI. Возвращаю пустой граф. Ошибка: {}", e.getMessage());
+            return "{\"elements\":{\"nodes\":[],\"edges\":[]}}";
         }
     }
 }
