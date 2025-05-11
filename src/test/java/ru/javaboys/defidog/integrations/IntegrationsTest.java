@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestPropertySource;
+import ru.javaboys.defidog.entity.Cryptocurrency;
+import ru.javaboys.defidog.entity.DeFiProtocol;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.blockchain.BlockchainService;
 import ru.javaboys.defidog.integrations.coinmarketcap.CoinMarketCapService;
-import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapIdMapResponseDto;
-import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapQuotesLatestResponseDto;
-import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseDto;
+import ru.javaboys.defidog.integrations.coinmarketcap.dto.*;
 import ru.javaboys.defidog.integrations.dedaub.DedaubService;
 import ru.javaboys.defidog.integrations.dedaub.dto.DecompilationDto;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
@@ -30,10 +30,14 @@ import ru.javaboys.defidog.integrations.telegram.TelegramBotService;
 import ru.javaboys.defidog.test_support.AuthenticatedAsAdmin;
 import ru.javaboys.defidog.utils.DotenvTestExecutionListener;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.List;
 import java.time.Duration;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -173,18 +177,117 @@ public class IntegrationsTest {
     @Test
     void shouldFetchCryptocurrencyQuotesLatest() {
         List<Integer> listSymbols = List.of(1839, 825, 1027, 4943, 3408, 5426);
-        //BNB - 1839
-        //USDT - 825
-        //ETH - 1027
-        //DAI - 4943
-        //USDC - 3408
-        //SOL - 5426
         CoinMarketCapQuotesLatestResponseDto response = coinMarketCapService.getCryptocurrencyQuotesLatestByIds(listSymbols);
 
         log.info("CoinMarketCap CryptocurrencyCryptocurrencyQuotesLatest response: {}", response);
 
         assertThat(response).isNotNull();
         assertThat(response.getData()).isNotEmpty();
+    }
+
+    @Test
+    void shouldFetchCryptocurrencyMetadata() {
+        List<Integer> listSymbols = List.of(2, 825, 1975, 3408, 4943, 11419);
+        CoinMarketCapMetadataDto response = coinMarketCapService.getCryptocurrencyMetadataByIds(listSymbols);
+
+        log.info("CoinMarketCap CryptocurrencyCryptocurrencyMetadata response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNotEmpty();
+    }
+
+    @Test
+    void shouldLoadCryptocurrencyLogo() {
+        List<Integer> listSymbols = List.of(2, 825, 1975, 3408, 4943, 11419);
+        CoinMarketCapMetadataDto response = coinMarketCapService.getCryptocurrencyMetadataByIds(listSymbols);
+
+        log.info("CoinMarketCap CryptocurrencyLogo response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNotEmpty();
+
+        for (Map.Entry<String, CryptocurrencyMetadataDto> cr : response.getData().entrySet()) {
+            updateCryptoLogoByDto(cr.getValue());
+        }
+    }
+
+    @Test
+    void shouldLoadDexLogo() {
+        List<Integer> listSymbols = List.of(7186, 8526, 7083, 4157, 5692, 7278);
+        CoinMarketCapMetadataDto response = coinMarketCapService.getCryptocurrencyMetadataByIds(listSymbols);
+
+        log.info("CoinMarketCap DexLogo response: {}", response);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNotEmpty();
+
+        for (Map.Entry<String, CryptocurrencyMetadataDto> cr : response.getData().entrySet()) {
+            updateDexLogoByDto(cr.getValue());
+        }
+    }
+
+    private void updateCryptoLogoByDto(CryptocurrencyMetadataDto dto) {
+
+        Integer cmcId = dto.getId();
+
+        // Загрузка существующей сущности по CMC_ID
+        Cryptocurrency crypto = dataManager.load(Cryptocurrency.class)
+                .query("select c from Cryptocurrency c where c.cmcId = :cmcId")
+                .parameter("cmcId", cmcId)
+                .optional()
+                .orElse(null);
+
+        if (crypto != null) {
+            String logoUrl = dto.getLogo();
+
+            try (InputStream in = new URL(logoUrl).openStream()) {
+                crypto.setLogoImage(in.readAllBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to download image: " + logoUrl, e);
+            }
+
+            // Сохраняем обновленную сущность
+            dataManager.save(crypto);
+        }
+    }
+
+    private void updateDexLogoByDto(CryptocurrencyMetadataDto dto) {
+
+        Integer cmcId = dto.getId();
+
+        // Загрузка существующей сущности по CMC_ID
+        DeFiProtocol dex = dataManager.load(DeFiProtocol.class)
+                .query("select c from DeFiProtocol c where c.cmcId = :cmcId")
+                .parameter("cmcId", cmcId)
+                .optional()
+                .orElse(null);
+
+        if (dex != null) {
+            String logoUrl = dto.getLogo();
+
+            try (InputStream in = new URL(logoUrl).openStream()) {
+                dex.setLogoImage(in.readAllBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to download image: " + logoUrl, e);
+            }
+
+            // Сохраняем обновленную сущность
+            dataManager.save(dex);
+        }
+    }
+
+    @Test
+    void shouldFetchDexScanCoinMarketCapIDMap() {
+        String response = coinMarketCapService.getDexScanCoinMarketCapIDMap();
+        log.info("CoinMarketCap DexScanCoinMarketCapIDMap response: {}", response);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    void shouldFetchExchangeCoinMarketCapIDMap() {
+        String response = coinMarketCapService.getExchangeCoinMarketCapIDMap();
+        log.info("CoinMarketCap ExchangeCoinMarketCapIDMap response: {}", response);
+        assertThat(response).isNotNull();
     }
 
     void shouldDecompileBytecodeSuccessfully() {

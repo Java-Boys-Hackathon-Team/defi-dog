@@ -4,15 +4,7 @@ import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,13 +31,18 @@ public class DeFiProtocol {
     @Id
     private UUID id;
 
+    @Column(name = "CMC_ID")
+    private Integer cmcId;
+
+    @Column(name = "LOGO_IMAGE")
+    private byte[] logoImage;
+
     @NotBlank
     @InstanceName
     @Comment("Название DeFi-протокола")
     @Column(name = "NAME")
     private String name;
 
-    @NotBlank
     @Comment("Описание назначения и функций протокола")
     @Column(name = "DESCRIPTION")
     private String description;
@@ -81,6 +78,22 @@ public class DeFiProtocol {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    public byte[] getLogoImage() {
+        return logoImage;
+    }
+
+    public void setLogoImage(byte[] logoImage) {
+        this.logoImage = logoImage;
+    }
+
+    public Integer getCmcId() {
+        return cmcId;
+    }
+
+    public void setCmcId(Integer cmcId) {
+        this.cmcId = cmcId;
+    }
 
     public SourceCode getSources() {
         return sources;

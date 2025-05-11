@@ -1,11 +1,14 @@
 package ru.javaboys.defidog.view.main;
 
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.Notifications;
@@ -20,6 +23,7 @@ import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaboys.defidog.crypto.CryptocurrencyService;
 import ru.javaboys.defidog.entity.BlockchainNetwork;
@@ -30,8 +34,10 @@ import ru.javaboys.defidog.entity.ProtocolKind;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 @Route("")
 @ViewController(id = "MainView")
@@ -73,6 +79,11 @@ public class MainView extends StandardMainView {
     }
 
     private void setColumnsDataGrids() {
+
+        cryptocurrencyGrid.addColumn(
+                new ComponentRenderer<>(item -> createImageComponent(item, Cryptocurrency::getLogoImage)))
+                .setHeader("Logo")
+                .setKey("logoImageColumn");
 
         cryptocurrencyGrid.addComponentColumn(crypto -> {
                     Span span = new Span(crypto.getName());
@@ -155,6 +166,11 @@ public class MainView extends StandardMainView {
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
+        dexGrid.addColumn(
+                new ComponentRenderer<>(item -> createImageComponent(item, DeFiProtocol::getLogoImage)))
+                .setHeader("Logo")
+                .setKey("logoImageColumn");
+
         dexGrid.addComponentColumn(dex -> {
                     Span span = new Span(dex.getName());
                     span.getStyle().set("font-weight", "bold");
@@ -178,6 +194,25 @@ public class MainView extends StandardMainView {
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
+    }
+
+    private <T> Component createImageComponent(T item, Function<T, byte[]> imageExtractor) {
+        byte[] logoImage = imageExtractor.apply(item);
+        return getComponent(logoImage);
+    }
+
+    @NotNull
+    private Component getComponent(byte[] logoImage) {
+        if (logoImage != null) {
+            // Convert byte array to a Base64 string
+            String base64Image = Base64.getEncoder().encodeToString(logoImage);
+            // Create an Image component with the Base64 string
+            Image image = new Image("data:image/png;base64," + base64Image, "Logo");
+            image.setWidth("30px"); // Set the desired width
+            image.setHeight("30px"); // Set the desired height
+            return image;
+        }
+        return new Image(); // Return an empty image if logoImage is null
     }
 
     @Subscribe("timer")
