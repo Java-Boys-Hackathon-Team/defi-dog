@@ -1,11 +1,15 @@
 package ru.javaboys.defidog.asyncjobs.service;
 
-import io.jmix.core.UnconstrainedDataManager;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.stereotype.Service;
+
+import io.jmix.core.UnconstrainedDataManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.javaboys.defidog.asyncjobs.dto.AuditReportResponseDto;
 import ru.javaboys.defidog.entity.AbiChangeSet;
 import ru.javaboys.defidog.entity.AuditReport;
@@ -14,9 +18,6 @@ import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceCodeChangeSet;
 import ru.javaboys.defidog.entity.SourceCodeSecurityScanJob;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
-
-import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -103,8 +104,6 @@ public class AuditReportService {
         report.setSmartContract(sourceCode.getSmartContracts().isEmpty()
                 ? null
                 : sourceCode.getSmartContracts().get(0)); // если связан
-        dataManager.save(report);
-
-        return report;
+        return dataManager.save(report);
     }
 }

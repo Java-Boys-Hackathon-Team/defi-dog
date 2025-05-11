@@ -1,5 +1,13 @@
 package ru.javaboys.defidog.entity;
 
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
 import io.jmix.core.metamodel.annotation.JmixEntity;
@@ -13,16 +21,8 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @JmixEntity
 @Table(name = "NOTIFICATION", indexes = {
@@ -41,20 +41,20 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Column(name = "HEADER")
+    private String header;
+
     @NotBlank
     @Column(name = "MESSAGE")
     @Lob
     private String message;
 
-    @NotBlank
-    @Comment("По каким каналам было отправлено уведомление")
-    @Column(name = "CHANNELS")
-    private String channels;
-
-    @NotNull
     @Comment("Было ли успешно отправлено уведомление")
-    @Column(name = "SENT")
-    private Boolean sent;
+    @Column(name = "EMAIL_SENT")
+    private Boolean emailSent;
+
+    @Column(name = "TELEGRAM_SENT")
+    private Boolean telegramSent;
 
     @CreatedBy
     @Column(name = "CREATED_BY")
@@ -71,4 +71,5 @@ public class Notification {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://setupTelegramView.title">
+    <layout>
+        <vbox spacing="false">
+            <nativeLabel text="Используйте данный QR-код для привязки аккаунта"
+                         themeNames="badge, normal, small"/>
+            <div width="100%" css="display: flex; justify-content: center; align-items: center; width: 100%;">
+                <image id="qrImage" width="200px" height="200px"/>
+            </div>
+        </vbox>
+    </layout>
+</view>
