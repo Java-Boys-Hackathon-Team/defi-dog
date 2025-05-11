@@ -54,6 +54,8 @@
                         </actionItem>
                     </items>
                 </dropdownButton>
+                <button id="inspectorButton"
+                        icon="MAGIC"/>
                 <button id="adminButton"
                         icon="COG_O"/>
                 <button id="settingsButton"

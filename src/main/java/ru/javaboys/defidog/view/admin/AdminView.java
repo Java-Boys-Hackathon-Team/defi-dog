@@ -61,7 +61,9 @@ public class AdminView extends StandardView {
 
         if (listViewClass != null) {
             StandardListView<?> listView = uiComponents.create(listViewClass);
-            ((DynamicListView) listView).activate();
+            if (listView instanceof DynamicListView) {
+                ((DynamicListView) listView).activate();
+            }
             contentBox.add(listView);
         }
     }
