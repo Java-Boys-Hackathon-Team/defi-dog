@@ -1,10 +1,7 @@
 package ru.javaboys.defidog.integrations.telegram.bot;
 
-import io.jmix.core.DataManager;
-import io.jmix.core.security.SystemAuthenticator;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -16,7 +13,16 @@ import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+
+import io.jmix.core.DataManager;
+import io.jmix.core.security.SystemAuthenticator;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import ru.javaboys.defidog.entity.ChannelEnum;
+import ru.javaboys.defidog.entity.CodeEntity;
 import ru.javaboys.defidog.entity.TelegramUser;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.telegram.TelegramUserService;
@@ -56,35 +62,52 @@ public class DeFiDogBot implements SpringLongPollingBot, LongPollingSingleThread
         systemAuthenticator.begin("admin");
 
         try {
-
-            TelegramUser upsertedTelegramUser = telegramUserService.upsertTelegramUser(update);
-
-            // TODO: Пример связывания пользователя бота и проекта
-            // TODO: УДАЛИТЬ ЭТОТ КОД ПОСЛЕ РАЗРАБОТКИ ПРОД ВЕРСИИ
-            var admin = dataManager.load(User.class)
-                    .query("e.username = ?1", "admin")
-                    .one();
-
-            admin.setTelegramUser(upsertedTelegramUser);
-            dataManager.save(admin);
-
-            if (update.hasMessage() && update.getMessage().hasText()) {
-
-                String messageText = update.getMessage().getText();
-                long chatId = update.getMessage().getChatId();
-
-                SendMessage message = SendMessage
-                        .builder()
-                        .chatId(chatId)
-                        .text(messageText)
-                        .build();
-
-                telegramClient.execute(message);
+            String input = update.getMessage().getText();
+            if (input.startsWith("/start")) {
+                processSetup(update);
             }
 
         } finally {
             systemAuthenticator.end();
         }
+    }
+
+    private void processSetup(Update update) throws TelegramApiException {
+
+        String input = update.getMessage().getText();
+        String code = input.substring("/start".length()).trim();
+
+        Optional<CodeEntity> codeEntityOptional = dataManager.load(CodeEntity.class)
+                .query("select c from CodeEntity c where c.type = :type and c.code = :code order by c.createdDate desc")
+                .parameter("code", code)
+                .parameter("type", ChannelEnum.TELEGRAM.name())
+                .optional();
+
+        if (codeEntityOptional.isEmpty()) {
+            sendHtmlMessage(update, "Привязка не удалась, попробуйте еще раз");
+            return;
+        }
+
+        TelegramUser upsertedTelegramUser = telegramUserService.upsertTelegramUser(update);
+
+        CodeEntity codeEntity = codeEntityOptional.get();
+        User user = codeEntity.getUser();
+
+        user.setTelegramUser(upsertedTelegramUser);
+        dataManager.save(user);
+
+        sendHtmlMessage(update, "<b>Telegram успешно привязан.</b>\nТеперь вы будете получать все важные уведомления на ваш telegram аккаунт");
+    }
+
+    private void sendHtmlMessage(Update update, String text) throws TelegramApiException {
+        long chatId = update.getMessage().getChatId();
+        SendMessage message = SendMessage
+                .builder()
+                .chatId(chatId)
+                .parseMode("HTML")
+                .text(text)
+                .build();
+        telegramClient.execute(message);
     }
 
     @AfterBotRegistration

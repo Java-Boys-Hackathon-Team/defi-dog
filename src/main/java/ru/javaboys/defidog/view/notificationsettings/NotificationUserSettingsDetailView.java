@@ -1,11 +1,11 @@
 package ru.javaboys.defidog.view.notificationsettings;
 
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -18,6 +18,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -30,16 +31,15 @@ import io.jmix.core.querycondition.PropertyCondition;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.view.DialogWindow;
 import io.jmix.flowui.view.EditedEntityContainer;
 import io.jmix.flowui.view.StandardDetailView;
-import io.jmix.flowui.view.StandardOutcome;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.Supply;
 import io.jmix.flowui.view.Target;
-import io.jmix.flowui.view.View;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
@@ -47,8 +47,9 @@ import ru.javaboys.defidog.entity.Cryptocurrency;
 import ru.javaboys.defidog.entity.DeFiProtocol;
 import ru.javaboys.defidog.entity.NotificationSettings;
 import ru.javaboys.defidog.entity.User;
-import ru.javaboys.defidog.view.cryptocurrency.CryptocurrencyListView;
+import ru.javaboys.defidog.event.UserChannelUpdatedEvent;
 import ru.javaboys.defidog.view.main.MainView;
+import ru.javaboys.defidog.view.settings.SettingsView;
 
 @Route(value = "notification-settings", layout = MainView.class)
 @ViewController(id = "NotificationUserSettings.detail")
@@ -67,6 +68,9 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
 
     @Autowired
     private DataManager dataManager;
+
+    @Autowired
+    private ViewNavigators viewNavigators;
 
     @ViewComponent
     private HorizontalLayout currencyHeader;
@@ -101,8 +105,18 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
     @ViewComponent
     private HorizontalLayout detailActions;
 
+    @ViewComponent
+    private HorizontalLayout channelsNullWarning;
+
+    @ViewComponent
+    private TextField email;
+
+    @ViewComponent
+    private TextField telegram;
+
     private List<Cryptocurrency> initCryptocurrencies;
     private List<DeFiProtocol> initProtocols;
+    private DialogWindow<?> currentDialog;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -118,6 +132,15 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
                 .parameter("username", username)
                 .one();
 
+        email.setValue(user.getEmail());
+        if (user.getTelegramUser() != null) {
+            telegram.setValue(user.getTelegramUser().getTelegramUserName());
+        }
+
+        if (StringUtils.isBlank(user.getEmail()) && user.getTelegramUser() == null) {
+            channelsNullWarning.setVisible(true);
+        }
+
         NotificationSettings entity = dataManager.load(NotificationSettings.class)
                 .condition(PropertyCondition.create("user", PropertyCondition.Operation.EQUAL, user))
                 .optional()
@@ -130,6 +153,29 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
 
         initCryptocurrencies = ListUtils.emptyIfNull(entity.getSubscribedCryptocurrencies());
         initProtocols = ListUtils.emptyIfNull(entity.getSubscribedDeFiProtocols());
+    }
+
+    @Subscribe(id = "editEmail", subject = "clickListener")
+    public void onEditEmailAction(final ClickEvent<JmixButton> event) {
+        currentDialog = dialogWindows.view(this, "SetupEmailView")
+                .withAfterCloseListener(afterCloseEvent -> {
+                    viewNavigators.view(this, SettingsView.class).navigate();
+                })
+                .open();
+    }
+
+    @EventListener
+    public void onCloseDialogsAndNavigate(UserChannelUpdatedEvent event) {
+        if (currentDialog != null) {
+            currentDialog.close();
+            currentDialog = null;
+        }
+    }
+
+    @Subscribe(id = "editTelegram", subject = "clickListener")
+    public void onEditTelegramAction(final ClickEvent<JmixButton> event) {
+        dialogWindows.view(this, "SetupTelegramView")
+                .open();
     }
 
     /*

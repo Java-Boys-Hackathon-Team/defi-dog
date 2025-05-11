@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://setupEmailView.title">
+    <layout>
+        <vbox>
+            <hbox spacing="false">
+                <emailField id="emailField"
+                            errorMessage="Введите валидный email адрес"
+                            placeholder="Введите адрес"
+                            width="20em"/>
+                <button id="setupButton" icon="CHECK" visible="true"/>
+                <button id="clearButton" icon="CLOSE" visible="false"/>
+            </hbox>
+            <hbox id="codeLayout" spacing="false" visible="false">
+                <textField id="codeField"
+                           placeholder="Введите проверочный код из письма"
+                           width="20em"/>
+                <button id="codeConfirmButton" icon="CHECK"/>
+            </hbox>
+        </vbox>
+    </layout>
+</view>

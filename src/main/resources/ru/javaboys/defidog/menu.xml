@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
     <item view="NotificationSettings.list" title="msg://ru.javaboys.defidog.view.notificationsettings/notificationSettingsListView.title"/>
+    <item view="SetupEmailView" title="msg://ru.javaboys.defidog.view.setupemail/setupEmailView.title"/>
+    <item view="SetupTelegramView" title="msg://ru.javaboys.defidog.view.setuptelegram/setupTelegramView.title"/>
 </menu-config>
