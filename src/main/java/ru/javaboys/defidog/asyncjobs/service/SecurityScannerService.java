@@ -1,25 +1,6 @@
 package ru.javaboys.defidog.asyncjobs.service;
 
 
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.model.Bind;
-import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.api.model.Volume;
-import io.jmix.core.UnconstrainedDataManager;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Service;
-import ru.javaboys.defidog.asyncjobs.dto.ScanResult;
-import ru.javaboys.defidog.asyncjobs.util.LogContainerCallback;
-import ru.javaboys.defidog.entity.ScanTool;
-import ru.javaboys.defidog.entity.SecurityScanJobStatus;
-import ru.javaboys.defidog.entity.SourceCode;
-import ru.javaboys.defidog.entity.SourceCodeChangeSet;
-import ru.javaboys.defidog.entity.SourceCodeSecurityScanJob;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +10,27 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Service;
+
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.model.Bind;
+import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.Volume;
+
+import io.jmix.core.UnconstrainedDataManager;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import ru.javaboys.defidog.asyncjobs.dto.ScanResult;
+import ru.javaboys.defidog.asyncjobs.util.LogContainerCallback;
+import ru.javaboys.defidog.entity.ScanTool;
+import ru.javaboys.defidog.entity.SecurityScanJobStatus;
+import ru.javaboys.defidog.entity.SourceCode;
+import ru.javaboys.defidog.entity.SourceCodeChangeSet;
+import ru.javaboys.defidog.entity.SourceCodeSecurityScanJob;
 
 @Slf4j
 @Service
@@ -61,7 +63,7 @@ public class SecurityScannerService {
         SourceCodeSecurityScanJob job = dataManager.create(SourceCodeSecurityScanJob.class);
         job.setSourceCodeChangeSet(changeSet);
         job.setScanTool(scanTool);
-        job.setStatus(result.getStatus().getId());
+        job.setStatus(result.getStatus());
         job.setRawOutput(result.getRawOutput() != null ? result.getRawOutput() : result.getErrorMessage());
         job.setExecutionLog(result.getExecutionLog());
         job.setCreatedDate(OffsetDateTime.now());
