@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="defi-dog">
+        <createTable tableName="SCAN_TOOL_SOURCE_CODE_LINK">
+            <column name="SCAN_TOOL_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SCAN_TOOL_SOURCE_CODE_LINK"/>
+            </column>
+            <column name="SOURCE_CODE_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_SCAN_TOOL_SOURCE_CODE_LINK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="defi-dog">
+        <addForeignKeyConstraint baseColumnNames="SCAN_TOOL_ID" baseTableName="SCAN_TOOL_SOURCE_CODE_LINK" constraintName="FK_SCATOOSOUCOD_ON_SCAN_TOOL"
+                                 referencedColumnNames="ID" referencedTableName="SCAN_TOOL"/>
+    </changeSet>
+    <changeSet id="3" author="defi-dog">
+        <addForeignKeyConstraint baseColumnNames="SOURCE_CODE_ID" baseTableName="SCAN_TOOL_SOURCE_CODE_LINK" constraintName="FK_SCATOOSOUCOD_ON_SOURCE_CODE"
+                                 referencedColumnNames="ID" referencedTableName="SOURCE_CODE"/>
+    </changeSet>
+    <changeSet id="5" author="defi-dog">
+        <dropColumn columnName="source_code_id" tableName="scan_tool"/>
+    </changeSet>
+</databaseChangeLog>
