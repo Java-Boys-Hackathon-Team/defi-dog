@@ -27,6 +27,9 @@
             <textField id="priceField" property="price"/>
             <textField id="marketCapField" property="marketCap"/>
             <textField id="totalSupplyField" property="totalSupply"/>
+            <textField property="cmcId"/>
+            <textField property="cmcRank"/>
+            <textField property="percentChange24h"/>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

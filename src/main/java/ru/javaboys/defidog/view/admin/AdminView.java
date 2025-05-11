@@ -1,10 +1,16 @@
 package ru.javaboys.defidog.view.admin;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.view.StandardListView;
@@ -36,19 +42,35 @@ public class AdminView extends StandardView {
     @Autowired
     private UiComponents uiComponents;
 
+    private Map<String, Tab> tabs = new HashMap<>();
+
     @Subscribe
     public void onInit(InitEvent event) {
         tabSheet.addSelectedChangeListener(e -> {
-            e.getSelectedTab().getId()
-                    .ifPresent(this::loadTabContent);
+            if (e.getSelectedTab() != null) {
+                e.getSelectedTab().getId()
+                        .ifPresent(this::loadTabContent);
+            }
         });
 
-        loadTabContent("sources");
+        for (int i = 0; i < tabSheet.getTabCount(); i++) {
+            Tab tab = tabSheet.getTabAt(i);
+            if (tab.getId().isPresent()) {
+                tabs.put(tab.getId().get(), tab);
+            }
+        }
+
+        String tabId = Optional.ofNullable(VaadinSession.getCurrent().getAttribute("lastKnownTabId"))
+                .orElse("sources")
+                .toString();
+        tabSheet.setSelectedTab(tabs.get(tabId));
+        loadTabContent(tabId);
     }
 
     private void loadTabContent(String tabId) {
         contentBox.removeAll();
 
+        VaadinSession.getCurrent().setAttribute("lastKnownTabId", tabId);
         Class<? extends StandardListView<?>> listViewClass = switch (tabId) {
             case "sources" -> SourceCodeListView.class;
             case "tools" -> ScanToolListView.class;

@@ -49,8 +49,6 @@ dependencies {
 
     implementation 'io.jmix.email:jmix-email-starter'
     implementation 'io.jmix.email:jmix-email-flowui-starter'
-    implementation 'io.jmix.quartz:jmix-quartz-starter'
-    implementation 'io.jmix.quartz:jmix-quartz-flowui-starter'
     implementation "com.google.zxing:core:3.5.3"
     implementation 'com.google.zxing:javase:3.5.2'
 

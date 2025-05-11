@@ -25,6 +25,7 @@
             <textField id="nameField" property="name"/>
             <textField id="descriptionField" property="description"/>
             <textField id="officialSiteField" property="officialSite"/>
+            <textField id="cmcId" property="cmcId"/>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
