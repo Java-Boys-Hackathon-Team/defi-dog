@@ -57,6 +57,11 @@ public class SourceCodeSecurityScanJob {
     @Lob
     private String rawOutput;
 
+    @Comment("Подробная информация о запуске docker-контейнера сканера")
+    @Column(name = "EXECUTION_LOG")
+    @Lob
+    private String executionLog;
+
     @JoinColumn(name = "AUDIT_REPORT_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private AuditReport auditReport;
