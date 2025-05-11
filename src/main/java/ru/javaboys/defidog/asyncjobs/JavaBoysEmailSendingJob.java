@@ -1,19 +1,19 @@
 package ru.javaboys.defidog.asyncjobs;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import io.jmix.email.Emailer;
 
-public class JavaBoysEmailSendingJob implements Job {
+@Service
+public class JavaBoysEmailSendingJob  {
 
     @Autowired
     private Emailer emailer;
 
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    @Scheduled(fixedRate = 60 * 1000)
+    public void execute() {
         emailer.processQueuedEmails();
     }
 
