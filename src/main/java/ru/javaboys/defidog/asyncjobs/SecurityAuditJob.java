@@ -66,6 +66,7 @@ public class SecurityAuditJob {
             }
 
             AuditReport report = auditReportService.generateReport(changeSet);
+
             List<Notification> notifications = notificationService.buildNotifications(report);
             if (CollectionUtils.isNotEmpty(notifications)) {
                 dataManager.saveAll(notifications);

@@ -21,38 +21,36 @@ public class NotificationService {
     private final UnconstrainedDataManager dataManager;
 
     public List<Notification> buildNotifications(AuditReport report) {
-        log.info("Starting to build notifications for audit report: {}", report.getId());
+        log.info("Начинаем создание уведомлений для аудиторского отчета: {}", report.getId());
         SmartContract smartContract = report.getSmartContract();
         if (smartContract == null) {
-            log.info("No smart contract found for audit report: {}, skipping notification creation", report.getId());
+            log.info("Не найден смарт-контракт для аудиторского отчета: {}, пропускаем создание уведомлений", report.getId());
             return List.of();
         }
 
         List<User> users = null;
         if (smartContract.getCryptocurrency() != null) {
-            log.info("Finding users subscribed to cryptocurrency: {}", smartContract.getCryptocurrency().getName());
+            log.info("Поиск пользователей, подписанных на криптовалюту: {}", smartContract.getCryptocurrency().getName());
             users = dataManager.load(User.class)
-                    .query("select distinct n.user from NotificationSettings n " +
-                            "where :currency in(n.subscribedCryptocurrencies)")
+                    .query("select distinct n.user from NotificationSettings n join n.subscribedCryptocurrencies c where c = :currency")
                     .parameter("currency", smartContract.getCryptocurrency())
                     .list();
         } else if (smartContract.getDeFiProtocol() != null) {
-            log.info("Finding users subscribed to DeFi protocol: {}", smartContract.getDeFiProtocol().getName());
+            log.info("Поиск пользователей, подписанных на DeFi протокол: {}", smartContract.getDeFiProtocol().getName());
             users = dataManager.load(User.class)
-                    .query("select distinct n.user from NotificationSettings n " +
-                            "where :protocol in(n.subscribedDeFiProtocols)")
+                    .query("select distinct n.user from NotificationSettings n join n.subscribedDeFiProtocols p where p = :protocol")
                     .parameter("protocol", smartContract.getDeFiProtocol())
                     .list();
         } else {
-            log.info("Smart contract has neither cryptocurrency nor DeFi protocol assigned");
+            log.info("Смарт-контракт не имеет ни криптовалюты, ни DeFi протокола");
         }
 
         if (CollectionUtils.isEmpty(users)) {
-            log.info("No users found for notification about audit report: {}", report.getId());
+            log.info("Не найдено пользователей для уведомления об аудиторском отчете: {}", report.getId());
             return List.of();
         }
 
-        log.info("Found {} users to notify about audit report: {}", users.size(), report.getId());
+        log.info("Найдено {} пользователей для уведомления об аудиторском отчете: {}", users.size(), report.getId());
         List<Notification> notifications = users.stream()
                 .map(u -> {
                     Notification n = dataManager.create(Notification.class);
@@ -70,7 +68,7 @@ public class NotificationService {
                 .filter(n -> n.getEmailSent() != null || n.getTelegramSent() != null)
                 .toList();
 
-        log.info("Created {} notifications for audit report: {}", notifications.size(), report.getId());
+        log.info("Создано {} уведомлений для аудиторского отчета: {}", notifications.size(), report.getId());
         return notifications;
     }
 }
