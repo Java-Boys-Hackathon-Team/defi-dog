@@ -64,6 +64,8 @@
             </hbox>
         </navigationBar>
         <initialLayout>
+            <vbox id="logoLayout" alignItems="CENTER" justifyContent="CENTER">
+            </vbox>
             <hbox spacing="true" alignItems="CENTER">
                 <comboBox id="blockchainNetworkComboBox"
                           itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"/>

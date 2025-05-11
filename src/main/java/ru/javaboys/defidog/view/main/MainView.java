@@ -6,6 +6,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Map;
 import java.util.UUID;
 
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Layout;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -71,6 +74,9 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private DataGrid<DeFiProtocol> dexGrid;
 
+    @ViewComponent
+    private VerticalLayout logoLayout;
+
     @Subscribe
     public void onInit(InitEvent event) {
         blockchainNetworkComboBox.setValue(BlockchainNetwork.ETHEREUM);
@@ -79,6 +85,10 @@ public class MainView extends StandardMainView {
         setColumnsDataGrids();
         cryptocurrencyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         dexGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
+        Image logo = new Image("icons/icon.png", "My App Logo");
+        logo.setWidth("250px");
+        logoLayout.add(logo);
     }
 
     private void setColumnsDataGrids() {
