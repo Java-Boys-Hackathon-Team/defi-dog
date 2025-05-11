@@ -34,7 +34,6 @@ import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.view.DialogWindow;
 import io.jmix.flowui.view.EditedEntityContainer;
 import io.jmix.flowui.view.StandardDetailView;
 import io.jmix.flowui.view.Subscribe;
@@ -50,6 +49,7 @@ import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.event.UserChannelUpdatedEvent;
 import ru.javaboys.defidog.view.main.MainView;
 import ru.javaboys.defidog.view.settings.SettingsView;
+import ru.javaboys.defidog.viewutils.ViewComponentsUtils;
 
 @Route(value = "notification-settings", layout = MainView.class)
 @ViewController(id = "NotificationUserSettings.detail")
@@ -211,10 +211,9 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
                 LumoUtility.BorderColor.CONTRAST_10,
                 LumoUtility.BorderRadius.MEDIUM);
 
-        Image image = uiComponents.create(Image.class);
-        image.setWidth("50px");
-        image.setHeight("50px");
-        image.setSrc("/icons/currency-default-transparent.png");
+        Image image = (Image) ViewComponentsUtils.createImageComponent(currency, Cryptocurrency::getLogoImage);
+        image.setWidth("45px");
+        image.setHeight("45px");
 
         VerticalLayout infoLayout = new VerticalLayout();
         infoLayout.setPadding(false);
@@ -268,10 +267,9 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
                 LumoUtility.BorderColor.CONTRAST_10,
                 LumoUtility.BorderRadius.MEDIUM);
 
-        Image image = uiComponents.create(Image.class);
-        image.setWidth("50px");
-        image.setHeight("50px");
-        image.setSrc("/icons/protocol-default-transparent.png");
+        Image image = (Image) ViewComponentsUtils.createImageComponent(protocol, DeFiProtocol::getLogoImage);
+        image.setWidth("45px");
+        image.setHeight("45px");
 
         VerticalLayout infoLayout = new VerticalLayout();
         infoLayout.setPadding(false);
