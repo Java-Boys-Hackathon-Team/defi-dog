@@ -1,9 +1,7 @@
 package ru.javaboys.defidog.view.notificationsettings;
 
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,14 +30,11 @@ import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.view.DialogWindow;
 import io.jmix.flowui.view.EditedEntityContainer;
 import io.jmix.flowui.view.StandardDetailView;
-import io.jmix.flowui.view.StandardOutcome;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.Supply;
 import io.jmix.flowui.view.Target;
-import io.jmix.flowui.view.View;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
@@ -47,8 +42,8 @@ import ru.javaboys.defidog.entity.Cryptocurrency;
 import ru.javaboys.defidog.entity.DeFiProtocol;
 import ru.javaboys.defidog.entity.NotificationSettings;
 import ru.javaboys.defidog.entity.User;
-import ru.javaboys.defidog.view.cryptocurrency.CryptocurrencyListView;
 import ru.javaboys.defidog.view.main.MainView;
+import ru.javaboys.defidog.viewutils.ViewComponentsUtils;
 
 @Route(value = "notification-settings", layout = MainView.class)
 @ViewController(id = "NotificationUserSettings.detail")
@@ -165,10 +160,9 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
                 LumoUtility.BorderColor.CONTRAST_10,
                 LumoUtility.BorderRadius.MEDIUM);
 
-        Image image = uiComponents.create(Image.class);
-        image.setWidth("50px");
-        image.setHeight("50px");
-        image.setSrc("/icons/currency-default-transparent.png");
+        Image image = (Image) ViewComponentsUtils.createImageComponent(currency, Cryptocurrency::getLogoImage);
+        image.setWidth("45px");
+        image.setHeight("45px");
 
         VerticalLayout infoLayout = new VerticalLayout();
         infoLayout.setPadding(false);
@@ -222,10 +216,9 @@ public class NotificationUserSettingsDetailView extends StandardDetailView<Notif
                 LumoUtility.BorderColor.CONTRAST_10,
                 LumoUtility.BorderRadius.MEDIUM);
 
-        Image image = uiComponents.create(Image.class);
-        image.setWidth("50px");
-        image.setHeight("50px");
-        image.setSrc("/icons/protocol-default-transparent.png");
+        Image image = (Image) ViewComponentsUtils.createImageComponent(protocol, DeFiProtocol::getLogoImage);
+        image.setWidth("45px");
+        image.setHeight("45px");
 
         VerticalLayout infoLayout = new VerticalLayout();
         infoLayout.setPadding(false);
