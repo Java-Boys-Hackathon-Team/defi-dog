@@ -78,9 +78,13 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private VerticalLayout logoLayout;
 
+    @ViewComponent
+    private Button homeButton;
+
     @Subscribe
     public void onInit(InitEvent event) {
         blockchainNetworkComboBox.setValue(BlockchainNetwork.ETHEREUM);
+        blockchainNetworkComboBox.setItemLabelGenerator(BlockchainNetwork::toString);
         setVisiblesGrid(true, false);
 
         setColumnsDataGrids();
@@ -90,6 +94,11 @@ public class MainView extends StandardMainView {
         Image logo = new Image("icons/lader.png", "DeFi App Logo");
         logo.setWidth("400px");
         logoLayout.add(logo);
+
+        Image  home = new Image("icons/defidog_text.png", "DeFi App Home");
+        home.setWidth("100px");
+        homeButton.setIcon(home);
+        homeButton.setWidth("100");
     }
 
     private void setColumnsDataGrids() {
