@@ -48,8 +48,11 @@
             </actions>
             <columns resizable="true">
                 <column property="name" header="msg://cryptocurrenciesDataGrid.name"/>
+                <column property="cmcId" header="msg://cryptocurrenciesDataGrid.cmcId"/>
+                <column property="cmcRank" header="msg://cryptocurrenciesDataGrid.cmcRank"/>
                 <column property="ticker" header="msg://cryptocurrenciesDataGrid.ticker"/>
                 <column property="price" header="msg://cryptocurrenciesDataGrid.price"/>
+                <column property="percentChange24h" header="msg://cryptocurrenciesDataGrid.percentChange24h"/>
                 <column property="marketCap" header="msg://cryptocurrenciesDataGrid.marketCap"/>
                 <column property="totalSupply" header="msg://cryptocurrenciesDataGrid.totalSupply"/>
             </columns>

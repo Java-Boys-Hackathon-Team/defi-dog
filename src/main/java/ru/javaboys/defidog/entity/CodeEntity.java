@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.annotation.CreatedDate;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,11 +17,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 @JmixEntity
 @Table(name = "CODE_ENTITY", indexes = {
         @Index(name = "IDX_CODE_ENTITY_USER", columnList = "USER_ID")
 })
+@Getter
+@Setter
 @Entity
 public class CodeEntity {
     @JmixGeneratedValue
@@ -28,6 +33,7 @@ public class CodeEntity {
     @Id
     private UUID id;
 
+    @InstanceName
     @NotNull
     @Column(name = "CODE", length = 8)
     private String code;
@@ -53,35 +59,4 @@ public class CodeEntity {
         this.type = type == null ? null : type.getId();
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public OffsetDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(OffsetDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
 }

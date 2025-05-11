@@ -48,6 +48,7 @@
             </actions>
             <columns resizable="true">
                 <column property="name" header="msg://deFiProtocolsDataGrid.name"/>
+                <column property="cmcId" header="msg://deFiProtocolsDataGrid.cmcId"/>
                 <column property="description" header="msg://deFiProtocolsDataGrid.description"/>
                 <column property="officialSite" header="msg://deFiProtocolsDataGrid.officialSite"/>
             </columns>

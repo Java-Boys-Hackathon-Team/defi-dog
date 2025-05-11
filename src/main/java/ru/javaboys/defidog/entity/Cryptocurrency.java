@@ -82,40 +82,8 @@ public class Cryptocurrency {
     @Column(name = "CREATED_DATE")
     private OffsetDateTime createdDate;
 
-
-    public Integer getCmcRank() {
-        return cmcRank;
-    }
-
-    public void setCmcRank(Integer cmcRank) {
-        this.cmcRank = cmcRank;
-    }
-
-    public Integer getCmcId() {
-        return cmcId;
-    }
-
-    public void setCmcId(Integer cmcId) {
-        this.cmcId = cmcId;
-    }
-
     @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private ContractDependenciesGraph dependencyGraph;
 
-    public byte[] getLogoImage() {
-        return logoImage;
-    }
-
-    public void setLogoImage(byte[] logoImage) {
-        this.logoImage = logoImage;
-    }
-
-    public BigDecimal getPercentChange24h() {
-        return percentChange24h;
-    }
-
-    public void setPercentChange24h(BigDecimal percentChange24h) {
-        this.percentChange24h = percentChange24h;
-    }
 }
