@@ -1,6 +1,7 @@
 package ru.javaboys.defidog.integrations.coinmarketcap;
 
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapIdMapResponseDto;
+import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapMetadataDto;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapQuotesLatestResponseDto;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseDto;
 
@@ -10,6 +11,9 @@ public interface CoinMarketCapService {
     CoinMarketCapResponseDto getCryptocurrencyListingsLatest();
 
     CoinMarketCapIdMapResponseDto getCryptocurrencyCoinMarketCapIDMap();
-
     CoinMarketCapQuotesLatestResponseDto getCryptocurrencyQuotesLatestByIds(List<Integer> ids);
+    CoinMarketCapMetadataDto getCryptocurrencyMetadataByIds(List<Integer> ids);
+
+    String getDexScanCoinMarketCapIDMap();
+    String getExchangeCoinMarketCapIDMap();
 }

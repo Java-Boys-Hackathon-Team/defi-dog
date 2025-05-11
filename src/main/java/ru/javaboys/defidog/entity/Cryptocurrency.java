@@ -30,6 +30,9 @@ public class Cryptocurrency {
     @Id
     private UUID id;
 
+    @Column(name = "LOGO_IMAGE")
+    private byte[] logoImage;
+
     @Column(name = "CMC_ID")
     private Integer cmcId;
 
@@ -99,6 +102,14 @@ public class Cryptocurrency {
     @JoinColumn(name = "DEPENDENCY_GRAPH_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private ContractDependenciesGraph dependencyGraph;
+
+    public byte[] getLogoImage() {
+        return logoImage;
+    }
+
+    public void setLogoImage(byte[] logoImage) {
+        this.logoImage = logoImage;
+    }
 
     public BigDecimal getPercentChange24h() {
         return percentChange24h;

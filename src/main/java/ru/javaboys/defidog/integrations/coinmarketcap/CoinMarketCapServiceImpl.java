@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapIdMapResponseDto;
+import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapMetadataDto;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapQuotesLatestResponseDto;
 import ru.javaboys.defidog.integrations.coinmarketcap.dto.CoinMarketCapResponseDto;
 
@@ -45,15 +46,6 @@ public class CoinMarketCapServiceImpl implements CoinMarketCapService {
     public CoinMarketCapQuotesLatestResponseDto getCryptocurrencyQuotesLatestByIds(List<Integer> ids) {
         String idsParam = ids.stream().map(Object::toString).collect(Collectors.joining(","));
 
-//        String re = coinmarketcapClient.get()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/v2/cryptocurrency/quotes/latest")
-//                        .queryParam("id", idsParam)
-//                        .build())
-//                .accept(MediaType.APPLICATION_JSON)
-//                .retrieve()
-//                .body(String.class);
-
         return coinmarketcapClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v2/cryptocurrency/quotes/latest")
@@ -62,5 +54,37 @@ public class CoinMarketCapServiceImpl implements CoinMarketCapService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(CoinMarketCapQuotesLatestResponseDto.class);
+    }
+
+    @Override
+    public CoinMarketCapMetadataDto getCryptocurrencyMetadataByIds(List<Integer> ids) {
+        String idsParam = ids.stream().map(Object::toString).collect(Collectors.joining(","));
+
+        return coinmarketcapClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v2/cryptocurrency/info")
+                        .queryParam("id", idsParam)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(CoinMarketCapMetadataDto.class);
+    }
+
+    @Override
+    public String getDexScanCoinMarketCapIDMap() {
+        return coinmarketcapClient.get()
+                .uri("/v4/dex/networks/list")
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(String.class);
+    }
+
+    @Override
+    public String getExchangeCoinMarketCapIDMap() {
+        return coinmarketcapClient.get()
+                .uri("/v1/exchange/map")
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(String.class);
     }
 }

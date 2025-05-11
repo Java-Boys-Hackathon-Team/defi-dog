@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="defi-dog">
+        <update tableName="PROTOCOL">
+            <column name="CMC_ID" valueNumeric="7186"/>
+            <where>ID = '3d308c6c-c7b6-4f44-9f74-ff13c062a99e'</where>
+        </update>
+        <update tableName="PROTOCOL">
+            <column name="CMC_ID" valueNumeric="8526"/>
+            <where>ID = 'dbb9f012-7b52-490b-a8d2-b0146f33cb8b'</where>
+        </update>
+        <update tableName="PROTOCOL">
+            <column name="CMC_ID" valueNumeric="7083"/>
+            <where>ID = '9272cf36-bd27-414e-a61c-1f23c31bb255'</where>
+        </update>
+        <update tableName="PROTOCOL">
+            <column name="CMC_ID" valueNumeric="4157"/>
+            <where>ID = '257a3b18-3706-4e94-b226-174e87917362'</where>
+        </update>
+        <update tableName="PROTOCOL">
+            <column name="CMC_ID" valueNumeric="5692"/>
+            <where>ID = '641bfbfd-5d87-4ccf-a723-8325ec2a4642'</where>
+        </update>
+        <update tableName="PROTOCOL">
+            <column name="CMC_ID" valueNumeric="7278"/>
+            <where>ID = '69e07e8c-17f6-48c4-84a0-82ae4df5b5ce'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
