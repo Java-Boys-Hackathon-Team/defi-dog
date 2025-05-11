@@ -86,8 +86,8 @@ public class MainView extends StandardMainView {
         cryptocurrencyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         dexGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
-        Image logo = new Image("icons/icon.png", "My App Logo");
-        logo.setWidth("250px");
+        Image logo = new Image("icons/lader.png", "DeFi App Logo");
+        logo.setWidth("400px");
         logoLayout.add(logo);
     }
 
