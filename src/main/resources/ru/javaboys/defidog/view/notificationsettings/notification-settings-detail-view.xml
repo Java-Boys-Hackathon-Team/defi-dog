@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://notificationSettingsDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="notificationSettingsDc"
+                  class="ru.javaboys.defidog.entity.NotificationSettings">
+            <fetchPlan extends="_base">
+                <property name="subscribedCryptocurrencies" fetchPlan="_base"/>
+                <property name="subscribedDeFiProtocols" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="notificationSettingsDl"/>
+            <collection id="subscribedCryptocurrenciesDc" property="subscribedCryptocurrencies"/>
+            <collection id="subscribedDeFiProtocolsDc" property="subscribedDeFiProtocols"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="notificationSettingsDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+                <responsiveStep minWidth="40em" columns="2"/>
+            </responsiveSteps>
+        </formLayout>
+        <h4 text="msg://ru.javaboys.defidog.entity/NotificationSettings.subscribedCryptocurrencies"/>
+        <hbox id="buttonsPanel1" classNames="buttons-panel">
+            <button action="subscribedCryptocurrenciesDataGrid.addAction"/>
+            <button action="subscribedCryptocurrenciesDataGrid.excludeAction"/>
+        </hbox>
+        <dataGrid id="subscribedCryptocurrenciesDataGrid" dataContainer="subscribedCryptocurrenciesDc" width="100%" minHeight="20em">
+            <actions>
+                <action id="addAction" type="list_add"/>
+                <action id="excludeAction" type="list_exclude"/>
+            </actions>
+            <columns>
+                <column property="name"/>
+                <column property="cmcId"/>
+                <column property="cmcRank"/>
+                <column property="ticker"/>
+                <column property="price"/>
+                <column property="marketCap"/>
+                <column property="totalSupply"/>
+            </columns>
+        </dataGrid>
+        <h4 text="msg://ru.javaboys.defidog.entity/NotificationSettings.subscribedDeFiProtocols"/>
+        <hbox id="buttonsPanel2" classNames="buttons-panel">
+            <button action="subscribedDeFiProtocolsDataGrid.addAction"/>
+            <button action="subscribedDeFiProtocolsDataGrid.excludeAction"/>
+        </hbox>
+        <dataGrid id="subscribedDeFiProtocolsDataGrid" dataContainer="subscribedDeFiProtocolsDc" width="100%" minHeight="20em">
+            <actions>
+                <action id="addAction" type="list_add"/>
+                <action id="excludeAction" type="list_exclude"/>
+            </actions>
+            <columns>
+                <column property="name"/>
+                <column property="description"/>
+                <column property="officialSite"/>
+            </columns>
+        </dataGrid>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
