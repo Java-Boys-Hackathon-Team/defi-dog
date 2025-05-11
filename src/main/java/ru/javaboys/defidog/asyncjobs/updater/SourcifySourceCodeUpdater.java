@@ -1,5 +1,6 @@
 package ru.javaboys.defidog.asyncjobs.updater;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -13,11 +14,13 @@ import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceType;
 import ru.javaboys.defidog.integrations.sourcify.SourcifyService;
 import ru.javaboys.defidog.integrations.sourcify.dto.GetContract200Response;
+import ru.javaboys.defidog.integrations.sourcify.dto.GetContract200ResponseAllOfSourcesValue;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -27,6 +30,7 @@ public class SourcifySourceCodeUpdater implements SourceCodeUpdater, TypedUpdate
     private final SourcifyService sourcifyService;
     private final SourceStorageService storageService;
     private final LocalRepositoryIntegratorService integratorService;
+    private final ObjectMapper objectMapper; // для сериализации ABI
 
     @Override
     public SourceType getSupportedSourceType() {
@@ -57,31 +61,38 @@ public class SourcifySourceCodeUpdater implements SourceCodeUpdater, TypedUpdate
             String address = contract.getAddress();
             String chainId = CommonUtils.getChainIdByNetworkName(network);
 
-            jobLog.append("Получение данных по контракту: ").append(address).append("\n");
+            jobLog.append("Контракт ").append(address).append("\n");
 
             GetContract200Response response;
             try {
                 response = sourcifyService.getContract(chainId, address, "all", null);
             } catch (Exception e) {
-                jobLog.append("⚠️ Не удалось получить контракт ").append(address).append(": ").append(e.getMessage()).append("\n");
+                jobLog.append("⚠️ Не удалось получить контракт: ").append(e.getMessage()).append("\n");
                 continue;
             }
 
-            String source = response.getSources().get("").getContent();
-            String abi = response.getAbi().toString();
-
-            if (source == null || source.isBlank()) {
+            // --- Исходники
+            Map<String, GetContract200ResponseAllOfSourcesValue> sources = response.getSources();
+            if (sources == null || sources.isEmpty()) {
                 jobLog.append("⚠️ Исходный код отсутствует для адреса ").append(address).append("\n");
                 continue;
             }
 
-            // Сохраняем файлы
-            File sourceFile = new File(repoDir, "Contract-" + address + ".sol");
-            FileUtils.writeStringToFile(sourceFile, source, StandardCharsets.UTF_8);
+            for (Map.Entry<String, GetContract200ResponseAllOfSourcesValue> entry : sources.entrySet()) {
+                String filename = entry.getKey();
+                String content = entry.getValue().getContent();
+                if (content != null && !content.isBlank()) {
+                    File file = new File(repoDir, filename);
+                    FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
+                }
+            }
 
-            if (abi != null && !abi.isBlank()) {
+            // --- ABI
+            List<Object> abiList = response.getAbi();
+            if (abiList != null && !abiList.isEmpty()) {
                 File abiFile = new File(repoDir, "Contract-" + address + ".abi.json");
-                FileUtils.writeStringToFile(abiFile, abi, StandardCharsets.UTF_8);
+                String abiJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(abiList);
+                FileUtils.writeStringToFile(abiFile, abiJson, StandardCharsets.UTF_8);
             }
 
             jobLog.append("Файлы для ").append(address).append(" записаны.\n");
@@ -98,4 +109,5 @@ public class SourcifySourceCodeUpdater implements SourceCodeUpdater, TypedUpdate
         return jobLog.toString();
     }
 }
+
 
