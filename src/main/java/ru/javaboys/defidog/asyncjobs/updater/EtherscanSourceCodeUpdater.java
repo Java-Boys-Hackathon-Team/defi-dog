@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.javaboys.defidog.asyncjobs.service.LocalRepositoryIntegratorService;
 import ru.javaboys.defidog.asyncjobs.util.CommonUtils;
 import ru.javaboys.defidog.asyncjobs.util.SourceStorageService;
+import ru.javaboys.defidog.entity.SmartContract;
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceType;
 import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
@@ -15,6 +16,7 @@ import ru.javaboys.defidog.integrations.etherscan.EtherscanService;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -38,46 +40,54 @@ public class EtherscanSourceCodeUpdater implements SourceCodeUpdater, TypedUpdat
 
         jobLog.append("Источник: ETHERSCAN\n");
 
-        String chainId = CommonUtils.getChainIdByNetworkName(sourceCode.getSmartContracts().get(0).getNetwork());
-
-        String contractAddress = sourceCode.getSmartContracts().get(0).getAddress();
-
-        // Получение исходников
-        var codeResponse = etherscanService.getContractSourceCode(chainId, contractAddress);
-        String sourceText = codeResponse != null && codeResponse.getResult() != null && !codeResponse.getResult().isEmpty()
-                ? codeResponse.getResult().get(0).getSourceCode()
-                : null;
-
-        if (sourceText == null || sourceText.isBlank()) {
-            throw new IllegalStateException("Не удалось получить исходный код с Etherscan");
+        List<SmartContract> contracts = sourceCode.getSmartContracts();
+        if (contracts == null || contracts.isEmpty()) {
+            throw new IllegalStateException("Нет связанных SmartContract-ов для SourceCode ID=" + sourceCode.getId());
         }
 
-        // Получение ABI
-        var abiResponse = etherscanService.getContractAbi(chainId, contractAddress);
-        String abi = abiResponse != null ? abiResponse.getResult() : null;
-
-        // Подготовка локального репо
         if (!repoDir.exists()) {
             jobLog.append("Создание нового git-репозитория...\n");
             repoDir.mkdirs();
             Git.init().setDirectory(repoDir).call();
         }
 
-        // Запись файлов
-        File sourceFile = new File(repoDir, "Contract.sol");
-        FileUtils.writeStringToFile(sourceFile, sourceText, StandardCharsets.UTF_8);
+        for (SmartContract contract : contracts) {
+            String network = contract.getNetwork();
+            String address = contract.getAddress();
+            String chainId = CommonUtils.getChainIdByNetworkName(network);
 
-        if (abi != null) {
-            File abiFile = new File(repoDir, "contract.abi.json");
-            FileUtils.writeStringToFile(abiFile, abi, StandardCharsets.UTF_8);
+            jobLog.append("Получение данных по контракту: ").append(address).append("\n");
+
+            var codeResponse = etherscanService.getContractSourceCode(chainId, address);
+            String sourceText = codeResponse != null && codeResponse.getResult() != null && !codeResponse.getResult().isEmpty()
+                    ? codeResponse.getResult().get(0).getSourceCode()
+                    : null;
+
+            if (sourceText == null || sourceText.isBlank()) {
+                jobLog.append("⚠️ Исходный код не найден для адреса ").append(address).append("\n");
+                continue;
+            }
+
+            var abiResponse = etherscanService.getContractAbi(chainId, address);
+            String abi = abiResponse != null ? abiResponse.getResult() : null;
+
+            // Запись файлов
+            File sourceFile = new File(repoDir, "Contract-" + address + ".sol");
+            FileUtils.writeStringToFile(sourceFile, sourceText, StandardCharsets.UTF_8);
+
+            if (abi != null && !abi.isBlank()) {
+                File abiFile = new File(repoDir, "Contract-" + address + ".abi.json");
+                FileUtils.writeStringToFile(abiFile, abi, StandardCharsets.UTF_8);
+            }
+
+            jobLog.append("Файлы для контракта ").append(address).append(" записаны.\n");
         }
 
         // Коммит
         Git git = Git.open(repoDir);
         git.add().addFilepattern(".").call();
-        git.commit().setMessage("Fetched from Etherscan").call();
+        git.commit().setMessage("Fetched multiple contracts from Etherscan").call();
 
-        // Общая пост-обработка
         String integrationLog = integratorService.integrateAndProcess(sourceCode, repoPath);
         jobLog.append(integrationLog);
 
