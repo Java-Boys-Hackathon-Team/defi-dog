@@ -12,4 +12,5 @@ public class ScanResult {
     private String rawOutput;
     private String errorMessage;
     private Integer exitCode;
+    private String executionLog;
 }
