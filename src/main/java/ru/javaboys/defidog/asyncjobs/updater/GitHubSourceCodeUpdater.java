@@ -5,20 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.stereotype.Component;
-import ru.javaboys.defidog.asyncjobs.service.ChangeSetService;
-import ru.javaboys.defidog.asyncjobs.service.GitRepositoryService;
+import ru.javaboys.defidog.asyncjobs.service.LocalRepositoryIntegratorService;
 import ru.javaboys.defidog.asyncjobs.util.SourceStorageService;
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceType;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -27,9 +23,7 @@ public class GitHubSourceCodeUpdater implements SourceCodeUpdater, TypedUpdater 
 
     private final SourceStorageService storageService;
 
-    private final GitRepositoryService gitRepositoryService;
-
-    private final ChangeSetService changeSetService;
+    private final LocalRepositoryIntegratorService integratorService;
 
     @Override
     public SourceType getSupportedSourceType() {
@@ -75,33 +69,9 @@ public class GitHubSourceCodeUpdater implements SourceCodeUpdater, TypedUpdater 
             }
         }
 
-        // Получение HEAD commit SHA
-        ObjectId headId = git.getRepository().resolve("HEAD");
-        if (headId == null) {
-            jobLog.append("Не удалось получить HEAD commit SHA.\n");
-            return jobLog.toString();
-        }
-
-        String aggregatedCode = gitRepositoryService.getFullSourceCode(repoDir);
-        sourceCode.setLastKnownSourceCode(aggregatedCode);
-
-        List<String> abis = gitRepositoryService.extractAbiStrings(repoDir);
-        if (!abis.isEmpty()) {
-            // Запишем первый найденный ABI
-            sourceCode.setLastKnownAbi(abis.get(0));
-            jobLog.append("Найден ABI. Кол-во вариантов: ").append(abis.size()).append("\n");
-        } else {
-            jobLog.append("ABI не найден в репозитории.\n");
-        }
-
-        changeSetService.createChangeSetsIfNeeded(sourceCode, repoDir, headId.getName());
-
-        String commitSha = headId.getName();
-        sourceCode.setLastCommitSha(commitSha);
-        jobLog.append("Последний коммит: ").append(commitSha).append("\n");
-
-        sourceCode.setFetchedAt(OffsetDateTime.now());
-        sourceCode.setLocalPath(storageService.getRelativePath(localPath));
+        // Общая пост-обработка
+        String integrationLog = integratorService.integrateAndProcess(sourceCode, localPath);
+        jobLog.append(integrationLog);
 
         return jobLog.toString();
     }

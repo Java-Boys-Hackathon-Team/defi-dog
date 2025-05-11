@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="update-cryptocurrencies-001" author="defi-dog">
+        <delete tableName="CRYPTOCURRENCY">
+            <where>CMC_ID IN (1027, 1839, 5426)</where>
+        </delete>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="f1c2a731-0c43-4b23-90c1-eee1a0c12d01"/>
+            <column name="NAME" value="Chainlink"/>
+            <column name="TICKER" value="LINK"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" value="1975"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="4b123456-78e9-4c00-91a2-3dfe2f55cc02"/>
+            <column name="NAME" value="Litecoin"/>
+            <column name="TICKER" value="LTC"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" value="2"/>
+        </insert>
+        <insert tableName="CRYPTOCURRENCY">
+            <column name="ID" value="adc34567-d1b2-489a-8775-5e9e0a7a8cc3"/>
+            <column name="NAME" value="Toncoin"/>
+            <column name="TICKER" value="TON"/>
+            <column name="CREATED_BY" value="admin"/>
+            <column name="LAST_MODIFIED_BY" value="admin"/>
+            <column name="CREATED_DATE" valueDate="NOW()"/>
+            <column name="LAST_MODIFIED_DATE" valueDate="NOW()"/>
+            <column name="CMC_ID" value="11419"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

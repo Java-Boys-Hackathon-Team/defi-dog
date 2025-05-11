@@ -1,27 +1,32 @@
 package ru.javaboys.defidog.entity;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @JmixEntity
 @Table(name = "SOURCE_CODE")
@@ -39,6 +44,7 @@ public class SourceCode {
     @Column(name = "SOURCE_TYPE")
     private String sourceType;
 
+    @InstanceName
     @Comment("URL к исходникам на GitHub")
     @Column(name = "REPO_URL")
     private String repoUrl;
@@ -51,6 +57,10 @@ public class SourceCode {
     @Comment("Путь на диске к клонированному коду")
     @Column(name = "LOCAL_PATH")
     private String localPath;
+
+    @Comment("Путь к файлу ABI в локальном репозитории")
+    @Column(name = "ABI_FILE_PATH")
+    private String abiFilePath;
 
     @Comment("Дата последнего обновления исходника")
     @Column(name = "FETCHED_AT")
@@ -73,9 +83,6 @@ public class SourceCode {
 
     @OneToMany(mappedBy = "sourceCode")
     private List<AbiChangeSet> abiChanges;
-
-    @OneToMany(mappedBy = "sourceCode")
-    private List<ScanTool> scanTools;
 
     @OneToMany(mappedBy = "sources")
     private List<SmartContract> smartContracts;
@@ -114,12 +121,17 @@ public class SourceCode {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sources")
     private DeFiProtocol deFiProtocol;
 
-    public DeFiProtocol getDeFiProtocol() {
-        return deFiProtocol;
+    @JoinTable(name = "SCAN_TOOL_SOURCE_CODE_LINK",
+            joinColumns = @JoinColumn(name = "SOURCE_CODE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SCAN_TOOL_ID"))
+    @ManyToMany
+    private List<ScanTool> scanTools;
+
+    public SourceType getSourceType() {
+        return sourceType == null ? null : SourceType.valueOf(sourceType);
     }
 
-    public void setDeFiProtocol(DeFiProtocol deFiProtocol) {
-        this.deFiProtocol = deFiProtocol;
+    public void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType == null ? null : sourceType.getId();
     }
-
 }

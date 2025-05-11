@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://notificationSettingsDetailView.title">
+    <data>
+        <instance id="notificationSettingsDc"
+                  class="ru.javaboys.defidog.entity.NotificationSettings">
+            <fetchPlan extends="_base">
+                <property name="subscribedCryptocurrencies" fetchPlan="_base"/>
+                <property name="subscribedDeFiProtocols" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="notificationSettingsDl"/>
+            <collection id="cryptocurrenciesDc" property="subscribedCryptocurrencies"/>
+            <collection id="protocolsDc" property="subscribedDeFiProtocols"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <hbox id="channelsNullWarning" visible="false">
+            <nativeLabel
+                    text="У вас не настроен ни один канал уведомлений, вы не будете получать сообщения об изменениях в смарт контрактах. Для активации уведомлений подключите как минимум один канал для уведомлений."
+                    themeNames="badge, error"/>
+        </hbox>
+        <hbox id="detailActions" visible="false">
+            <button id="saveAndCloseButton" text="Сохранить" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+        <hbox width="75%" height="500px">
+            <vbox width="33%" classNames="border">
+                <hbox id="channelHeader" width="100%">
+                    <nativeLabel id="channelHeaderLabel" text="Каналы уведомлений" css="font-size: 20px"/>
+                </hbox>
+                <hbox alignItems="CENTER" spacing="true" width="100%">
+                    <hbox width="15%">
+                        <nativeLabel text="Email"/>
+                    </hbox>
+                    <hbox spacing="false">
+                        <textField id="email" enabled="false" width="15em"/>
+                        <button id="editEmail" icon="EDIT"/>
+                    </hbox>
+                </hbox>
+                <hbox alignItems="CENTER" spacing="true" width="100%">
+                    <hbox width="15%">
+                        <nativeLabel text="Telegram"/>
+                    </hbox>
+                    <hbox spacing="false">
+                        <textField id="telegram" enabled="false" width="15em"/>
+                        <button id="editTelegram" icon="EDIT"/>
+                    </hbox>
+                </hbox>
+            </vbox>
+            <vbox width="33%" classNames="border">
+                <hbox id="currencyHeader" width="100%">
+                    <nativeLabel id="currencyHeaderLabel" text="Интересующие криптовалюты" css="font-size: 20px"/>
+                    <button id="currencyAddBtn" icon="PLUS" height="100%" themeNames="tertiary"/>
+                </hbox>
+                <nativeLabel id="currenciesListEmptyLabel"
+                             visible="false"
+                             alignSelf="CENTER"
+                             text="Список пуст"/>
+                <virtualList id="currenciesList"
+                             itemsContainer="cryptocurrenciesDc"/>
+            </vbox>
+            <vbox width="33%" classNames="border">
+                <hbox id="protocolHeader" width="100%">
+                    <nativeLabel id="protocolHeaderLabel" text="Интересующие протоколы" css="font-size: 20px"/>
+                    <button id="protocolAddBtn" icon="PLUS" height="100%" themeNames="tertiary"/>
+                </hbox>
+                <nativeLabel id="protocolsListEmptyLabel"
+                             visible="false"
+                             alignSelf="CENTER"
+                             text="Список пуст"/>
+                <virtualList id="protocolsList"
+                             itemsContainer="protocolsDc"/>
+            </vbox>
+        </hbox>
+    </layout>
+</view>

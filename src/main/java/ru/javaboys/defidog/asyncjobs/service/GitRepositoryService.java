@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.stereotype.Service;
+import ru.javaboys.defidog.asyncjobs.dto.AbiCandidate;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,40 +63,36 @@ public class GitRepositoryService {
                 .build();
     }
 
-    public List<String> extractAbiStrings(File repositoryDir) throws IOException {
+
+    public List<AbiCandidate> extractAbiInfo(File repositoryDir) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<String> abiList = new ArrayList<>();
+        List<AbiCandidate> result = new ArrayList<>();
 
         try (Stream<Path> files = Files.walk(repositoryDir.toPath())) {
             files
                     .filter(path -> !path.toFile().isDirectory())
                     .filter(path -> !path.toString().contains(File.separator + ".git" + File.separator))
                     .filter(path -> !path.toString().contains(File.separator + "node_modules" + File.separator))
-                    .filter(path -> path.toString().endsWith(".json"))
+                    .filter(path -> path.toString().toLowerCase().endsWith(".json"))
                     .forEach(path -> {
                         try {
                             JsonNode json = objectMapper.readTree(path.toFile());
 
-                            // Если JSON — массив, содержащий ABI (например, [{ "type": "function", ... }])
-                            if (json.isArray() && !json.isEmpty() && isAbiArray(json)) {
-                                abiList.add(json.toPrettyString());
+                            if (json.isArray() && isAbiArray(json)) {
+                                result.add(new AbiCandidate(json.toPrettyString(), repositoryDir.toPath().relativize(path).toString()));
                             }
 
-                            // Если JSON содержит поле "abi" — как в Truffle/Hardhat-артефактах
-                            if (json.has("abi") && json.get("abi").isArray()) {
-                                JsonNode abi = json.get("abi");
-                                if (isAbiArray(abi)) {
-                                    abiList.add(abi.toPrettyString());
-                                }
+                            if (json.has("abi") && json.get("abi").isArray() && isAbiArray(json.get("abi"))) {
+                                result.add(new AbiCandidate(json.get("abi").toPrettyString(), repositoryDir.toPath().relativize(path).toString()));
                             }
 
                         } catch (Exception e) {
-                            log.warn("Не удалось прочитать JSON-файл {}: {}", path, e.getMessage());
+                            log.warn("Ошибка разбора JSON {}: {}", path, e.getMessage());
                         }
                     });
         }
 
-        return abiList;
+        return result;
     }
 
     private boolean isAbiArray(JsonNode array) {

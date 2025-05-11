@@ -36,4 +36,21 @@ public class OpenAiServiceImpl implements OpenAiService {
 
         return fullResponse;
     }
+
+    @Override
+    public <T> T structuredTalkToChatGPT(String conversationId, SystemMessage systemMessage, UserMessage userMessage, Class<T> classType) {
+        List<Message> promptMessages = new ArrayList<>();
+        promptMessages.add(systemMessage);
+        promptMessages.add(userMessage);
+
+        T fullResponse = chatClient
+                .prompt(new Prompt(promptMessages))
+                .advisors(advisor -> advisor
+                        .param("chat_memory_conversation_id", conversationId)
+                        .param("chat_memory_response_size", 1000))
+                .call()
+                .entity(classType);
+
+        return fullResponse;
+    }
 }

@@ -2,3 +2,11 @@
 @import url('view/main-view.css');
 @import url('view/main-view-top-menu.css');
 @import url('view/login-view.css');
+
+html[theme~="dark"] {
+    --lumo-base-color: #0D1421;
+    --lumo-body-background-color: #222531;
+    --lumo-primary-color: #4a90e2;
+    --lumo-primary-text-color: #ffffff;
+    --lumo-text-color: #e0e0e0;
+}

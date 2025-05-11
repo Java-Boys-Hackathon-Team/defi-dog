@@ -1,5 +1,13 @@
 package ru.javaboys.defidog.entity;
 
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -18,13 +26,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @JmixEntity
 @Table(name = "SOURCE_CODE_SECURITY_SCAN_JOB", indexes = {
@@ -57,6 +58,11 @@ public class SourceCodeSecurityScanJob {
     @Lob
     private String rawOutput;
 
+    @Comment("Подробная информация о запуске docker-контейнера сканера")
+    @Column(name = "EXECUTION_LOG")
+    @Lob
+    private String executionLog;
+
     @JoinColumn(name = "AUDIT_REPORT_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private AuditReport auditReport;
@@ -76,4 +82,12 @@ public class SourceCodeSecurityScanJob {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    public SecurityScanJobStatus getStatus() {
+        return status != null ? SecurityScanJobStatus.valueOf(status) : null;
+    }
+
+    public void setStatus(SecurityScanJobStatus status) {
+        this.status = status != null ? status.toString() : null;
+    }
 }

@@ -1,7 +1,6 @@
 package ru.javaboys.defidog.asyncjobs.service;
 
 
-import io.jmix.core.DataManager;
 import io.jmix.core.UnconstrainedDataManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +29,7 @@ public class ChangeSetService {
 
     private final GitRepositoryService gitRepositoryService;
     private final UnconstrainedDataManager dataManager;
+    private final ChangeSummaryGenerationService changeSummaryGenerationService;
 
     public void createChangeSetsIfNeeded(SourceCode sourceCode, File repoDir, String newHeadCommit) {
         try (Git git = gitRepositoryService.openGit(repoDir)) {
@@ -54,14 +54,21 @@ public class ChangeSetService {
                 codeChangeSet.setSourceCode(sourceCode);
                 codeChangeSet.setCommitHash(newHeadCommit);
                 codeChangeSet.setGitDiff(sourceCodeDiff);
-                codeChangeSet.setChangeSummary("Изменения исходного кода между %s и %s".formatted(oldCommit, newHeadCommit));
+
+                String summary = changeSummaryGenerationService.generateSourceCodeSummary(codeChangeSet);
+                codeChangeSet.setChangeSummary(summary);
+
                 dataManager.save(codeChangeSet);
             }
 
             // --- ABI change set (по .json, .abi и т.п.)
             String abiDiff = getGitDiff(repo, oldId, newId, path -> {
-                String p = path.toLowerCase();
-                return p.endsWith(".json") || p.endsWith(".abi") || p.contains("abi");
+                if (sourceCode.getAbiFilePath() != null) {
+                    return path.equals(sourceCode.getAbiFilePath());
+                } else {
+                    String p = path.toLowerCase();
+                    return p.endsWith(".json") || p.contains("abi");
+                }
             });
 
             if (!abiDiff.isBlank()) {
@@ -69,7 +76,10 @@ public class ChangeSetService {
                 abiChangeSet.setSourceCode(sourceCode);
                 abiChangeSet.setCommitHash(newHeadCommit);
                 abiChangeSet.setGitDiff(abiDiff);
-                abiChangeSet.setChangeSummary("Изменения ABI между %s и %s".formatted(oldCommit, newHeadCommit));
+
+                String summary = changeSummaryGenerationService.generateAbiSummary(abiChangeSet);
+                abiChangeSet.setChangeSummary(summary);
+
                 dataManager.save(abiChangeSet);
             }
 
@@ -84,12 +94,8 @@ public class ChangeSetService {
                 DiffFormatter formatter = new DiffFormatter(out);
                 RevWalk walk = new RevWalk(repo)
         ) {
-            RevCommit csCommit = walk.parseCommit(oldId);
-            if (csCommit.getParentCount() == 0) {
-                log.warn("Коммит {} не имеет родителя — пропускаем diff", oldId.name());
-                return "";
-            }
-            RevCommit oldCommit = walk.parseCommit(csCommit.getParent(0));
+
+            RevCommit oldCommit = walk.parseCommit(oldId);
             RevCommit newCommit = walk.parseCommit(newId);
 
             try (var reader = repo.newObjectReader()) {

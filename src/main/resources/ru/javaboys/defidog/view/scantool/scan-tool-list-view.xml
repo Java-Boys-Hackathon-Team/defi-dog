@@ -32,6 +32,7 @@
         </genericFilter>
         <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="createButton" action="scanToolsDataGrid.createAction"/>
+            <button id="editButton" action="scanToolsDataGrid.editAction"/>
             <button id="removeButton" action="scanToolsDataGrid.removeAction"/>
             <simplePagination id="pagination" dataLoader="scanToolsDl"/>
         </hbox>
@@ -42,12 +43,14 @@
                   columnReorderingAllowed="true">
             <actions>
                 <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
                 <action id="removeAction" type="list_remove"/>
             </actions>
             <columns resizable="true">
-                <column property="active" header="msg://scanToolsDataGrid.active" width="10%"/>
-                <column property="name" header="msg://scanToolsDataGrid.name" width="45%"/>
-                <column property="dockerImage" header="msg://scanToolsDataGrid.dockerImage" width="45%"/>
+                <column property="active" header="msg://scanToolsDataGrid.active"/>
+                <column property="name" header="msg://scanToolsDataGrid.name"/>
+                <column property="dockerImage" header="msg://scanToolsDataGrid.dockerImage"/>
+                <column property="containerCmdParams" header="msg://scanToolsDataGrid.containerCmdParams"/>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

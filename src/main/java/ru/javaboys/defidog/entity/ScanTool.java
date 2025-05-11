@@ -1,5 +1,14 @@
 package ru.javaboys.defidog.entity;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
 import io.jmix.core.metamodel.annotation.InstanceName;
@@ -10,24 +19,18 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @JmixEntity
 @Table(name = "SCAN_TOOL", indexes = {
-        @Index(name = "IDX_SCAN_TOOL_SOURCE_CODE", columnList = "SOURCE_CODE_ID"),
+        @Index(name = "IDX_SCAN_TOOL_SOURCE_CODE", columnList = ""),
         @Index(name = "IDX_SCAN_TOOL_SOURCE_CODE_SECURITY_SCAN_JOB", columnList = "SOURCE_CODE_SECURITY_SCAN_JOB_ID")
 })
 @Entity
@@ -59,9 +62,11 @@ public class ScanTool {
     @Column(name = "ACTIVE")
     private Boolean active;
 
-    @JoinColumn(name = "SOURCE_CODE_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SourceCode sourceCode;
+    @JoinTable(name = "SCAN_TOOL_SOURCE_CODE_LINK",
+            joinColumns = @JoinColumn(name = "SCAN_TOOL_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SOURCE_CODE_ID"))
+    @ManyToMany
+    private List<SourceCode> sourceCode;
 
     @JoinColumn(name = "SOURCE_CODE_SECURITY_SCAN_JOB_ID")
     @OneToOne(fetch = FetchType.LAZY)

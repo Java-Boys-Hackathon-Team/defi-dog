@@ -5,7 +5,11 @@
     <data>
         <instance id="smartContractDc"
                   class="ru.javaboys.defidog.entity.SmartContract">
-            <fetchPlan extends="_base"/>
+            <fetchPlan extends="_base">
+                <property name="deFiProtocol" fetchPlan="_base"/>
+                <property name="sources" fetchPlan="_base"/>
+                <property name="cryptocurrency" fetchPlan="_base"/>
+            </fetchPlan>
             <loader id="smartContractDl"/>
         </instance>
     </data>
@@ -24,8 +28,28 @@
             </responsiveSteps>
             <textField id="nameField" property="name"/>
             <textField id="addressField" property="address"/>
-            <select id="networkField" property="network"/>
+            <select id="networkField"
+                    itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"
+                    property="network"/>
             <textField id="externalLinkField" property="externalLink"/>
+            <entityPicker property="deFiProtocol">
+                <actions>
+                    <action id="entityLookup" type="entity_lookup"/>
+                    <action id="entityClear" type="entity_clear"/>
+                </actions>
+            </entityPicker>
+            <entityPicker property="sources">
+                <actions>
+                    <action id="entityLookup" type="entity_lookup"/>
+                    <action id="entityClear" type="entity_clear"/>
+                </actions>
+            </entityPicker>
+            <entityPicker property="cryptocurrency">
+                <actions>
+                    <action id="entityLookup" type="entity_lookup"/>
+                    <action id="entityClear" type="entity_clear"/>
+                </actions>
+            </entityPicker>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

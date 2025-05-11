@@ -1,12 +1,13 @@
 package ru.javaboys.defidog.asyncjobs.util;
 
 
+import java.nio.file.Path;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceType;
-
-import java.nio.file.Path;
 
 @Service
 public class SourceStorageService {
@@ -15,7 +16,7 @@ public class SourceStorageService {
     private String sourceStorageRoot;
 
     public Path getSourceDirectory(SourceCode sourceCode) {
-        SourceType type = SourceType.fromId(sourceCode.getSourceType());
+        SourceType type = sourceCode.getSourceType();
         if (type == null) throw new IllegalArgumentException("Unknown SourceType: " + sourceCode.getSourceType());
         return Path.of(sourceStorageRoot, type.getId(), sourceCode.getId().toString());
     }

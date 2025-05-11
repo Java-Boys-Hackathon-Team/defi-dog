@@ -4,6 +4,7 @@ import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.Comment;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,6 +41,7 @@ public class AbiChangeSet {
     @Id
     private UUID id;
 
+    @InstanceName
     @NotBlank
     @Comment("Человеко-понятное описание изменений ABI смарт-контракта")
     @Column(name = "CHANGE_SUMMARY")

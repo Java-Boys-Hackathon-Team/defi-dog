@@ -4,9 +4,6 @@
     <data readOnly="true">
         <collection id="cryptocurrencyDg"
                     class="ru.javaboys.defidog.entity.Cryptocurrency">
-<!--            <fetchPlan extends="_local">-->
-<!--                <property name="id" fetchPlan="_local"/>-->
-<!--            </fetchPlan>-->
             <loader id="cryptocurrencyLoader">
                 <query>
                     <![CDATA[select cc from Cryptocurrency cc order by cc.id]]>
@@ -15,9 +12,6 @@
         </collection>
         <collection id="dexDg"
                     class="ru.javaboys.defidog.entity.DeFiProtocol">
-            <!--            <fetchPlan extends="_local">-->
-            <!--                <property name="id" fetchPlan="_local"/>-->
-            <!--            </fetchPlan>-->
             <loader id="dexLoader">
                 <query>
                     <![CDATA[select dp from DeFiProtocol dp order by dp.id]]>
@@ -36,70 +30,56 @@
     <appLayout>
         <navigationBar>
             <header id="header" classNames="jmix-main-view-header">
-                <drawerToggle id="drawerToggle"
-                              classNames="jmix-main-view-drawer-toggle"
-                              themeNames="contrast"
-                              ariaLabel="msg://drawerToggle.ariaLabel"/>
+                <button id="homeButton" icon="HOME_O"/>
+                <div width="10px"/>
                 <h1 id="viewTitle" classNames="jmix-main-view-title"/>
             </header>
-            <hbox spacing="true" alignItems="CENTER">
-                <label value="Select Network"/>
-                <comboBox id="blockchainNetworkComboBox"
-                          itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"
-                          label=""/>
+            <userIndicator id="userIndicator" minWidth="150px"/>
+            <hbox themeNames="spacing-xs">
+                <dropdownButton id="themeSwitcher"
+                                icon="ADJUST"
+                                dropdownIndicatorVisible="false">
+                    <items>
+                        <actionItem id="systemThemeItem">
+                            <action id="systemThemeAction"
+                                    text="System" icon="ADJUST"/>
+                        </actionItem>
+                        <actionItem id="lightThemeItem">
+                            <action id="lightThemeAction"
+                                    text="Light" icon="SUN_O"/>
+                        </actionItem>
+                        <actionItem id="darkThemeItem">
+                            <action id="darkThemeAction"
+                                    text="Dark" icon="MOON_O"/>
+                        </actionItem>
+                    </items>
+                </dropdownButton>
+                <button id="inspectorButton"
+                        icon="MAGIC"/>
+                <button id="adminButton"
+                        icon="COG_O"/>
+                <button id="settingsButton"
+                        icon="ENVELOPE_OPEN"/>
+                <button id="logoutButton"
+                        action="logoutAction"
+                        classNames="jmix-logout-button"/>
             </hbox>
-            <dropdownButton id="themeSwitcher"
-                            text="Theme" icon="ADJUST"
-                            classNames="ms-auto me-m"
-                            dropdownIndicatorVisible="false">
-                <items>
-                    <actionItem id="systemThemeItem">
-                        <action id="systemThemeAction"
-                                text="System" icon="ADJUST"/>
-                    </actionItem>
-                    <actionItem id="lightThemeItem">
-                        <action id="lightThemeAction"
-                                text="Light" icon="SUN_O"/>
-                    </actionItem>
-                    <actionItem id="darkThemeItem">
-                        <action id="darkThemeAction"
-                                text="Dark" icon="MOON_O"/>
-                    </actionItem>
-                </items>
-            </dropdownButton>
         </navigationBar>
-        <drawerLayout>
-            <section id="section" classNames="jmix-main-view-section">
-                <h2 id="applicationTitle"
-                    classNames="jmix-main-view-application-title">
-                    <anchor id="baseLink"
-                            href="."
-                            text="msg://applicationTitle.text"
-                            classNames="jmix-main-view-application-title-base-link"/>
-                </h2>
-                <nav id="navigation"
-                     classNames="jmix-main-view-navigation"
-                     ariaLabel="msg://navigation.ariaLabel">
-                    <listMenu id="menu"/>
-                </nav>
-                <footer id="footer" classNames="jmix-main-view-footer">
-                    <userIndicator id="userIndicator"/>
-                    <button id="logoutButton"
-                            action="logoutAction"
-                            classNames="jmix-logout-button"/>
-                </footer>
-            </section>
-        </drawerLayout>
         <initialLayout>
-            <flexLayout id="topLayout" alignItems="END" justifyContent="END" width="100%" visible="false">
-                <button id="updateButton" action="updateAction"/>
-            </flexLayout>
-            <flexLayout id="dataLayoutButtons">
-                <button id="cryptocurrenciesButton"
-                        text="Cryptocurrencies"/>
-                <button id="dexButton"
-                        text="DEX"/>
-            </flexLayout>
+            <vbox id="logoLayout" alignItems="CENTER" justifyContent="CENTER">
+            </vbox>
+            <hbox spacing="true" alignItems="CENTER">
+                <comboBox id="blockchainNetworkComboBox"
+                          itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"/>
+                <tabSheet id="tabs">
+                    <tab id="cryptoTableTab" label="Криптовалюты">
+                        <span/>
+                    </tab>
+                    <tab id="dexTableTab" label="DEX">
+                        <span/>
+                    </tab>
+                </tabSheet>
+            </hbox>
             <dataGrid id="cryptocurrencyGrid" width="100%" minHeight="20em"
                       dataContainer="cryptocurrencyDg">
             </dataGrid>

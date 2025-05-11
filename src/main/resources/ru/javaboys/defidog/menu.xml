@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
-
-    <menu id="application" title="msg://ru.javaboys.defidog/menu.application.title" opened="true">
-        <item view="User.list" title="msg://ru.javaboys.defidog.view.user/UserListView.title"/>
-        <item view="SourceCode.list" title="msg://ru.javaboys.defidog.view.sourcecode/sourceCodeListView.title"/>
-        <item view="ScanTool.list" title="msg://ru.javaboys.defidog.view.scantool/scanToolListView.title"/>
-        <item view="SourceCodeSecurityScanJob.list" title="msg://ru.javaboys.defidog.view.sourcecodesecurityscanjob/sourceCodeSecurityScanJobListView.title"/>
-        <item view="SmartContract.list" title="msg://ru.javaboys.defidog.view.smartcontract/smartContractListView.title"/>
-        <item view="Cryptocurrency.list" title="msg://ru.javaboys.defidog.view.cryptocurrency/cryptocurrencyListView.title"/>
-        <item view="DeFiProtocol.list" title="msg://ru.javaboys.defidog.view.defiprotocol/deFiProtocolListView.title"/>
-    </menu>
-
+    <item view="NotificationSettings.list" title="msg://ru.javaboys.defidog.view.notificationsettings/notificationSettingsListView.title"/>
+    <item view="SetupEmailView" title="msg://ru.javaboys.defidog.view.setupemail/setupEmailView.title"/>
+    <item view="SetupTelegramView" title="msg://ru.javaboys.defidog.view.setuptelegram/setupTelegramView.title"/>
+    <item view="Cryptocurrency.list-new" title="msg://ru.javaboys.defidog.view.cryptocurrency/cryptocurrencyListViewNew.title"/>
 </menu-config>

@@ -1,37 +1,53 @@
 package ru.javaboys.defidog.view.main;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Map;
+import java.util.UUID;
+
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Layout;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
+
+import io.jmix.datatoolsflowui.view.entityinspector.EntityInspectorListView;
 import io.jmix.flowui.Notifications;
+import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.app.main.StandardMainView;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.grid.DataGrid;
+import io.jmix.flowui.component.tabsheet.JmixTabSheet;
 import io.jmix.flowui.facet.Timer;
 import io.jmix.flowui.kit.action.ActionPerformedEvent;
+import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.kit.theme.ThemeUtils;
 import io.jmix.flowui.model.CollectionLoader;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaboys.defidog.crypto.CryptocurrencyService;
 import ru.javaboys.defidog.entity.BlockchainNetwork;
 import ru.javaboys.defidog.entity.Cryptocurrency;
 import ru.javaboys.defidog.entity.DeFiProtocol;
 import ru.javaboys.defidog.entity.ProtocolKind;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Map;
-import java.util.UUID;
+import ru.javaboys.defidog.view.admin.AdminView;
+import ru.javaboys.defidog.view.settings.SettingsView;
+import ru.javaboys.defidog.viewutils.ViewComponentsUtils;
 
 @Route("")
 @ViewController(id = "MainView")
@@ -43,6 +59,9 @@ public class MainView extends StandardMainView {
 
     @Autowired
     private CryptocurrencyService cryptocurrencyService;
+
+    @Autowired
+    private ViewNavigators viewNavigators;
 
     @ViewComponent("cryptocurrencyLoader")
     private CollectionLoader<Cryptocurrency> cryptocurrencyLoader;
@@ -57,10 +76,7 @@ public class MainView extends StandardMainView {
     private DataGrid<DeFiProtocol> dexGrid;
 
     @ViewComponent
-    private Button cryptocurrenciesButton;
-
-    @ViewComponent
-    private Button dexButton;
+    private VerticalLayout logoLayout;
 
     @Subscribe
     public void onInit(InitEvent event) {
@@ -70,9 +86,19 @@ public class MainView extends StandardMainView {
         setColumnsDataGrids();
         cryptocurrencyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         dexGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
+        Image logo = new Image("icons/lader.png", "DeFi App Logo");
+        logo.setWidth("400px");
+        logoLayout.add(logo);
     }
 
     private void setColumnsDataGrids() {
+
+        cryptocurrencyGrid.addColumn(
+                new ComponentRenderer<>(item ->
+                        ViewComponentsUtils.createImageComponent(item, Cryptocurrency::getLogoImage)))
+                .setHeader("Logo")
+                .setKey("logoImageColumn");
 
         cryptocurrencyGrid.addComponentColumn(crypto -> {
                     Span span = new Span(crypto.getName());
@@ -150,10 +176,18 @@ public class MainView extends StandardMainView {
                 .setHeader("Market Cap");
 
         cryptocurrencyGrid.addComponentColumn(entity -> {
-            Button actionButton = new Button("Run Audit");
+            Button actionButton = new Button();
+            actionButton.setIcon(new Icon(VaadinIcon.PLAY));
+            actionButton.setTooltipText("Запустить аудит");
             actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.CRYPTOCURRENCY));
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
+
+        dexGrid.addColumn(
+                new ComponentRenderer<>(item ->
+                        ViewComponentsUtils.createImageComponent(item, DeFiProtocol::getLogoImage)))
+                .setHeader("Logo")
+                .setKey("logoImageColumn");
 
         dexGrid.addComponentColumn(dex -> {
                     Span span = new Span(dex.getName());
@@ -173,7 +207,9 @@ public class MainView extends StandardMainView {
                 .setHeader("Official Site");
 
         dexGrid.addComponentColumn(entity -> {
-            Button actionButton = new Button("Run Audit");
+            Button actionButton = new Button();
+            actionButton.setIcon(new Icon(VaadinIcon.PLAY));
+            actionButton.setTooltipText("Запустить аудит");
             actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.DEFI));
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
@@ -185,27 +221,38 @@ public class MainView extends StandardMainView {
         updateCryptocurrencyGrid();
     }
 
-    @Subscribe("cryptocurrenciesButton")
-    public void onCryptocurrenciesButtonClick(ClickEvent<Button> event) {
-        setVisiblesGrid(true, false);
+    @Subscribe("tabs")
+    public void onCryptoTableTab(final JmixTabSheet.SelectedChangeEvent event) {
+        String tabId = event.getSelectedTab().getId().orElse(null);
+        switch (tabId) {
+            case "cryptoTableTab" -> setVisiblesGrid(true, false);
+            case "dexTableTab" -> setVisiblesGrid(false, true);
+        }
     }
 
-    @Subscribe("dexButton")
-    public void onDexButtonClick(ClickEvent<Button> event) {
-        setVisiblesGrid(false, true);
+    @Subscribe(id = "homeButton", subject = "clickListener")
+    public void onHomeButtonClick(final ClickEvent<JmixButton> event) {
+        viewNavigators.view(this, MainView.class).navigate();
     }
 
-    @Subscribe("updateButton")
-    protected void onHelloButtonClick(ClickEvent<Button> event) {
-        cryptocurrencyService.updateCryptocurrenciesInfo();
-        updateCryptocurrencyGrid();
+    @Subscribe(id = "adminButton", subject = "clickListener")
+    public void onAdminButtonClick(final ClickEvent<JmixButton> event) {
+        viewNavigators.view(this, AdminView.class).navigate();
+    }
+
+    @Subscribe(id = "inspectorButton", subject = "clickListener")
+    public void onInspectorButtonClick(final ClickEvent<JmixButton> event) {
+        viewNavigators.view(this, EntityInspectorListView.class).navigate();
+    }
+
+    @Subscribe(id = "settingsButton", subject = "clickListener")
+    public void onSettingsButtonClick(final ClickEvent<JmixButton> event) {
+        viewNavigators.view(this, SettingsView.class).navigate();
     }
 
     private void setVisiblesGrid(Boolean visibleCryptocurrencyGrid, Boolean visibleDexGrid) {
         cryptocurrencyGrid.setVisible(visibleCryptocurrencyGrid);
         dexGrid.setVisible(visibleDexGrid);
-        cryptocurrenciesButton.setThemeName(visibleCryptocurrencyGrid ? "primary contrast" : "tertiary contrast");
-        dexButton.setThemeName(visibleDexGrid ? "primary contrast" : "tertiary contrast");
     }
 
     private void goToAudit(UUID id, ProtocolKind kind) {
