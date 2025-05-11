@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.javaboys.defidog.asyncjobs.service.AuditReportService;
 import ru.javaboys.defidog.asyncjobs.service.SecurityScannerService;
 import ru.javaboys.defidog.entity.ScanTool;
 import ru.javaboys.defidog.entity.SourceCode;
@@ -21,6 +22,7 @@ public class SecurityAuditJob {
 
     private final UnconstrainedDataManager dataManager;
     private final SecurityScannerService securityScannerService;
+    private final AuditReportService auditReportService;
 
     @Scheduled(fixedDelay = 60000)
     @Transactional
@@ -55,6 +57,8 @@ public class SecurityAuditJob {
                     log.error("Ошибка при запуске сканера {} для changeSet {}: {}", tool.getName(), changeSet.getId(), e.getMessage(), e);
                 }
             }
+
+            auditReportService.generateReport(changeSet);
         }
 
         log.info("Джоба аудита безопасности завершена");
