@@ -1,5 +1,14 @@
 package ru.javaboys.defidog.entity;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -18,14 +27,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @JmixEntity
 @Table(name = "SMART_CONTRACT", indexes = {
@@ -93,4 +94,12 @@ public class SmartContract {
     @JoinColumn(name = "CRYPTOCURRENCY_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cryptocurrency cryptocurrency;
+
+    public BlockchainNetwork getNetwork() {
+        return network == null ? null : BlockchainNetwork.valueOf(network);
+    }
+
+    public void setNetwork(BlockchainNetwork network) {
+        this.network = network == null ? null : network.name();
+    }
 }

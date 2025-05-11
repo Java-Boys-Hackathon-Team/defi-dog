@@ -28,7 +28,9 @@
             </responsiveSteps>
             <textField id="nameField" property="name"/>
             <textField id="addressField" property="address"/>
-            <select id="networkField" property="network"/>
+            <select id="networkField"
+                    itemsEnum="ru.javaboys.defidog.entity.BlockchainNetwork"
+                    property="network"/>
             <textField id="externalLinkField" property="externalLink"/>
             <entityPicker property="deFiProtocol">
                 <actions>

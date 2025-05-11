@@ -10,6 +10,14 @@
             </fetchPlan>
             <loader id="scanToolDl"/>
         </instance>
+        <collection id="sourceCodesDc" class="ru.javaboys.defidog.entity.SourceCode">
+            <loader id="sourceCodesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from SourceCode e]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
     </data>
     <facets>
         <dataLoadCoordinator auto="true"/>
@@ -28,12 +36,18 @@
             <textField id="dockerImageField" property="dockerImage"/>
             <textField id="containerCmdParamsField" property="containerCmdParams"/>
             <checkbox id="activeField" property="active"/>
-            <entityPicker property="sourceCode">
+            <dataGrid id="sourceCodesDataGrid" dataContainer="sourceCodesDc" minWidth="100px" width="100%">
                 <actions>
-                    <action id="entityLookup" type="entity_lookup"/>
-                    <action id="entityClear" type="entity_clear"/>
+                    <action id="addAction" type="list_add"/>
+                    <action id="removeAction" type="list_remove"/>
                 </actions>
-            </entityPicker>
+                <columns>
+                    <column property="repoUrl"/>
+                    <column property="sourceType"/>
+                    <column property="branch"/>
+                    <column property="localPath"/>
+                </columns>
+            </dataGrid>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

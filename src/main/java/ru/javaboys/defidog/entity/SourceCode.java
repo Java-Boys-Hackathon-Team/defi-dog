@@ -127,4 +127,11 @@ public class SourceCode {
     @ManyToMany
     private List<ScanTool> scanTools;
 
+    public SourceType getSourceType() {
+        return sourceType == null ? null : SourceType.valueOf(sourceType);
+    }
+
+    public void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType == null ? null : sourceType.getId();
+    }
 }

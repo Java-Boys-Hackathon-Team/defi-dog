@@ -22,7 +22,9 @@
                 <responsiveStep minWidth="0" columns="1"/>
                 <responsiveStep minWidth="40em" columns="2"/>
             </responsiveSteps>
-            <select id="statusField" property="status"/>
+            <select id="statusField"
+                    itemsEnum="ru.javaboys.defidog.entity.SecurityScanJobStatus"
+                    property="status"/>
             <textArea id="rawOutputField" height="9.5em" property="rawOutput"/>
         </formLayout>
         <hbox id="detailActions">

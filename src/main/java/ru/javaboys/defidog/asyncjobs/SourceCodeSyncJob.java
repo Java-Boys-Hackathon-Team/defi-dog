@@ -1,18 +1,19 @@
 package ru.javaboys.defidog.asyncjobs;
 
-import io.jmix.core.UnconstrainedDataManager;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import ru.javaboys.defidog.asyncjobs.updater.SourceCodeUpdater;
-import ru.javaboys.defidog.entity.SourceCode;
-import ru.javaboys.defidog.entity.SourceType;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import io.jmix.core.UnconstrainedDataManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ru.javaboys.defidog.asyncjobs.updater.SourceCodeUpdater;
+import ru.javaboys.defidog.entity.SourceCode;
+import ru.javaboys.defidog.entity.SourceType;
 
 @Slf4j
 @Component
@@ -33,7 +34,7 @@ public class SourceCodeSyncJob {
                 .list();
 
         for (SourceCode sourceCode : sources) {
-            SourceType sourceType = SourceType.fromId(sourceCode.getSourceType());
+            SourceType sourceType = sourceCode.getSourceType();
             if (sourceType == null) {
                 log.warn("Неизвестный SourceType: {}", sourceCode.getSourceType());
                 continue;

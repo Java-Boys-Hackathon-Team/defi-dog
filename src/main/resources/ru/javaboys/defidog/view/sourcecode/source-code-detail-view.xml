@@ -24,7 +24,9 @@
                 <responsiveStep minWidth="0" columns="1"/>
                 <responsiveStep minWidth="40em" columns="2"/>
             </responsiveSteps>
-            <select id="sourceTypeField" property="sourceType"/>
+            <select id="sourceTypeField"
+                    itemsEnum="ru.javaboys.defidog.entity.SourceType"
+                    property="sourceType"/>
             <textField id="repoUrlField" property="repoUrl"/>
             <textField id="branchField" property="branch"/>
             <textField id="localPathField" property="localPath"/>
