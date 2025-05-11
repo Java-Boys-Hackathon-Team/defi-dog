@@ -36,12 +36,6 @@ public class AuditReportService {
                 .optional()
                 .orElse(null);
 
-//        // ABI (если есть)
-//        AbiChangeSet abiChangeSet = sourceCode.getAbiChanges().stream()
-//                .filter(c -> c.getCommitHash().equals(codeChangeSet.getCommitHash()))
-//                .findFirst()
-//                .orElse(null);
-
         // Сканирование
         List<SourceCodeSecurityScanJob> scanJobs = codeChangeSet.getSecurityScanJobResult();
         List<String> completedOutputs = scanJobs.stream()
