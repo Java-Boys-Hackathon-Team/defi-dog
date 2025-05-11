@@ -10,16 +10,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.router.Route;
 
 import io.jmix.core.DataManager;
 import io.jmix.core.security.CurrentAuthentication;
-import io.jmix.flowui.Dialogs;
-import io.jmix.flowui.UiEventPublisher;
 import io.jmix.flowui.component.image.JmixImage;
-import io.jmix.flowui.kit.action.ActionPerformedEvent;
-import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.StandardView;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
@@ -28,7 +23,6 @@ import io.jmix.flowui.view.ViewDescriptor;
 import ru.javaboys.defidog.entity.ChannelEnum;
 import ru.javaboys.defidog.entity.CodeEntity;
 import ru.javaboys.defidog.entity.User;
-import ru.javaboys.defidog.event.UserChannelUpdatedEvent;
 import ru.javaboys.defidog.integrations.telegram.TelegramBotService;
 import ru.javaboys.defidog.util.CodeUtil;
 import ru.javaboys.defidog.util.InMemoryImageSource;
@@ -40,19 +34,13 @@ import ru.javaboys.defidog.view.main.MainView;
 public class SetupTelegramView extends StandardView {
 
     @Autowired
-    private Dialogs dialogs;
-
-    @Autowired
-    private UiEventPublisher eventPublisher;
-
-    @Autowired
-    private TelegramBotService telegramService;
-
-    @Autowired
     private DataManager dataManager;
 
     @Autowired
     private CurrentAuthentication currentAuthentication;
+
+    @Autowired
+    private TelegramBotService telegramBotService;
 
     @ViewComponent
     private JmixImage<byte[]> qrImage;
@@ -61,23 +49,11 @@ public class SetupTelegramView extends StandardView {
     public void onInit(InitEvent event) throws Exception {
 
         CodeEntity codeEntity = createCode();
-        String link = "https://t.me/defidogdemo04_bot?start=" + codeEntity.getCode();
+        String botName = telegramBotService.getBotName();
+        String link = "https://t.me/" + botName + "?start=" + codeEntity.getCode();
 
         final BufferedImage bufferedImage = generateQR(link);
         qrImage.setValueSource(new InMemoryImageSource(bufferedImage));
-    }
-
-//    @Subscribe(id = "codeConfirmButton", subject = "clickListener")
-    public void onCodeConfirmButtonAction(final ClickEvent<JmixButton> event) {
-
-    }
-
-    private void codeConfirmSuccess(ActionPerformedEvent e) {
-        eventPublisher.publishEventForCurrentUI(new UserChannelUpdatedEvent(this));
-    }
-
-    private void codeConfirmError(ActionPerformedEvent e) {
-
     }
 
     private CodeEntity createCode() {
