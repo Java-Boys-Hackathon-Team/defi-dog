@@ -32,6 +32,7 @@
         </genericFilter>
         <hbox id="buttonsPanel" classNames="buttons-panel">
             <button id="createButton" action="smartContractsDataGrid.createAction"/>
+            <button id="editButton" action="smartContractsDataGrid.editAction"/>
             <button id="removeButton" action="smartContractsDataGrid.removeAction"/>
             <simplePagination id="pagination" dataLoader="smartContractsDl"/>
         </hbox>
@@ -42,6 +43,7 @@
                   columnReorderingAllowed="true">
             <actions>
                 <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
                 <action id="removeAction" type="list_remove"/>
             </actions>
             <columns resizable="true">

@@ -3,4 +3,5 @@
     <item view="NotificationSettings.list" title="msg://ru.javaboys.defidog.view.notificationsettings/notificationSettingsListView.title"/>
     <item view="SetupEmailView" title="msg://ru.javaboys.defidog.view.setupemail/setupEmailView.title"/>
     <item view="SetupTelegramView" title="msg://ru.javaboys.defidog.view.setuptelegram/setupTelegramView.title"/>
+    <item view="Cryptocurrency.list-new" title="msg://ru.javaboys.defidog.view.cryptocurrency/cryptocurrencyListViewNew.title"/>
 </menu-config>
