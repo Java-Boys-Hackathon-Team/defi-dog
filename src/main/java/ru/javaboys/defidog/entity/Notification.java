@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,6 +42,7 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @InstanceName
     @Column(name = "HEADER")
     private String header;
 

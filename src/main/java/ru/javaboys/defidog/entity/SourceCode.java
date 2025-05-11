@@ -2,6 +2,7 @@ package ru.javaboys.defidog.entity;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Comment;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +40,7 @@ public class SourceCode {
     @Column(name = "SOURCE_TYPE")
     private String sourceType;
 
+    @InstanceName
     @Comment("URL к исходникам на GitHub")
     @Column(name = "REPO_URL")
     private String repoUrl;
