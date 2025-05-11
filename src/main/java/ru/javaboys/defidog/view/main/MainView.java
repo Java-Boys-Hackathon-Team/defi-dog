@@ -23,6 +23,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
+import io.jmix.datatoolsflowui.view.entityinspector.EntityInspectorListView;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.app.main.StandardMainView;
@@ -237,6 +238,11 @@ public class MainView extends StandardMainView {
     @Subscribe(id = "adminButton", subject = "clickListener")
     public void onAdminButtonClick(final ClickEvent<JmixButton> event) {
         viewNavigators.view(this, AdminView.class).navigate();
+    }
+
+    @Subscribe(id = "inspectorButton", subject = "clickListener")
+    public void onInspectorButtonClick(final ClickEvent<JmixButton> event) {
+        viewNavigators.view(this, EntityInspectorListView.class).navigate();
     }
 
     @Subscribe(id = "settingsButton", subject = "clickListener")
