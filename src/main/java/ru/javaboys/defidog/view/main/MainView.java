@@ -10,11 +10,8 @@ import java.util.UUID;
 
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Layout;
 import io.jmix.core.Sort;
 import io.jmix.flowui.model.CollectionContainer;
-import jakarta.inject.Inject;
-import org.apache.hc.core5.annotation.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.ClickEvent;
