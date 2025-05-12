@@ -1,4 +1,4 @@
-package ru.javaboys.defidog;
+package ru.javaboys.defidog.config;
 
 import org.springframework.context.annotation.Configuration;
 
