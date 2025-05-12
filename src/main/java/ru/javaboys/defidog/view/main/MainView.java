@@ -78,9 +78,13 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private VerticalLayout logoLayout;
 
+    @ViewComponent
+    private Button homeButton;
+
     @Subscribe
     public void onInit(InitEvent event) {
         blockchainNetworkComboBox.setValue(BlockchainNetwork.ETHEREUM);
+        blockchainNetworkComboBox.setItemLabelGenerator(BlockchainNetwork::toString);
         setVisiblesGrid(true, false);
 
         setColumnsDataGrids();
@@ -90,6 +94,8 @@ public class MainView extends StandardMainView {
         Image logo = new Image("icons/lader.png", "DeFi App Logo");
         logo.setWidth("400px");
         logoLayout.add(logo);
+
+        homeButton.addClassName("home-button-icon");
     }
 
     private void setColumnsDataGrids() {
@@ -178,7 +184,7 @@ public class MainView extends StandardMainView {
         cryptocurrencyGrid.addComponentColumn(entity -> {
             Button actionButton = new Button();
             actionButton.setIcon(new Icon(VaadinIcon.PLAY));
-            actionButton.setTooltipText("Запустить аудит");
+            actionButton.setTooltipText("Перейти к аудиту");
             actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.CRYPTOCURRENCY));
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");

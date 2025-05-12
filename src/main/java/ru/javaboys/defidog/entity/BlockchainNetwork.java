@@ -30,4 +30,14 @@ public enum BlockchainNetwork implements EnumClass<String> {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case ETHEREUM -> "Ethereum Mainnet";
+            case BSC -> "Binance Smart Chain";
+            case POLYGON -> "Polygon Network";
+            case SOLANA -> "Solana Blockchain";
+        };
+    }
 }

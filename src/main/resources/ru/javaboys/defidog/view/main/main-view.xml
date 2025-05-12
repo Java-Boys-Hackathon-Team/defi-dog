@@ -30,7 +30,8 @@
     <appLayout>
         <navigationBar>
             <header id="header" classNames="jmix-main-view-header">
-                <button id="homeButton" icon="HOME_O"/>
+                <div width="10px"/>
+                <button id="homeButton"/>
                 <div width="10px"/>
                 <h1 id="viewTitle" classNames="jmix-main-view-title"/>
             </header>
@@ -80,10 +81,10 @@
                     </tab>
                 </tabSheet>
             </hbox>
-            <dataGrid id="cryptocurrencyGrid" width="100%" minHeight="20em"
+            <dataGrid id="cryptocurrencyGrid" width="100%" minHeight="30em"
                       dataContainer="cryptocurrencyDg">
             </dataGrid>
-            <dataGrid id="dexGrid" width="100%" minHeight="20em"
+            <dataGrid id="dexGrid" width="100%" minHeight="30em"
                       dataContainer="dexDg">
             </dataGrid>
         </initialLayout>

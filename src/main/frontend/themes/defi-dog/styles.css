@@ -10,3 +10,22 @@ html[theme~="dark"] {
     --lumo-primary-text-color: #ffffff;
     --lumo-text-color: #e0e0e0;
 }
+
+.home-button-icon {
+    width: 100px;
+    height: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    display: inline-block;
+}
+
+/* Тёмная тема */
+html[theme~="dark"] .home-button-icon {
+    background-image: url('icons/defidog_dark.png');
+}
+
+/* Светлая тема */
+html:not([theme~="dark"]) .home-button-icon {
+    background-image: url('icons/defidog_light.png');
+}
