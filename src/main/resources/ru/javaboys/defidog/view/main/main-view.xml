@@ -56,8 +56,10 @@
                     </items>
                 </dropdownButton>
                 <button id="inspectorButton"
+                        visible="false"
                         icon="MAGIC"/>
                 <button id="adminButton"
+                        visible="false"
                         icon="COG_O"/>
                 <button id="settingsButton"
                         icon="ENVELOPE_OPEN"/>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="defi-dog">
+        <insert tableName="USER_" dbms="postgresql, mssql, hsqldb">
+            <column name="ID" value="79496769-1794-4ccc-a784-9de2cf829a70"/>
+            <column name="VERSION" value="1"/>
+            <column name="USERNAME" value="user"/>
+            <column name="PASSWORD" value="{noop}user"/>
+            <column name="ACTIVE" valueBoolean="true"/>
+        </insert>
+        <insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb">
+            <column name="ID" value="4af4d876-0fbf-4d3f-8350-da58680f75cf"/>
+            <column name="VERSION" value="1"/>
+            <column name="USERNAME" value="user"/>
+            <column name="ROLE_CODE" value="ui-minimal"/>
+            <column name="ROLE_TYPE" value="resource"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
