@@ -31,7 +31,7 @@ import ru.javaboys.defidog.entity.CodeEntity;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.event.UserChannelUpdatedEvent;
 import ru.javaboys.defidog.mail.MailService;
-import ru.javaboys.defidog.util.CodeUtil;
+import ru.javaboys.defidog.utils.CodeUtil;
 import ru.javaboys.defidog.view.main.MainView;
 
 @Route(value = "setup-email-view", layout = MainView.class)

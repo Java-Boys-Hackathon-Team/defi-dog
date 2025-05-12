@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import io.jmix.email.EmailInfo;
 import io.jmix.email.EmailInfoBuilder;
 import io.jmix.email.Emailer;
-import ru.javaboys.defidog.util.MailTemplates;
+import ru.javaboys.defidog.utils.MailTemplates;
 
 @Service
 public class MailService {

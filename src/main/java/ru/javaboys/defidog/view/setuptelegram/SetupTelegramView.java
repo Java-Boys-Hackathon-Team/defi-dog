@@ -24,8 +24,8 @@ import ru.javaboys.defidog.entity.ChannelEnum;
 import ru.javaboys.defidog.entity.CodeEntity;
 import ru.javaboys.defidog.entity.User;
 import ru.javaboys.defidog.integrations.telegram.TelegramBotService;
-import ru.javaboys.defidog.util.CodeUtil;
-import ru.javaboys.defidog.util.InMemoryImageSource;
+import ru.javaboys.defidog.utils.CodeUtil;
+import ru.javaboys.defidog.utils.InMemoryImageSource;
 import ru.javaboys.defidog.view.main.MainView;
 
 @Route(value = "setup-telegram-view", layout = MainView.class)

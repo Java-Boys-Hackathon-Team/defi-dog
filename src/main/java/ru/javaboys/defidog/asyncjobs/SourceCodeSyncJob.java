@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.jmix.core.UnconstrainedDataManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.javaboys.defidog.asyncjobs.service.ChangeSetInitializationService;
 import ru.javaboys.defidog.asyncjobs.updater.SourceCodeUpdater;
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceType;
@@ -23,6 +24,8 @@ public class SourceCodeSyncJob {
     private final UnconstrainedDataManager dataManager;
     // Регистрация обработчиков по типу источника
     private final Map<SourceType, SourceCodeUpdater> updaterMap;
+
+    private final ChangeSetInitializationService changeSetInitializationService;
 
     @Scheduled(fixedDelay = 30000)
     @Transactional
@@ -59,6 +62,13 @@ public class SourceCodeSyncJob {
                 sourceCode.setFetchedAt(OffsetDateTime.now());
                 dataManager.save(sourceCode);
             }
+        }
+
+        try {
+            log.info("Создание начальных ChangeSet-ов, если они отсутствуют...");
+            changeSetInitializationService.createInitialChangeSetsIfMissing();
+        } catch (Exception e) {
+            log.error("Ошибка при создании начальных ChangeSet-ов: {}", e.getMessage(), e);
         }
 
         log.info("Завершена джоба синхронизации исходного кода.");

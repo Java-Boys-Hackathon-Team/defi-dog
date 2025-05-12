@@ -9,7 +9,7 @@ import io.jmix.flowui.view.StandardListView;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
-import ru.javaboys.defidog.DynamicListView;
+import ru.javaboys.defidog.viewutils.DynamicListView;
 import ru.javaboys.defidog.entity.ScanTool;
 import ru.javaboys.defidog.view.main.MainView;
 
