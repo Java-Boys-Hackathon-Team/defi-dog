@@ -72,6 +72,7 @@ public class Audit extends StandardView {
     private CodeEditor abiCodeEditor;
     @ViewComponent
     private HorizontalLayout header;
+    @ViewComponent
     private Div markdownHtml;
 
     @Autowired
