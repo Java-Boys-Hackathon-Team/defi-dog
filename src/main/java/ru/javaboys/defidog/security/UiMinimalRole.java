@@ -8,28 +8,14 @@ import io.jmix.security.role.annotation.ResourceRole;
 import io.jmix.security.role.annotation.SpecificPolicy;
 import io.jmix.securityflowui.role.UiMinimalPolicies;
 import io.jmix.securityflowui.role.annotation.ViewPolicy;
-import ru.javaboys.defidog.entity.AbiChangeSet;
-import ru.javaboys.defidog.entity.AuditReport;
-import ru.javaboys.defidog.entity.CodeEntity;
-import ru.javaboys.defidog.entity.ContractDependenciesGraph;
-import ru.javaboys.defidog.entity.Cryptocurrency;
-import ru.javaboys.defidog.entity.DeFiProtocol;
-import ru.javaboys.defidog.entity.Notification;
-import ru.javaboys.defidog.entity.NotificationSettings;
-import ru.javaboys.defidog.entity.ScanTool;
-import ru.javaboys.defidog.entity.SmartContract;
-import ru.javaboys.defidog.entity.SourceCode;
-import ru.javaboys.defidog.entity.SourceCodeChangeSet;
-import ru.javaboys.defidog.entity.SourceCodeSecurityScanJob;
-import ru.javaboys.defidog.entity.TelegramUser;
-import ru.javaboys.defidog.entity.User;
+import ru.javaboys.defidog.entity.*;
 
 @ResourceRole(name = "UI: minimal access", code = UiMinimalRole.CODE)
 public interface UiMinimalRole extends UiMinimalPolicies {
 
     String CODE = "ui-minimal";
 
-    @ViewPolicy(viewIds = {"MainView", "SettingsView", "SetupEmailView", "SetupTelegramView", "NotificationUserSettings.detail", "Cryptocurrency.list", "DeFiProtocol.list"})
+    @ViewPolicy(viewIds = {"MainView", "SettingsView", "SetupEmailView", "SetupTelegramView", "NotificationUserSettings.detail", "Cryptocurrency.list", "DeFiProtocol.list", "Audit"})
     void main();
 
     @ViewPolicy(viewIds = "LoginView")
