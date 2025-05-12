@@ -30,6 +30,7 @@
     <appLayout>
         <navigationBar>
             <header id="header" classNames="jmix-main-view-header">
+                <div width="10px"/>
                 <button id="homeButton"/>
                 <div width="10px"/>
                 <h1 id="viewTitle" classNames="jmix-main-view-title"/>
