@@ -83,28 +83,32 @@ public class ProtocolGraphBuilderService {
             return;
         }
 
-        // Криптовалюта
+        // --- Обновление криптовалюты
         Cryptocurrency crypto = contract.getCryptocurrency();
         if (crypto != null) {
-            ContractDependenciesGraph graph = crypto.getDependencyGraph() != null
-                    ? crypto.getDependencyGraph()
-                    : dataManager.create(ContractDependenciesGraph.class);
+            crypto = dataManager.load(Cryptocurrency.class).id(crypto.getId()).one(); // гарантировано managed
+            ContractDependenciesGraph graph = crypto.getDependencyGraph();
+            if (graph == null) {
+                graph = dataManager.create(ContractDependenciesGraph.class);
+                crypto.setDependencyGraph(graph);
+            }
             graph.setGraphJson(jsonGraph);
-            crypto.setDependencyGraph(graph);
-            dataManager.save(graph);
-            log.info("📦 Обновлён/создан граф для Cryptocurrency ID: {}", crypto.getId());
+            dataManager.save(crypto); // сохраняем владеющего
+            log.info("📦 Граф обновлён для Cryptocurrency ID: {}", crypto.getId());
         }
 
-        // DeFi-протокол
+        // --- Обновление DeFi протокола
         DeFiProtocol defi = contract.getDeFiProtocol();
         if (defi != null) {
-            ContractDependenciesGraph graph = defi.getDependencyGraph() != null
-                    ? defi.getDependencyGraph()
-                    : dataManager.create(ContractDependenciesGraph.class);
+            defi = dataManager.load(DeFiProtocol.class).id(defi.getId()).one();
+            ContractDependenciesGraph graph = defi.getDependencyGraph();
+            if (graph == null) {
+                graph = dataManager.create(ContractDependenciesGraph.class);
+                defi.setDependencyGraph(graph);
+            }
             graph.setGraphJson(jsonGraph);
-            defi.setDependencyGraph(graph);
-            dataManager.save(graph);
-            log.info("📦 Обновлён/создан граф для DeFiProtocol ID: {}", defi.getId());
+            dataManager.save(defi);
+            log.info("📦 Граф обновлён для DeFiProtocol ID: {}", defi.getId());
         }
     }
 }

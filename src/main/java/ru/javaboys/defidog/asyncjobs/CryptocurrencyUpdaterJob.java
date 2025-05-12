@@ -10,7 +10,7 @@ import ru.javaboys.defidog.crypto.CryptocurrencyService;
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "coinmarketcap.updater", name = "enabled", havingValue = "true")
-public class CryptocurrencyUpdaterScheduler {
+public class CryptocurrencyUpdaterJob {
 
     private final CryptocurrencyService cryptocurrencyService;
     private final SystemAuthenticator systemAuthenticator;

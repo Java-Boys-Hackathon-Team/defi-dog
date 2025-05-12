@@ -4,6 +4,7 @@ package ru.javaboys.defidog.view.audit;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
@@ -12,10 +13,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.codeeditor.CodeEditor;
+import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.view.StandardView;
 import io.jmix.flowui.view.Subscribe;
@@ -23,10 +24,14 @@ import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import lombok.RequiredArgsConstructor;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaboys.defidog.audit.components.GraphPanel;
 import ru.javaboys.defidog.entity.*;
 import ru.javaboys.defidog.repositories.ChangeSetRepository;
+import ru.javaboys.defidog.repositories.CryptocurrencyRepository;
 import ru.javaboys.defidog.repositories.DeFiProtocolRepository;
 import ru.javaboys.defidog.repositories.SourceCodeRepository;
 import ru.javaboys.defidog.view.main.MainView;
@@ -58,6 +63,8 @@ public class Audit extends StandardView {
     @ViewComponent
     private CollectionContainer<AbiChangeSet> abiChangesDc;
     @ViewComponent
+    private DataGrid<SourceCodeChangeSet> sourceCodeHistoryGrid;
+    @ViewComponent
     private Div statusDot;
     @ViewComponent
     private Span statusLabel;
@@ -65,6 +72,7 @@ public class Audit extends StandardView {
     private CodeEditor abiCodeEditor;
     @ViewComponent
     private HorizontalLayout header;
+    private Div markdownHtml;
 
     @Autowired
     private DeFiProtocolRepository deFiProtocolRepository;
@@ -72,46 +80,47 @@ public class Audit extends StandardView {
     private ChangeSetRepository changeSetRepository;
     @Autowired
     private SourceCodeRepository sourceCodeRepository;
+    @Autowired
+    private CryptocurrencyRepository cryptocurrencyRepository;
 
     private UUID protocolId;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        UUID protocolId = null;
-        ProtocolKind protocolKind = null;
+        Map<String, List<String>> params = event.getLocation().getQueryParameters().getParameters();
 
-        QueryParameters queryParameters = event.getLocation().getQueryParameters();
-        Map<String, List<String>> paramsMap = queryParameters.getParameters();
-
-        try {
-            protocolId = Optional.ofNullable(paramsMap.get("id"))
-                    .flatMap(list -> list.stream().findFirst())
-                    .map(UUID::fromString)
-                    .orElseThrow(() -> new IllegalArgumentException("Missing or invalid 'id'"));
-
-            protocolKind = Optional.ofNullable(paramsMap.get("kind"))
-                    .flatMap(list -> list.stream().findFirst())
-                    .map(ProtocolKind::valueOf)
-                    .orElseThrow(() -> new IllegalArgumentException("Missing or invalid 'kind'"));
-        } catch (Exception e) {
-            getUI().ifPresent(ui ->
-                    ui.navigate("main")
-            );
-        }
-        this.protocolId = protocolId;
+        UUID protocolId = parseUuidParam(params, "id");
+        ProtocolKind protocolKind = parseKindParam(params, "kind");
 
         if (!validateInputs(protocolId, protocolKind)) {
+            getUI().ifPresent(ui -> ui.navigate("main"));
             return;
         }
 
-        renderProtocolTexts(protocolId);
-        renderChanges(protocolId, protocolKind);
-        renderStatusDot();
+        this.protocolId = protocolId;
+        renderProtocolTexts(protocolId, protocolKind);
+
+        Optional<SourceCode> sourceCodeOpt = sourceCodeRepository.findFirstSourceCodeByProtocolId(protocolId, protocolKind);
+        if (sourceCodeOpt.isEmpty()) {
+            renderEmptyChanges();
+            return;
+        }
+
+        SourceCode sourceCode = sourceCodeOpt.get();
+        UUID sourceId = sourceCode.getId();
+
+        List<SourceCodeChangeSet> codeChanges = changeSetRepository.findCodeChanges(sourceId);
+        List<AbiChangeSet> abiChanges = changeSetRepository.findAbiChanges(sourceId);
+
+        renderChanges(sourceCode, codeChanges, abiChanges);
+        renderStatusDot(codeChanges);
+        renderAuditMd(codeChanges);
     }
 
     @Subscribe
     public void onReady(ReadyEvent e) {
         renderDependencyGraph();
+        addCriticalityEmojiColumn();
     }
 
     @Subscribe("copyCodeBtn")
@@ -174,34 +183,40 @@ public class Audit extends StandardView {
         return true;
     }
 
-    private void renderProtocolTexts(UUID protocolId) {
-        protocolNameH3.setText(
-                deFiProtocolRepository.findNameById(protocolId).orElse("Не найдено")
-        );
-        protocolDescriptionP.setText(
-                deFiProtocolRepository.findDescriptionById(protocolId).orElse("Описание отсутствует")
-        );
-        DeFiProtocol protocol = deFiProtocolRepository.findById(protocolId);
-        if (protocol != null) {
-            Component logo = ViewComponentsUtils.createImageComponent(protocol, DeFiProtocol::getLogoImage);
-            header.addComponentAsFirst(logo);
+    private void renderProtocolTexts(UUID protocolId, ProtocolKind kind) {
+        String name = null;
+        String description = null;
+
+        switch (kind) {
+            case DEFI -> {
+                name = deFiProtocolRepository.findNameById(protocolId).orElse("Не найдено");
+                description = deFiProtocolRepository.findDescriptionById(protocolId).orElse("Описание отсутствует");
+                DeFiProtocol protocol = deFiProtocolRepository.findById(protocolId);
+                if (protocol != null) {
+                    Component logo = ViewComponentsUtils.createImageComponent(protocol, DeFiProtocol::getLogoImage);
+                    header.addComponentAsFirst(logo);
+                }
+            }
+            case CRYPTOCURRENCY -> {
+                name = cryptocurrencyRepository.findNameById(protocolId).orElse("Не найдено");
+                description = cryptocurrencyRepository.findDescriptionById(protocolId).orElse("Описание отсутствует");
+            }
         }
+
+        protocolNameH3.setText(name);
+        protocolDescriptionP.setText(description);
     }
 
-    private void renderStatusDot() {
-        List<SourceCodeChangeSet> changes = sourceCodeChangesDc.getItems();
-
+    private void renderStatusDot(List<SourceCodeChangeSet> changes) {
         String criticality = changes.isEmpty()
                 ? "UNKNOWN"
                 : Optional.ofNullable(changes.get(0).getAuditReport())
                 .map(AuditReport::getCriticality)
                 .orElse("UNKNOWN");
 
-        // Очистка текущих классов и установка базового
         statusDot.getClassNames().clear();
         statusDot.addClassName("fancy-dot");
 
-        // Добавление специфичного класса
         String statusClass = switch (criticality) {
             case "CRITICAL" -> "status-critical";
             case "HIGH"     -> "status-high";
@@ -210,7 +225,6 @@ public class Audit extends StandardView {
         };
         statusDot.addClassName(statusClass);
 
-        // Отображение текстовой подписи
         statusLabel.setText(
                 switch (criticality) {
                     case "CRITICAL" -> "Critical";
@@ -221,23 +235,7 @@ public class Audit extends StandardView {
         );
     }
 
-    private void renderChanges(UUID protocolId, ProtocolKind kind) {
-        Optional<SourceCode> sourceCodeOpt = sourceCodeRepository.findFirstSourceCodeByProtocolId(protocolId, kind);
-
-        if (sourceCodeOpt.isEmpty()) {
-            sourceCodeChangesDc.setItems(List.of());
-            abiChangesDc.setItems(List.of());
-            sourceCodeEditor.setValue("// Исходный код отсутствует");
-            abiCodeEditor.setValue("// ABI отсутствует");
-            return;
-        }
-
-        SourceCode sourceCode = sourceCodeOpt.get();
-        UUID sourceId = sourceCode.getId();
-
-        List<SourceCodeChangeSet> codeChanges = changeSetRepository.findCodeChanges(sourceId);
-        List<AbiChangeSet> abiChanges = changeSetRepository.findAbiChanges(sourceId);
-
+    private void renderChanges(SourceCode sourceCode, List<SourceCodeChangeSet> codeChanges, List<AbiChangeSet> abiChanges) {
         sourceCodeChangesDc.setItems(codeChanges);
         abiChangesDc.setItems(abiChanges);
 
@@ -250,5 +248,72 @@ public class Audit extends StandardView {
                 Optional.ofNullable(sourceCode.getLastKnownAbi())
                         .orElse("// ABI отсутствует")
         );
+    }
+
+    private void addCriticalityEmojiColumn() {
+        sourceCodeHistoryGrid.addComponentColumn(item -> {
+                    String level = Optional.ofNullable(item.getAuditReport())
+                            .map(AuditReport::getCriticality)
+                            .orElse("UNKNOWN");
+
+                    Span emoji = new Span(switch (level) {
+                        case "CRITICAL" -> "🔴 CRITICAL";
+                        case "HIGH"     -> "🟠 HIGH";
+                        case "NORMAL"   -> "🟢 NORMAL";
+                        default         -> "⚪ UNKNOWN";
+                    });
+
+                    emoji.getStyle().set("font-weight", "bold");
+                    return emoji;
+                }).setHeader("Критичность")
+                .setWidth("50px")
+                .setTextAlign(ColumnTextAlign.CENTER);
+    }
+
+    private UUID parseUuidParam(Map<String, List<String>> params, String key) {
+        try {
+            return Optional.ofNullable(params.get(key))
+                    .flatMap(list -> list.stream().findFirst())
+                    .map(UUID::fromString)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private ProtocolKind parseKindParam(Map<String, List<String>> params, String key) {
+        try {
+            return Optional.ofNullable(params.get(key))
+                    .flatMap(list -> list.stream().findFirst())
+                    .map(ProtocolKind::valueOf)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void renderEmptyChanges() {
+        sourceCodeChangesDc.setItems(List.of());
+        abiChangesDc.setItems(List.of());
+        sourceCodeEditor.setValue("// Исходный код отсутствует");
+        abiCodeEditor.setValue("// ABI отсутствует");
+    }
+
+    private void renderAuditMd(List<SourceCodeChangeSet> codeChanges) {
+        SourceCodeChangeSet latest = codeChanges.isEmpty() ? null : codeChanges.get(0);
+
+        if (latest == null || latest.getAuditReport() == null || latest.getAuditReport().getSummary() == null) {
+            markdownHtml.getElement().setProperty("innerHTML", "<p><em>Описание аудита отсутствует</em></p>");
+            return;
+        }
+
+        String markdown = latest.getAuditReport().getSummary();
+
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(markdown);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        String html = renderer.render(document);
+
+        markdownHtml.getElement().setProperty("innerHTML", html);
     }
 }

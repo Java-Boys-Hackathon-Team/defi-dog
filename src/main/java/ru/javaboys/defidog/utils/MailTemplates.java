@@ -1,4 +1,4 @@
-package ru.javaboys.defidog.util;
+package ru.javaboys.defidog.utils;
 
 public class MailTemplates {
     private static final String CODE = """

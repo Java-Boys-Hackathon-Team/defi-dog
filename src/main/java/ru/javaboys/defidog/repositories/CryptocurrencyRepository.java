@@ -9,6 +9,7 @@ import ru.javaboys.defidog.entity.SmartContract;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -26,5 +27,19 @@ public class CryptocurrencyRepository {
                 .orElse(null);
 
         return crypto != null ? crypto.getContracts() : Collections.emptyList();
+    }
+
+    public Optional<String> findNameById(UUID protocolId) {
+        return dataManager.loadValue(
+                        "select c.name from Cryptocurrency c where c.id = :protocolId", String.class)
+                .parameter("protocolId", protocolId)
+                .optional();
+    }
+
+    public Optional<String> findDescriptionById(UUID protocolId) {
+        return dataManager.loadValue(
+                        "select c.description from Cryptocurrency c where c.id = :protocolId", String.class)
+                .parameter("protocolId", protocolId)
+                .optional();
     }
 }

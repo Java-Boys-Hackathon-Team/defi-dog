@@ -1,4 +1,4 @@
-package ru.javaboys.defidog;
+package ru.javaboys.defidog.viewutils;
 
 public interface DynamicListView {
 

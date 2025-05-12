@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.stereotype.Service;
+import ru.javaboys.defidog.asyncjobs.util.CommonUtils;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class ContractDependenciesGraphService {
      * Полная цепочка генерации общего графа из большого исходного кода.
      */
     public String generateGraphJsonFromSource(String sourceCode) {
-        List<String> contractBatches = splitSolidityContractsInBatches(sourceCode, DEFAULT_MAX_TOKENS_PER_BATCH);
+        List<String> contractBatches = CommonUtils.splitSolidityContractsInBatches(sourceCode, DEFAULT_MAX_TOKENS_PER_BATCH);
 
         log.info("Разделено на {} батчей по ~{} токенов", contractBatches.size(), DEFAULT_MAX_TOKENS_PER_BATCH);
 
@@ -80,7 +81,7 @@ public class ContractDependenciesGraphService {
             String batch = contractBatches.get(i);
             log.info("🚀 Генерируем граф для батча #{}", i + 1);
 
-            String graph = generateGraphForBatch(batch);
+            String graph = generateGraphForBatch(batch, i + 1, contractBatches.size());
             batchGraphs.add(graph);
 
             // Жёсткая пауза 10 секунд между батчами (или больше если надо)
@@ -106,61 +107,17 @@ public class ContractDependenciesGraphService {
     }
 
     /**
-     * Разделяет исходный код по контрактам (по комментариям // ===== ... =====).
-     */
-    private List<String> splitSolidityContracts(String sourceCode) {
-        String[] parts = sourceCode.split("(?=// ===== )");
-        List<String> contracts = new ArrayList<>();
-        for (String part : parts) {
-            String trimmed = part.trim();
-            if (!trimmed.isEmpty()) {
-                contracts.add(trimmed);
-            }
-        }
-        return contracts;
-    }
-
-    /**
-     * Группировка контрактов по ~максимальному количеству токенов.
-     */
-    private List<String> splitSolidityContractsInBatches(String sourceCode, int maxTokensPerBatch) {
-        List<String> contracts = splitSolidityContracts(sourceCode);
-        List<String> batches = new ArrayList<>();
-
-        StringBuilder currentBatch = new StringBuilder();
-        int currentTokens = 0;
-
-        for (String contract : contracts) {
-            int estimatedTokens = countTokens(contract);
-
-            if (currentTokens + estimatedTokens > maxTokensPerBatch) {
-                batches.add(currentBatch.toString());
-                currentBatch = new StringBuilder();
-                currentTokens = 0;
-            }
-
-            currentBatch.append(contract).append("\n\n");
-            currentTokens += estimatedTokens;
-        }
-
-        if (currentBatch.length() > 0) {
-            batches.add(currentBatch.toString());
-        }
-
-        return batches;
-    }
-
-    /**
-     * Оценка токенов по длине текста.
-     */
-    private int countTokens(String text) {
-        return text.length() / 4;
-    }
-
-    /**
      * Генерация графа для батча контрактов.
+     * 
+     * @param batchContracts содержимое батча контрактов
+     * @param batchNumber номер текущего батча (начиная с 1)
+     * @param totalBatches общее количество батчей
+     * @return JSON-представление графа
      */
-    private String generateGraphForBatch(String batchContracts) {
+    private String generateGraphForBatch(String batchContracts, int batchNumber, int totalBatches) {
+        log.info("🔄 Обрабатываем батч № {} из {}. Осталось: {}",
+                batchNumber, totalBatches, totalBatches - batchNumber);
+
         String conversationId = UUID.randomUUID().toString();
         String userMessage = BUILD_GRAPH_FROM_CODE_PROMPT_TEMPLATE.formatted(batchContracts);
 
@@ -172,7 +129,7 @@ public class ContractDependenciesGraphService {
 
         try {
             JsonNode jsonNode = objectMapper.readTree(response);
-            log.info("Успешно сгенерирован граф для батча. Узлов: {}", jsonNode.at("/elements/nodes").size());
+            log.info("Успешно сгенерирован граф для батча № {}. Узлов: {}", batchNumber, jsonNode.at("/elements/nodes").size());
             return response;
         } catch (Exception e) {
             log.error("Ошибка парсинга JSON графа от OpenAI: {}", e.getMessage());

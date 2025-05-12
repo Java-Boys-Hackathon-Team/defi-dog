@@ -67,12 +67,22 @@ public class SecurityAuditJob {
 
             AuditReport report = auditReportService.generateReport(changeSet);
 
-            List<Notification> notifications = notificationService.buildNotifications(report);
-            if (CollectionUtils.isNotEmpty(notifications)) {
-                dataManager.saveAll(notifications);
+            changeSet.setAuditReport(report);
+            dataManager.save(changeSet);
+
+            try {
+                log.info( "Создание уведомлений и графа протокола для changeSet {}", changeSet.getId());
+
+                List<Notification> notifications = notificationService.buildNotifications(report);
+                if (CollectionUtils.isNotEmpty(notifications)) {
+                    dataManager.saveAll(notifications);
+                }
+
+                protocolGraphBuilderService.buildGraphProtocol(report, changeSet);
+            } catch (Exception e) {
+                log.error("Ошибка при создании уведомлений или графа протокола для changeSet {}: {}", changeSet.getId(), e.getMessage(), e);
             }
 
-            protocolGraphBuilderService.buildGraphProtocol(report, changeSet);
         }
 
         log.info("Джоба аудита безопасности завершена");
