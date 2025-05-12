@@ -10,7 +10,7 @@
             <column name="ID" value="79496769-1794-4ccc-a784-9de2cf829a70"/>
             <column name="VERSION" value="1"/>
             <column name="USERNAME" value="satoshi"/>
-            <column name="PASSWORD" value="{noop}satoshi"/>
+            <column name="PASSWORD" value="{noop}javaboys"/>
             <column name="ACTIVE" valueBoolean="true"/>
         </insert>
         <insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb">
