@@ -37,8 +37,10 @@
             </header>
             <userIndicator id="userIndicator" minWidth="150px"/>
             <button id="inspectorButton"
+                    visible="false"
                     icon="MAGIC"/>
             <button id="adminButton"
+                    visible="false"
                     icon="COG_O"/>
             <button id="settingsButton"
                     icon="ENVELOPE_OPEN"/>

@@ -26,6 +26,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 
+import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.datatoolsflowui.view.entityinspector.EntityInspectorListView;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.ViewNavigators;
@@ -63,6 +64,9 @@ public class MainView extends StandardMainView {
     @Autowired
     private ViewNavigators viewNavigators;
 
+    @Autowired
+    private CurrentAuthentication currentAuthentication;
+
     @ViewComponent("cryptocurrencyLoader")
     private CollectionLoader<Cryptocurrency> cryptocurrencyLoader;
 
@@ -86,6 +90,21 @@ public class MainView extends StandardMainView {
 
     @ViewComponent
     private CollectionContainer<DeFiProtocol> dexDg;
+
+    @ViewComponent
+    private Button inspectorButton;
+
+    @ViewComponent
+    private Button adminButton;
+
+    @Subscribe
+    public void onBeforeShow(BeforeShowEvent event) {
+        boolean isAdmin = currentAuthentication.getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_system-full-access"));
+
+        inspectorButton.setVisible(isAdmin);
+        adminButton.setVisible(isAdmin);
+    }
 
     @Subscribe
     public void onInit(InitEvent event) {
