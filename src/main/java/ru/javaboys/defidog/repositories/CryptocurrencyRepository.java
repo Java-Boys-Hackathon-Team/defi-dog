@@ -36,6 +36,10 @@ public class CryptocurrencyRepository {
                 .optional();
     }
 
+    public Cryptocurrency findById(UUID protocolId) {
+        return dataManager.load(Cryptocurrency.class).id(protocolId).optional().orElse(null);
+    }
+
     public Optional<String> findDescriptionById(UUID protocolId) {
         return dataManager.loadValue(
                         "select c.description from Cryptocurrency c where c.id = :protocolId", String.class)
