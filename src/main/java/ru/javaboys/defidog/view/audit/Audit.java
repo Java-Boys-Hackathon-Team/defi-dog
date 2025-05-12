@@ -2,6 +2,7 @@ package ru.javaboys.defidog.view.audit;
 
 
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
@@ -23,15 +25,12 @@ import io.jmix.flowui.view.ViewDescriptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaboys.defidog.audit.components.GraphPanel;
-import ru.javaboys.defidog.entity.AbiChangeSet;
-import ru.javaboys.defidog.entity.AuditReport;
-import ru.javaboys.defidog.entity.ProtocolKind;
-import ru.javaboys.defidog.entity.SourceCode;
-import ru.javaboys.defidog.entity.SourceCodeChangeSet;
+import ru.javaboys.defidog.entity.*;
 import ru.javaboys.defidog.repositories.ChangeSetRepository;
 import ru.javaboys.defidog.repositories.DeFiProtocolRepository;
 import ru.javaboys.defidog.repositories.SourceCodeRepository;
 import ru.javaboys.defidog.view.main.MainView;
+import ru.javaboys.defidog.viewutils.ViewComponentsUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -64,6 +63,8 @@ public class Audit extends StandardView {
     private Span statusLabel;
     @ViewComponent
     private CodeEditor abiCodeEditor;
+    @ViewComponent
+    private HorizontalLayout header;
 
     @Autowired
     private DeFiProtocolRepository deFiProtocolRepository;
@@ -180,6 +181,11 @@ public class Audit extends StandardView {
         protocolDescriptionP.setText(
                 deFiProtocolRepository.findDescriptionById(protocolId).orElse("Описание отсутствует")
         );
+        DeFiProtocol protocol = deFiProtocolRepository.findById(protocolId);
+        if (protocol != null) {
+            Component logo = ViewComponentsUtils.createImageComponent(protocol, DeFiProtocol::getLogoImage);
+            header.addComponentAsFirst(logo);
+        }
     }
 
     private void renderStatusDot() {

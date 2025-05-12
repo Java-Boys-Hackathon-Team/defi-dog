@@ -26,6 +26,10 @@ public class DeFiProtocolRepository {
                 .optional();
     }
 
+    public DeFiProtocol findById(UUID protocolId) {
+        return dataManager.load(DeFiProtocol.class).id(protocolId).optional().orElse(null);
+    }
+
     public Optional<String> findDescriptionById(UUID protocolId) {
         return dataManager.loadValue(
                         "select p.description from DeFiProtocol p where p.id = :protocolId", String.class)
