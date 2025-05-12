@@ -44,6 +44,10 @@ public class Cryptocurrency {
     @Column(name = "NAME")
     private String name;
 
+    @Comment("Описание криптовалюты")
+    @Column(name = "DESCRIPTION")
+    private String description;
+
     @Comment("Кракткое название криптовалютного инструмента")
     @Column(name = "TICKER")
     private String ticker;
