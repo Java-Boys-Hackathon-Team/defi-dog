@@ -78,13 +78,31 @@ public class ContractDependenciesGraphService {
         List<String> batchGraphs = new ArrayList<>();
         for (int i = 0; i < contractBatches.size(); i++) {
             String batch = contractBatches.get(i);
-            log.info("Генерируем граф для батча #{}", i + 1);
+            log.info("🚀 Генерируем граф для батча #{}", i + 1);
+
             String graph = generateGraphForBatch(batch);
             batchGraphs.add(graph);
+
+            // Жёсткая пауза 10 секунд между батчами (или больше если надо)
+            sleepSafe(10000);
         }
 
-        log.info("Склеиваем {} графов в один", batchGraphs.size());
+        log.info("🛠️ Склеиваем {} графов в один", batchGraphs.size());
+
+        // Перед мержем тоже пауза (если мерж большой — лучше выдержать)
+        sleepSafe(15000);
+
         return mergeGraphsWithChatGpt(batchGraphs);
+    }
+
+    private void sleepSafe(long millis) {
+        try {
+            log.info("⏸ Пауза {} мс для избежания 429", millis);
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.warn("Thread interrupted во время паузы");
+        }
     }
 
     /**
