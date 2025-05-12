@@ -36,6 +36,14 @@
                 <h1 id="viewTitle" classNames="jmix-main-view-title"/>
             </header>
             <userIndicator id="userIndicator" minWidth="150px"/>
+            <button id="inspectorButton"
+                    visible="false"
+                    icon="MAGIC"/>
+            <button id="adminButton"
+                    visible="false"
+                    icon="COG_O"/>
+            <button id="settingsButton"
+                    icon="ENVELOPE_OPEN"/>
             <hbox themeNames="spacing-xs">
                 <dropdownButton id="themeSwitcher"
                                 icon="ADJUST"
@@ -55,17 +63,10 @@
                         </actionItem>
                     </items>
                 </dropdownButton>
-                <button id="inspectorButton"
-                        visible="false"
-                        icon="MAGIC"/>
-                <button id="adminButton"
-                        visible="false"
-                        icon="COG_O"/>
-                <button id="settingsButton"
-                        icon="ENVELOPE_OPEN"/>
                 <button id="logoutButton"
                         action="logoutAction"
                         classNames="jmix-logout-button"/>
+                <div width="10px"/>
             </hbox>
         </navigationBar>
         <initialLayout>

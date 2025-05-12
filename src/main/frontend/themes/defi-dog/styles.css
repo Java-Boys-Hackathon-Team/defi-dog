@@ -29,3 +29,13 @@ html[theme~="dark"] .home-button-icon {
 html:not([theme~="dark"]) .home-button-icon {
     background-image: url('icons/defidog_light.png');
 }
+
+.audit-background-available {
+    background-color: #158443; /* светло-зеленый */
+    border-radius: 8px;
+}
+
+.audit-background-notavailable {
+    background-color: #383B43;
+    border-radius: 8px;
+}
