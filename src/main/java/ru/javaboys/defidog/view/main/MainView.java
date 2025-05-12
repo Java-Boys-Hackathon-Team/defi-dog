@@ -3,12 +3,14 @@ package ru.javaboys.defidog.view.main;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Layout;
+import org.apache.hc.core5.annotation.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -40,10 +42,7 @@ import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import ru.javaboys.defidog.crypto.CryptocurrencyService;
-import ru.javaboys.defidog.entity.BlockchainNetwork;
-import ru.javaboys.defidog.entity.Cryptocurrency;
-import ru.javaboys.defidog.entity.DeFiProtocol;
-import ru.javaboys.defidog.entity.ProtocolKind;
+import ru.javaboys.defidog.entity.*;
 
 import ru.javaboys.defidog.view.admin.AdminView;
 import ru.javaboys.defidog.view.settings.SettingsView;
@@ -183,9 +182,19 @@ public class MainView extends StandardMainView {
 
         cryptocurrencyGrid.addComponentColumn(entity -> {
             Button actionButton = new Button();
-            actionButton.setIcon(new Icon(VaadinIcon.PLAY));
+            Icon icon = new Icon(VaadinIcon.PLAY);
+            icon.setColor("white");
+            actionButton.setIcon(icon);
             actionButton.setTooltipText("Перейти к аудиту");
-            actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.CRYPTOCURRENCY));
+            if (contractsHaveAudit(entity.getContracts())) {
+                actionButton.addClickListener(clickEvent
+                        -> goToAudit(entity.getId(), ProtocolKind.CRYPTOCURRENCY));
+                actionButton.addClassName("audit-background-available");
+            } else {
+                actionButton.addClickListener(clickEvent
+                        -> notifications.show("Для этого актива пока нет Аудита"));
+                actionButton.addClassName("audit-background-notavailable");
+            }
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
@@ -214,9 +223,19 @@ public class MainView extends StandardMainView {
 
         dexGrid.addComponentColumn(entity -> {
             Button actionButton = new Button();
-            actionButton.setIcon(new Icon(VaadinIcon.PLAY));
-            actionButton.setTooltipText("Запустить аудит");
-            actionButton.addClickListener(clickEvent -> goToAudit(entity.getId(), ProtocolKind.DEFI));
+            Icon icon = new Icon(VaadinIcon.PLAY);
+            icon.setColor("white");
+            actionButton.setIcon(icon);
+            actionButton.setTooltipText("Перейти к аудиту");
+            if (contractsHaveAudit(entity.getContracts())) {
+                actionButton.addClickListener(clickEvent
+                        -> goToAudit(entity.getId(), ProtocolKind.DEFI));
+                actionButton.addClassName("audit-background-available");
+            } else {
+                actionButton.addClickListener(clickEvent
+                        -> notifications.show("Для этого актива пока нет Аудита"));
+                actionButton.addClassName("audit-background-notavailable");
+            }
             return actionButton;
         }).setTextAlign(ColumnTextAlign.CENTER).setHeader("Audit");
 
@@ -272,6 +291,17 @@ public class MainView extends StandardMainView {
                         )
                 )
         ));
+    }
+
+    private boolean contractsHaveAudit(List<SmartContract> contracts) {
+        boolean haveAudit = false;
+        for (SmartContract contract : contracts) {
+            if (!contract.getAuditReports().isEmpty()) {
+                haveAudit = true;
+                break;
+            }
+        }
+        return haveAudit;
     }
 
     private void updateCryptocurrencyGrid() {
