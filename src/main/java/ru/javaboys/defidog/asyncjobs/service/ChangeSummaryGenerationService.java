@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.stereotype.Service;
+import ru.javaboys.defidog.asyncjobs.util.CommonUtils;
 import ru.javaboys.defidog.entity.AbiChangeSet;
 import ru.javaboys.defidog.entity.SourceCodeChangeSet;
 import ru.javaboys.defidog.integrations.openai.OpenAiService;
@@ -71,4 +72,52 @@ public class ChangeSummaryGenerationService {
 
         return openAiService.talkToChatGPT(changeSet.getId().toString(), systemMessage, userMessage);
     }
+
+    public String generateInitialSourceCodeSummary(SourceCodeChangeSet changeSet) {
+        String diff = changeSet.getGitDiff();
+        diff = CommonUtils.splitSolidityContractsInBatches(diff, 3000).get(0);
+        SystemMessage systemMessage = new SystemMessage("""
+        Ты — специалист по смарт-контрактам и блокчейн-инфраструктуре.
+        Проанализируй текущий исходный код (без изменений), чтобы составить обзор его архитектуры и особенностей.
+        Укажи:
+        - Какие ключевые контракты присутствуют;
+        - Основные модули и библиотеки;
+        - Какие механизмы могут быть критичны для безопасности и инвесторов.
+        Ответ — краткий, понятный и деловой, на русском языке.
+    """);
+
+        UserMessage userMessage = new UserMessage("""
+        Ниже представлен полный текущий исходный код смарт-контрактов (без diff). 
+        Построй краткое резюме:
+        
+        ```
+        %s
+        ```
+    """.formatted(diff));
+
+        return openAiService.talkToChatGPT(changeSet.getId().toString(), systemMessage, userMessage);
+    }
+
+    public String generateInitialAbiSummary(AbiChangeSet changeSet) {
+        String abi = changeSet.getGitDiff(); // в данном случае — весь ABI
+        abi = CommonUtils.splitSolidityContractsInBatches(abi, 3000).get(0);
+        SystemMessage systemMessage = new SystemMessage("""
+        Ты — эксперт по API-интерфейсам Ethereum.
+        Проанализируй полный ABI контракта и сформируй обзор:
+        - Какие публичные функции доступны;
+        - Какие события могут быть важны для фронтенда и пользователей;
+        - Насколько велик и сложен API.
+        Ответ — краткий, профессиональный, на русском языке.
+    """);
+
+        UserMessage userMessage = new UserMessage("""
+        Вот полный ABI контракта:
+        ```
+        %s
+        ```
+    """.formatted(abi));
+
+        return openAiService.talkToChatGPT(changeSet.getId().toString(), systemMessage, userMessage);
+    }
+
 }
