@@ -27,7 +27,7 @@
             <textArea id="gitDiffField" height="9.5em" property="gitDiff" readOnly="true"/>
         </formLayout>
         <hbox id="detailActions">
-            <button id="closeButton" action="closeAction" text="Вереуться"/>
+            <button id="closeButton" action="closeAction" text="Вернуться"/>
         </hbox>
     </layout>
 </view>
