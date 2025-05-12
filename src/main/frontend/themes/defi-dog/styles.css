@@ -36,6 +36,6 @@ html:not([theme~="dark"]) .home-button-icon {
 }
 
 .audit-background-notavailable {
-    background-color: #1D2431; /* светло-зеленый */
+    background-color: #383B43;
     border-radius: 8px;
 }

@@ -5,12 +5,13 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.Layout;
-import org.apache.hc.core5.annotation.Contract;
+import io.jmix.core.Sort;
+import io.jmix.flowui.model.CollectionContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.ClickEvent;
@@ -80,6 +81,12 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private Button homeButton;
 
+    @ViewComponent
+    private CollectionContainer<Cryptocurrency> cryptocurrencyDg;
+
+    @ViewComponent
+    private CollectionContainer<DeFiProtocol> dexDg;
+
     @Subscribe
     public void onInit(InitEvent event) {
         blockchainNetworkComboBox.setValue(BlockchainNetwork.ETHEREUM);
@@ -89,6 +96,9 @@ public class MainView extends StandardMainView {
         setColumnsDataGrids();
         cryptocurrencyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         dexGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
+        Objects.requireNonNull(cryptocurrencyDg.getSorter()).sort(Sort.by(Sort.Order.desc("marketCap")));
+        Objects.requireNonNull(dexDg.getSorter()).sort(Sort.by(Sort.Order.asc("cmcId")));
 
         Image logo = new Image("icons/lader.png", "DeFi App Logo");
         logo.setWidth("400px");
