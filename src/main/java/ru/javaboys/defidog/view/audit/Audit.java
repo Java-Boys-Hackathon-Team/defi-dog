@@ -2,6 +2,7 @@ package ru.javaboys.defidog.view.audit;
 
 
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.html.Div;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.Route;
 import io.jmix.flowui.DialogWindows;
@@ -18,7 +20,6 @@ import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.component.codeeditor.CodeEditor;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.model.CollectionContainer;
-import io.jmix.flowui.view.DialogWindow;
 import io.jmix.flowui.view.StandardView;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
@@ -32,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.javaboys.defidog.audit.components.GraphPanel;
 import ru.javaboys.defidog.entity.AbiChangeSet;
 import ru.javaboys.defidog.entity.AuditReport;
+import ru.javaboys.defidog.entity.Cryptocurrency;
+import ru.javaboys.defidog.entity.DeFiProtocol;
 import ru.javaboys.defidog.entity.ProtocolKind;
 import ru.javaboys.defidog.entity.SourceCode;
 import ru.javaboys.defidog.entity.SourceCodeChangeSet;
@@ -40,7 +43,7 @@ import ru.javaboys.defidog.repositories.CryptocurrencyRepository;
 import ru.javaboys.defidog.repositories.DeFiProtocolRepository;
 import ru.javaboys.defidog.repositories.SourceCodeRepository;
 import ru.javaboys.defidog.view.main.MainView;
-import ru.javaboys.defidog.view.sourcecodechangeset.SourceCodeChangeSetDetailView;
+import ru.javaboys.defidog.viewutils.ViewComponentsUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -76,8 +79,9 @@ public class Audit extends StandardView {
     @ViewComponent
     private CodeEditor abiCodeEditor;
     @ViewComponent
+    private HorizontalLayout header;
+    @ViewComponent
     private Div markdownHtml;
-
 
     @Autowired
     private DeFiProtocolRepository deFiProtocolRepository;
@@ -202,10 +206,20 @@ public class Audit extends StandardView {
             case DEFI -> {
                 name = deFiProtocolRepository.findNameById(protocolId).orElse("Не найдено");
                 description = deFiProtocolRepository.findDescriptionById(protocolId).orElse("Описание отсутствует");
+                DeFiProtocol protocol = deFiProtocolRepository.findById(protocolId);
+                if (protocol != null) {
+                    Component logo = ViewComponentsUtils.createImageComponent(protocol, DeFiProtocol::getLogoImage);
+                    header.addComponentAsFirst(logo);
+                }
             }
             case CRYPTOCURRENCY -> {
                 name = cryptocurrencyRepository.findNameById(protocolId).orElse("Не найдено");
                 description = cryptocurrencyRepository.findDescriptionById(protocolId).orElse("Описание отсутствует");
+                Cryptocurrency cryptocurrency = cryptocurrencyRepository.findById(protocolId);
+                if (cryptocurrency != null) {
+                    Component logo = ViewComponentsUtils.createImageComponent(cryptocurrency, Cryptocurrency::getLogoImage);
+                    header.addComponentAsFirst(logo);
+                }
             }
         }
 
