@@ -81,7 +81,7 @@ public class ContractDependenciesGraphService {
             String batch = contractBatches.get(i);
             log.info("🚀 Генерируем граф для батча #{}", i + 1);
 
-            String graph = generateGraphForBatch(batch);
+            String graph = generateGraphForBatch(batch, i + 1, contractBatches.size());
             batchGraphs.add(graph);
 
             // Жёсткая пауза 10 секунд между батчами (или больше если надо)
@@ -108,8 +108,16 @@ public class ContractDependenciesGraphService {
 
     /**
      * Генерация графа для батча контрактов.
+     * 
+     * @param batchContracts содержимое батча контрактов
+     * @param batchNumber номер текущего батча (начиная с 1)
+     * @param totalBatches общее количество батчей
+     * @return JSON-представление графа
      */
-    private String generateGraphForBatch(String batchContracts) {
+    private String generateGraphForBatch(String batchContracts, int batchNumber, int totalBatches) {
+        log.info("🔄 Обрабатываем батч № {} из {}. Осталось: {}",
+                batchNumber, totalBatches, totalBatches - batchNumber);
+
         String conversationId = UUID.randomUUID().toString();
         String userMessage = BUILD_GRAPH_FROM_CODE_PROMPT_TEMPLATE.formatted(batchContracts);
 
@@ -121,7 +129,7 @@ public class ContractDependenciesGraphService {
 
         try {
             JsonNode jsonNode = objectMapper.readTree(response);
-            log.info("Успешно сгенерирован граф для батча. Узлов: {}", jsonNode.at("/elements/nodes").size());
+            log.info("Успешно сгенерирован граф для батча № {}. Узлов: {}", batchNumber, jsonNode.at("/elements/nodes").size());
             return response;
         } catch (Exception e) {
             log.error("Ошибка парсинга JSON графа от OpenAI: {}", e.getMessage());
