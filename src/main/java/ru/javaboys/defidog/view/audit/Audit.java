@@ -200,6 +200,11 @@ public class Audit extends StandardView {
             case CRYPTOCURRENCY -> {
                 name = cryptocurrencyRepository.findNameById(protocolId).orElse("Не найдено");
                 description = cryptocurrencyRepository.findDescriptionById(protocolId).orElse("Описание отсутствует");
+                Cryptocurrency cryptocurrency = cryptocurrencyRepository.findById(protocolId);
+                if (cryptocurrency != null) {
+                    Component logo = ViewComponentsUtils.createImageComponent(cryptocurrency, Cryptocurrency::getLogoImage);
+                    header.addComponentAsFirst(logo);
+                }
             }
         }
 
