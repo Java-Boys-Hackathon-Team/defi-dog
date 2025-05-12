@@ -45,31 +45,32 @@
                 </vbox>
             </hbox>
 
-            <!-- История ABI -->
-            <dataGrid id="abiHistoryGrid" width="100%" height="300px"
-                      dataContainer="abiChangesDc"
-                      columnReorderingAllowed="true"
-                      themeNames="column-borders card-section history-section mt-">
-                <columns>
-                    <column property="id" header="ID"/>
-                    <column property="createdDate" header="Дата"/>
-                    <column property="changeSummary" header="Описание изменений"/>
-                </columns>
-            </dataGrid>
-
             <!-- История исходного кода -->
-            <dataGrid id="sourceCodeHistoryGrid" width="100%" height="300px"
+            <h4 classNames="mt-m mb-s" text="История изменений исходного кода"/>
+            <dataGrid id="sourceCodeHistoryGrid" width="100%" height="250px"
                       dataContainer="sourceCodeChangesDc"
                       columnReorderingAllowed="true"
                       themeNames="column-borders card-section history-section mt-m">
                 <columns>
-                    <column property="id" header="ID"/>
-                    <column property="createdDate" header="Дата"/>
-                    <column property="commitHash" header="Коммит"/>
-                    <column property="changeSummary" header="Описание изменений"/>
+                    <column property="id" header="ID" resizable="true"/>
+                    <column property="createdDate" header="Дата" resizable="true"/>
+                    <column property="commitHash" header="Коммит" resizable="true"/>
+                    <column property="changeSummary" header="Описание изменений" resizable="true"/>
                 </columns>
             </dataGrid>
 
+            <!-- История ABI -->
+            <h4 classNames="mt-m mb-s" text="История изменений ABI"/>
+            <dataGrid id="abiHistoryGrid" width="100%" height="250px"
+                      dataContainer="abiChangesDc"
+                      columnReorderingAllowed="true"
+                      themeNames="column-borders card-section history-section mt-">
+                <columns>
+                    <column property="id" header="ID" resizable="true"/>
+                    <column property="createdDate" header="Дата" resizable="true"/>
+                    <column property="changeSummary" header="Описание изменений" resizable="true"/>
+                </columns>
+            </dataGrid>
         </vbox>
     </layout>
 </view>

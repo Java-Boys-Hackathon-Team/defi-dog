@@ -12,10 +12,13 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.Route;
+import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.Notifications;
+import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.component.codeeditor.CodeEditor;
 import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.model.CollectionContainer;
+import io.jmix.flowui.view.DialogWindow;
 import io.jmix.flowui.view.StandardView;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
@@ -37,6 +40,7 @@ import ru.javaboys.defidog.repositories.CryptocurrencyRepository;
 import ru.javaboys.defidog.repositories.DeFiProtocolRepository;
 import ru.javaboys.defidog.repositories.SourceCodeRepository;
 import ru.javaboys.defidog.view.main.MainView;
+import ru.javaboys.defidog.view.sourcecodechangeset.SourceCodeChangeSetDetailView;
 
 import java.util.List;
 import java.util.Map;
@@ -83,8 +87,14 @@ public class Audit extends StandardView {
     private SourceCodeRepository sourceCodeRepository;
     @Autowired
     private CryptocurrencyRepository cryptocurrencyRepository;
+    @Autowired
+    private DialogWindows dialogWindows;
+    @Autowired
+    private ViewNavigators viewNavigators;
 
     private UUID protocolId;
+    @ViewComponent
+    private DataGrid<AbiChangeSet> abiHistoryGrid;
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
@@ -244,6 +254,28 @@ public class Audit extends StandardView {
                 Optional.ofNullable(sourceCode.getLastKnownAbi())
                         .orElse("// ABI отсутствует")
         );
+
+        sourceCodeHistoryGrid.addItemDoubleClickListener(event -> {
+            SourceCodeChangeSet entity = event.getItem();
+            openSourceCodeDetailView(entity);
+        });
+
+        abiHistoryGrid.addItemDoubleClickListener(event -> {
+            AbiChangeSet entity = event.getItem();
+            openAbiDetailView(entity);
+        });
+    }
+
+    private void openSourceCodeDetailView(SourceCodeChangeSet entity) {
+        viewNavigators.detailView(SourceCodeChangeSet.class)
+                .editEntity(entity)
+                .navigate();
+    }
+
+    private void openAbiDetailView(AbiChangeSet entity) {
+        viewNavigators.detailView(AbiChangeSet.class)
+                .editEntity(entity)
+                .navigate();
     }
 
     private void addCriticalityEmojiColumn() {

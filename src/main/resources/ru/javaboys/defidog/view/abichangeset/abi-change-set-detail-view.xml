@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://abiChangeSetDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="abiChangeSetDc"
+                  class="ru.javaboys.defidog.entity.AbiChangeSet">
+            <fetchPlan extends="_base"/>
+            <loader id="abiChangeSetDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="abiChangeSetDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+                <responsiveStep minWidth="40em" columns="2"/>
+            </responsiveSteps>
+            <textArea id="changeSummaryField" height="9.5em" property="changeSummary" readOnly="true"/>
+            <textField id="commitHashField" property="commitHash" readOnly="true"/>
+            <textArea id="gitDiffField" height="9.5em" property="gitDiff" readOnly="true"/>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="closeButton" action="closeAction" text="Вереуться"/>
+        </hbox>
+    </layout>
+</view>

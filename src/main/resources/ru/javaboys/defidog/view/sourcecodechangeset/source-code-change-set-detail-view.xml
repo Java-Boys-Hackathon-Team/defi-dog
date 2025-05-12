@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://sourceCodeChangeSetDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="sourceCodeChangeSetDc"
+                  class="ru.javaboys.defidog.entity.SourceCodeChangeSet">
+            <fetchPlan extends="_base">
+                <property name="auditReport" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="sourceCodeChangeSetDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <!-- Заголовок секции изменений -->
+        <h4 classNames="mt-m mb-s" text="Описание изменений кода смарт-контракта"/>
+        <div id="changeSummaryField" height="9.5em" property="changeSummary" classNames="card-section audit-md-box bg-dark rounded-m px-m py-s shadow-s"/>
+
+        <h4 classNames="mt-m mb-s" text="Аудит смарт-контракта"/>
+        <div id="markdownHtml"
+             classNames="card-section audit-md-box bg-dark rounded-m px-m py-s shadow-s"
+             width="50%" height="100%"/>
+        <hbox id="detailActions">
+            <button id="closeButton" action="closeAction" text="Вернуться"/>
+        </hbox>
+    </layout>
+</view>
