@@ -46,35 +46,29 @@
             </hbox>
 
             <!-- История ABI -->
-            <details id="abiHistoryCard" summaryText="История изменений ABI"
-                     classNames="card-section history-section mt-m" width="100%" height="auto">
-                <dataGrid id="abiHistoryGrid" width="100%" height="200px"
-                          dataContainer="abiChangesDc"
-                          columnReorderingAllowed="true"
-                          themeNames="column-borders">
-                    <columns>
-                        <column property="id" header="ID"/>
-                        <column property="createdDate" header="Дата"/>
-                        <column property="changeSummary" header="Описание изменений"/>
-                    </columns>
-                </dataGrid>
-            </details>
+            <dataGrid id="abiHistoryGrid" width="100%" height="300px"
+                      dataContainer="abiChangesDc"
+                      columnReorderingAllowed="true"
+                      themeNames="column-borders card-section history-section mt-">
+                <columns>
+                    <column property="id" header="ID"/>
+                    <column property="createdDate" header="Дата"/>
+                    <column property="changeSummary" header="Описание изменений"/>
+                </columns>
+            </dataGrid>
 
             <!-- История исходного кода -->
-            <details id="sourceCodeHistoryCard" summaryText="История изменений исходного кода"
-                     classNames="card-section history-section mt-m" width="100%" height="auto">
-                <dataGrid id="sourceCodeHistoryGrid" width="100%" height="200px"
-                          dataContainer="sourceCodeChangesDc"
-                          columnReorderingAllowed="true"
-                          themeNames="column-borders">
-                    <columns>
-                        <column property="id" header="ID"/>
-                        <column property="createdDate" header="Дата"/>
-                        <column property="commitHash" header="Коммит"/>
-                        <column property="changeSummary" header="Описание изменений"/>
-                    </columns>
-                </dataGrid>
-            </details>
+            <dataGrid id="sourceCodeHistoryGrid" width="100%" height="300px"
+                      dataContainer="sourceCodeChangesDc"
+                      columnReorderingAllowed="true"
+                      themeNames="column-borders card-section history-section mt-m">
+                <columns>
+                    <column property="id" header="ID"/>
+                    <column property="createdDate" header="Дата"/>
+                    <column property="commitHash" header="Коммит"/>
+                    <column property="changeSummary" header="Описание изменений"/>
+                </columns>
+            </dataGrid>
 
         </vbox>
     </layout>
