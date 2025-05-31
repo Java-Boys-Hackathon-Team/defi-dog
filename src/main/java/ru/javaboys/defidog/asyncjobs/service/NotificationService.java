@@ -1,17 +1,19 @@
 package ru.javaboys.defidog.asyncjobs.service;
 
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
 import io.jmix.core.UnconstrainedDataManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import ru.javaboys.defidog.entity.AuditReport;
 import ru.javaboys.defidog.entity.Notification;
 import ru.javaboys.defidog.entity.SmartContract;
 import ru.javaboys.defidog.entity.User;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -55,7 +57,7 @@ public class NotificationService {
                 .map(u -> {
                     Notification n = dataManager.create(Notification.class);
                     n.setUser(u);
-                    n.setHeader(report.getDescription());
+                    n.setHeader(buildHeader(report));
                     n.setMessage(report.getSummary());
                     if (StringUtils.isNotBlank(u.getEmail())) {
                         n.setEmailSent(false);
@@ -70,5 +72,21 @@ public class NotificationService {
 
         log.info("Создано {} уведомлений для аудиторского отчета: {}", notifications.size(), report.getId());
         return notifications;
+    }
+
+    private String buildHeader(AuditReport report) {
+        String name = null;
+        if (report.getSmartContract() != null) {
+            SmartContract sc = report.getSmartContract();
+            if (sc.getCryptocurrency() != null) {
+                name = sc.getCryptocurrency().getName();
+            }
+            if (sc.getDeFiProtocol() != null) {
+                name = sc.getDeFiProtocol().getName();
+            }
+        }
+        return "\uD83D\uDD14 \uD83D\uDEA8 \uD83D\uDD14 Отчет по аудиту безопасности "
+               + ObjectUtils.defaultIfNull(name, "") + " \uD83D\uDD14\uD83D\uDEA8\uD83D\uDD14 \n"
+               + ObjectUtils.defaultIfNull(report.getDescription(), "");
     }
 }
