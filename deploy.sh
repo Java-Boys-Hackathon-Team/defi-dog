@@ -39,7 +39,7 @@ docker-compose rm -f
 docker image prune -f --filter "label=com.docker.compose.project=defi-dog"
 
 # Шаг 6: Сборка проекта defi-dog
-./gradlew -Pvaadin.productionMode=true bootJar -x test
+./gradlew -Dorg.gradle.jvmargs='-Xms1g -Xmx2g' -Pvaadin.productionMode=true bootJar -x test
 
 ./build_scan_tools.sh
 
